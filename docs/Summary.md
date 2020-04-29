@@ -47,8 +47,8 @@
   
 ---
 
-
-######<a name="classmgr-example-usage"></a>ClassMgr example usage
+<a name="classmgr-example-usage"></a>
+######ClassMgr example usage
  
 [ClassMgr] generate PHP class/interface/trait code
 ``` php
@@ -245,7 +245,8 @@ You will find more examples in test/ClassMgrTest.php.
 
 ---
 
-######<a name="docblockmgr-example-usage">DocBlockMgr example usage
+<a name="docblockmgr-example-usage"></a>
+######DocBlockMgr example usage
 
 [DocBlockMgr] generates docBlocks
 ``` php
@@ -327,7 +328,8 @@ You will find more usage examples of DocBlockMgr and [FcnFrameMgr] in src/ClassM
 
 ---
 
-######<a name="fcnframemgr-example-usage">FcnFrameMgr example usage
+<a name="fcnframemgr-example-usage"></a>
+######FcnFrameMgr example usage
  
 [FcnFrameMgr] generate PHP function/method frame (shell) code
 ``` php
@@ -401,7 +403,8 @@ You will find more usage examples of [DocBlockMgr] and FcnFrameMgr in src/ClassM
 
 ---
 
-######<a name="fcninvokemgr-example-usage">FcnInvokeMgr example usage
+<a name="fcninvokemgr-example-usage"></a>
+######FcnInvokeMgr example usage
  
 [FcnInvokeMgr] master single function/method invokes, for chained invokes, use [ChainInvokeMgr].
 ``` php
@@ -428,7 +431,8 @@ You will find more examples in test/FcnInvokeMgrTest.php.
 
 ---
 
-######<a name="variablemgr-example-usage">VariableMgr example usage
+<a name="variablemgr-example-usage"></a>
+######VariableMgr example usage
  
 [VariableMgr] generate PHP variable (and [PropertyMgr] property) define code 
 ``` php
@@ -485,7 +489,9 @@ VarDto methods in details are found in [VarDto], ArgumentDto methods in [Argumen
 <small>Go to [Top](#top).</small>
 
 --- 
-######<a name="misc">Misc
+
+<a name="misc"></a>
+######Misc
 
 The target PHP version code is, for now, the current PHP version. 
 
@@ -493,22 +499,24 @@ Using a PHP reserved name as _name_ (ex FQCN/className) will thow an InvalidArgu
 
 You may need to readjust result output code style and indents.
 
-######<a name="tests">Tests
+<a name="tests"></a>
+######Tests
 
 Tests are executed in ```DISPLAY``` mode, to alter, update _PHP_ const in top of ```phpunit.xml```.  
 
-
-######<a name="support">Support
+<a name="support"></a>
+######Support
 
 For support use [github.com PcGen]. Non-emergence support issues are, unless sponsored, fixed in due time.
 
-
-######<a name="sponsorship">Sponsorship
+<a name="sponsorship"></a>
+######Sponsorship
 
 Donation using <a href="https://paypal.me/kigkonsult?locale.x=en_US" rel="nofollow">paypal.me/kigkonsult</a> are appreciated. 
 For invoice, <a href="mailto:ical@kigkonsult.se">please e-mail</a>.
 
-######<a name="install">Install
+<a name="install"></a>
+######Install
 
 ``` php
 composer require kigkonsult/pcgen:dev-master
@@ -532,8 +540,8 @@ namespace Kigkonsult\PcGen;
 include 'pathToSource/Kigkonsult/PcGen/autoload.php';
 ```
 
-
-######<a name="license">License
+<a name="license"></a>
+######License
 
 This project is licensed under the GPLv3 License
 
