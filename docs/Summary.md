@@ -1,52 +1,60 @@
 [comment]: # (This file is part of PcGen, PHP Code Generation support package. Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved, licence GPL 3.0)
-<a name="top">PcGen summary
-###### the PHP Code Generation support package
+<a name="top"></a>
 
-* [ClassMgr] generate PHP class/interface/trait code, [ClassMgr example usage](#classmgr-example-usage)
-  * with namespace, use, extends, implements 
-  * with constuctor and factory methods 
-  * with constants and properties with opt. getter(+iterator) and setter methods
-  * allow insert of (pre-produced, logic) code 
+#### PcGen summary
 
-* [DocBlockMgr] generates docBlocks, [DocBlockMgr example usage](#docblockmgr-example-usage)
-  * in compliance with [phpdoc]
+The PHP Code Generation support package
 
-* [FcnFrameMgr] generate PHP function/method frame (shell) code, [FcnFrameMgr example usage](#fcnframemgr-example-usage)
-  * with arguments and closure use variables
-  * with property(/variable) set code
-  * with method return code
-  * allow insert of (pre-produced, logic) code 
+[ClassMgr] generate PHP class, interface and trait code
+* with namespace, use, extends, implements 
+* with constuctor and factory methods 
+* with constants and properties with opt. getter(+iterator) and setter methods
+* allow insert of (pre-produced, logic) code
+* [ClassMgr example usage](#classmgr-example-usage) 
 
-* For function/method invoke, opt with argument
-  * [FcnInvokeMgr] master single function/method invoke, [FcnInvokeMgr example usage](#fcninvokemgr-example-usage) 
+[DocBlockMgr] generates docBlocks
+* in compliance with [phpdoc]
+* [DocBlockMgr example usage](#docblockmgr-example-usage)
+
+[FcnFrameMgr] generate PHP function/method frame (shell) code
+* with arguments and closure use variables
+* with property(/variable) set code
+* with method return code
+* allow insert of (pre-produced, logic) code 
+* [FcnFrameMgr example usage](#fcnframemgr-example-usage)
+
+For function/method invoke, opt with argument
+* [FcnInvokeMgr] master single function/method invoke
   * sets of chained invokes by [ChainInvokeMgr]
+* [FcnInvokeMgr example usage](#fcninvokemgr-example-usage)
   
-* [VariableMgr] generate PHP variable (and [PropertyMgr] property) code
-  * supports property/variable/constant define with PHP primitive value, array, closure or callback 
-  * allow insert of closure (pre-produced, logic) code 
+[VariableMgr] generate PHP variable (and [PropertyMgr] property) code
+* supports property/variable/constant define with PHP primitive value, array, closure or callback 
+* allow insert of closure (pre-produced, logic) code 
 
-* [VarDto] holds variable base data, [ArgumentMgr] extends [VarDto], used for function/method base arguments.
+[VarDto] holds variable base data, [ArgumentMgr] extends [VarDto], used for function/method base arguments.
    
-* [AssignClauseMgr] assign target (variable/property) value from
-  * variable/property value
-  * (scalar) fixedSourceValue
-  * constant
-  * function/method invoke(s)
+[AssignClauseMgr] assign target (variable/property) value from
+* variable/property value
+* (scalar) fixedSourceValue
+* constant
+* function/method invoke(s)
     
-* [ReturnClauseMgr] manages function/method return of 
-  * variable/property value
-  * (scalar) fixedSourceValue
-  * constant  
-  * function/method invoke(s)
+[ReturnClauseMgr] manages function/method return of 
+* variable/property value
+* (scalar) fixedSourceValue
+* constant  
+* function/method invoke(s)
    
-* [PcGenInterface]
-  * provide convenient constants
+[PcGenInterface]
+* provide convenient constants
   
-* [Misc](#misc) - [Tests](#tests) - [Support](#support) - [Install](#install) - [License]("license)
-  
+[Misc](#misc) - [Tests](#tests) - [Support](#support) - [Install](#install) - [License]("license)
+ 
 ---
 
 <a name="classmgr-example-usage"></a>
+
 ###### ClassMgr example usage
  
 [ClassMgr] generate PHP class/interface/trait code
@@ -245,6 +253,7 @@ You will find more examples in test/ClassMgrTest.php.
 ---
 
 <a name="docblockmgr-example-usage"></a>
+
 ###### DocBlockMgr example usage
 
 [DocBlockMgr] generates docBlocks
@@ -328,6 +337,7 @@ You will find more usage examples of DocBlockMgr and [FcnFrameMgr] in src/ClassM
 ---
 
 <a name="fcnframemgr-example-usage"></a>
+
 ###### FcnFrameMgr example usage
  
 [FcnFrameMgr] generate PHP function/method frame (shell) code
@@ -403,6 +413,7 @@ You will find more usage examples of [DocBlockMgr] and FcnFrameMgr in src/ClassM
 ---
 
 <a name="fcninvokemgr-example-usage"></a>
+
 ###### FcnInvokeMgr example usage
  
 [FcnInvokeMgr] master single function/method invokes, for chained invokes, use [ChainInvokeMgr].
@@ -431,6 +442,7 @@ You will find more examples in test/FcnInvokeMgrTest.php.
 ---
 
 <a name="variablemgr-example-usage"></a>
+
 ###### VariableMgr example usage
  
 [VariableMgr] generate PHP variable (and [PropertyMgr] property) define code 
@@ -490,6 +502,7 @@ VarDto methods in details are found in [VarDto], ArgumentDto methods in [Argumen
 --- 
 
 <a name="misc"></a>
+
 ###### Misc
 
 The target PHP version code is, for now, the current PHP version. 
@@ -499,22 +512,26 @@ Using a PHP reserved name as _name_ (ex FQCN/className) will thow an InvalidArgu
 You may need to readjust result output code style and indents.
 
 <a name="tests"></a>
+
 ###### Tests
 
 Tests are executed in ```DISPLAY``` mode, to alter, update _PHP_ const in top of ```phpunit.xml```.  
 
 <a name="support"></a>
+
 ###### Support
 
 For support use [github.com PcGen]. Non-emergence support issues are, unless sponsored, fixed in due time.
 
 <a name="sponsorship"></a>
+
 ###### Sponsorship
 
 Donation using <a href="https://paypal.me/kigkonsult?locale.x=en_US" rel="nofollow">paypal.me/kigkonsult</a> are appreciated. 
 For invoice, <a href="mailto:ical@kigkonsult.se">please e-mail</a>.
 
 <a name="install"></a>
+
 ###### Install
 
 ``` php
@@ -540,6 +557,7 @@ include 'pathToSource/Kigkonsult/PcGen/autoload.php';
 ```
 
 <a name="license"></a>
+
 ###### License
 
 This project is licensed under the GPLv3 License
