@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ PcGen is a PHP Code Generation support package
+
+ Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ Link <https://kigkonsult.se>
+ Support <https://github.com/iCalcreator/PcMgr>
+
+ This file is part of PcMgr.
+
+ PcGen is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ PcGen is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Mgreral Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="auto"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         syntaxCheck="false"
+         bootstrap="autoload.php">
+    <php>
+        <!-- Display (most) results, 0=no display -->
+        <const name="DISPLAYacm"  value="1"/>  <!-- AssignClauseMgr tests -->
+        <const name="DISPLAYacm2" value="1"/>  <!-- AssignClauseMgr2 tests -->
+        <const name="DISPLAYcm"   value="1"/>  <!-- ClassMgr tests -->
+        <const name="DISPLAYdbm"  value="1"/>  <!-- DocBlockMgr tests -->
+        <const name="DISPLAYem"   value="1"/>  <!-- EntityMgr tests -->
+        <const name="DISPLAYffm"  value="1"/>  <!-- FcnFrameMgr tests -->
+        <const name="DISPLAYfim"  value="1"/>  <!-- FcninvokeMgr tests -->
+        <const name="DISPLAYrcm"  value="1"/>  <!-- ReturnClauseMgr tests -->
+        <const name="DISPLAYrcm2" value="1"/>  <!-- ReturnClauseMgr2 tests -->
+        <const name="DISPLAYvm"   value="1"/>  <!-- VariableMgr tests -->
+    </php>
+    <testsuites>
+        <testsuite variable="Base Tests">
+            <file>./test/BaseATest.php</file>
+            <file>./test/BaseBTest.php</file>
+            <file>./test/BaseCTest.php</file>
+        </testsuite>
+        <testsuite variable="DocBlockMgr Tests">
+            <file>./test/DocBlockMgrTest.php</file>
+        </testsuite>
+        <testsuite variable="Dto Tests">
+            <file>./test/Dto/VarDtoTest.php</file>
+            <file>./test/Dto/ArgumentDtoTest.php</file>
+        </testsuite>
+        <testsuite variable="Row clauses Tests">
+            <file>./test/EntityMgrTest.php</file>
+            <file>./test/AssignClauseMgrTest.php</file>
+            <file>./test/ReturnClauseMgrTest.php</file>
+        </testsuite>
+        <testsuite variable="Fcn Tests">
+            <file>./test/FcnFrameMgrTest.php</file>
+            <file>./test/FcnInvokeMgrTest.php</file>
+            <file>./test/AssignClauseMgrTest2.php</file>
+            <file>./test/ReturnClauseMgrTest2.php</file>
+        </testsuite>
+        <testsuite variable="VariableMgr Tests">
+            <file>./test/VariableMgrTest.php</file>
+        </testsuite>
+        <testsuite variable="ClassMgr Tests">
+            <file>./test/ClassMgrTest.php</file>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
+            <file>./src/ArgumentTrait.php</file>
+            <file>./src/Assert.php</file>
+            <file>./src/AssignClauseMgr.php</file>
+            <file>./src/BaseA.php</file>
+            <file>./src/BaseB.php</file>
+            <file>./src/BaseC.php</file>
+            <file>./src/BaseR1.php</file>
+            <file>./src/ChainInvokeMgr.php</file>
+            <file>./src/ClassMethodFactory.php</file>
+            <file>./src/ClassMgr.php</file>
+            <file>./src/DocBlockMgr.php</file>
+            <file>./src/Dto/ArgumentDto.php</file>
+            <file>./src/Dto/VarDto.php</file>
+            <file>./src/EntityMgr.php</file>
+            <file>./src/FcnFrameMgr.php</file>
+            <file>./src/FcnInvokeMgr.php</file>
+            <file>./src/PcGenInterface.php</file>
+            <file>./src/PropertyMgr.php</file>
+            <file>./src/ReturnClauseMgr.php</file>
+            <file>./src/Traits/ArgumentTrait.php</file>
+            <file>./src/Traits/OperatorTrait.php</file>
+            <file>./src/VariableMgr.php</file>
+        </whitelist>
+    </filter>
+    <logging>
+        <!-- Remove or comment after your own choice-->
+        <!-- All logs will be saved in 'testDocs' folder -->
+        <log type="coverage-html"
+             target="testDocs/PHPUnitCoverage"
+             lowUpperBound="35"
+             highLowerBound="70"/>
+        <!--log type="coverage-clover"
+             target="testDocs/coverage.xml"/-->
+        <!--log type="coverage-php"
+             target="testDocs/coverage.serialized"/-->
+        <log type="coverage-text"
+             target="testDocs/PHPUnitReport.txt"
+             showUncoveredFiles="true"/>
+        <!--log type="json"
+             target="testDocs/logfile.json"/-->
+        <!--log type="tap"
+             target="testDocs/logfile.tap"/-->
+        <!--log type="junit"
+             target="testDocs/logfile.xml"
+             logIncompleteSkipped="false"/-->
+        <!--log type="testdox-html"
+             target="testDocs/testdox.html"/-->
+        <!--log type="testdox-text"
+             target="testDocs/testdox.txt"/-->
+    </logging>
+</phpunit>
