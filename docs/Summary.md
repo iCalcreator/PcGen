@@ -511,7 +511,7 @@ For invoice, <a href="mailto:ical@kigkonsult.se">please e-mail</a>.
 ######<a name="install">Install
 
 ``` php
-composer require kigkonsult\pcgen:dev-master
+composer require kigkonsult/pcgen:dev-master
 ```
 
 Composer, in your `composer.json`:
@@ -519,7 +519,7 @@ Composer, in your `composer.json`:
 ``` json
 {
     "require": {
-        "kigkonsult\pcgen": "dev-master"
+        "kigkonsult/pcgen": "dev-master"
     }
 }
 ```
