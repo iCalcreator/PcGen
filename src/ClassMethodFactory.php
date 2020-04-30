@@ -305,7 +305,9 @@ class ClassMethodFactory implements PcGenInterface
                 ->toArray(),
             FcnFrameMgr::factory(
                 $SET . ucfirst( $propName ),
-                ArgumentDto::factory( $varDto )->setUpdClassProperty( ArgumentDto::BEFORE )
+                [
+                    ArgumentDto::factory( $varDto )->setUpdClassProperty( ArgumentDto::BEFORE )
+                ]
             )
                 ->setReturnThis()
                 ->toArray()
@@ -427,7 +429,7 @@ class ClassMethodFactory implements PcGenInterface
                 ->setTag( self::PARAM_T, self::INT_T, self::$POSITION )
                 ->setTag( self::RETURN_T, self::BOOL_T )
                 ->toArray(),
-            FcnFrameMgr::factory( $FCNNAME, varDto::factory( self::$POSITION, self::INT_T ))
+            FcnFrameMgr::factory( $FCNNAME, [ varDto::factory( self::$POSITION, self::INT_T ) ] )
                 ->setReturnType( self::BOOL_T )
                 ->setBody( sprintf( $CODETMPL, $varDto->getName()))
                 ->toArray()
@@ -600,7 +602,7 @@ class ClassMethodFactory implements PcGenInterface
                 ->setTag( self::RETURN_T, self::VOID_KW )
                 ->setTag( self::THROWS_T, self::$OoBException )
                 ->toArray(),
-            FcnFrameMgr::factory( $FCNNAME, self::$POSITION ) // no typed arg here..
+            FcnFrameMgr::factory( $FCNNAME, [ self::$POSITION ] ) // no typed arg here..
                 ->setBody(
                     VariableMgr::init()
                         ->setBaseIndent()

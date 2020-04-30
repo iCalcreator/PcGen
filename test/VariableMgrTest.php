@@ -194,7 +194,7 @@ class VariableMgrTest extends TestCase
         $body = ' /* this is the closure body */';
         $closure = FcnFrameMgr::init( PHP_EOL, '    ' )
             ->setVisibility()
-            ->setArguments( 'arg' )
+            ->setArguments( [ 'arg' ] )
             ->setBody( $body )
             ->toString();
 
@@ -229,7 +229,7 @@ class VariableMgrTest extends TestCase
         $vm = VariableMgr::init( PHP_EOL, '    ' )->setStatic( true );
         $closure = FcnFrameMgr::init()
             ->setVisibility()
-            ->setArguments( 'arg' )
+            ->setArguments( [ 'arg' ] )
             ->setBody( [ '', ' /* this is the closure body */', '' ] )
             ->toArray();
         $output = $vm->setName( 'theVariableName42' )->setBody( $closure )->toString();

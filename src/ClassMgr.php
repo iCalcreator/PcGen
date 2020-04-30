@@ -119,8 +119,9 @@ final class ClassMgr extends BaseB
      * @throws RuntimeException
      */
     public function toArray() {
+        static $NAME = 'name';
         if( ! $this->isNameSet()) {
-            throw new RuntimeException( self::$ERR1 );
+            throw new RuntimeException( sprintf( self::$ERR1, $NAME ));
         }
         $this->checkFixIteratorInterface();
         $code = array_merge(
@@ -343,13 +344,14 @@ final class ClassMgr extends BaseB
      * @throws InvalidArgumentException
      */
     public function setUses( $uses ) {
+        static $USE = 'use';
         if( empty( $uses )) {
-            throw new InvalidArgumentException( self::$ERR0 );
+            throw new InvalidArgumentException( sprintf( self::$ERR1, $USE ));
         }
         $this->uses = [];
         foreach( $uses as $useSet ) {
             if( empty( $useSet )) {
-                throw new InvalidArgumentException( self::$ERR0 );
+                throw new InvalidArgumentException( sprintf( self::$ERR1, $USE ));
             }
             $this->addUse(
                 $useSet[0],
@@ -451,13 +453,14 @@ final class ClassMgr extends BaseB
      * @throws InvalidArgumentException
      */
     public function setImplements( array $implements ) {
+        static $IMPLEMENTS = 'implements';
         if( empty( $implements )) {
-            throw new InvalidArgumentException( self::$ERR0 );
+            throw new InvalidArgumentException( sprintf( self::$ERR1, $IMPLEMENTS ));
         }
         $this->implements = [];
         foreach( $implements as $implement ) {
             if( empty( $implement )) {
-                throw new InvalidArgumentException( self::$ERR0 );
+                throw new InvalidArgumentException( sprintf( self::$ERR1, $IMPLEMENTS ));
             }
             $this->addImplement( $implement );
         }
@@ -571,8 +574,9 @@ final class ClassMgr extends BaseB
      * @return bool
      */
     private function hasOneArrayProperty() {
+        $cntProps = $this->getPropertyCount();
         switch( true ) {
-            case ( 2 < count( $this->properties )) :
+            case ( empty( $cntProps ) || ( 2 < $cntProps )) :
                 break;
             case ( true !== ( $this->properties[0]->getVarDto()->isTypedArray() &&
                     ! $this->properties[0]->isConst() &&

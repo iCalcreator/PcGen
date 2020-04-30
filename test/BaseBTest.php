@@ -39,7 +39,7 @@ class BaseBTest extends TestCase
             ->setBaseIndent()
             ->setVisibility()
             ->setName( 'halloWorld' )
-            ->setArguments( 'argument' )
+            ->setArguments( [ 'argument' ] )
             ->setBody(
                 ' /* body row 1 */',
                 [

@@ -22,7 +22,7 @@ Inherited [Common methods]
   * if _string_, one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
   * convenient constants found in PcGenInterface
 * ```fcnName```   _string_, function/method name
-* ```arguments``` _string_|_array_, note ```FcnInvokeMgr::setArguments()``` below
+* ```arguments``` _array_, note ```FcnInvokeMgr::setArguments()``` below
 * Static
 * Return _static_
 ---
@@ -63,7 +63,7 @@ Inherited [Common methods]
 * throws InvalidArgumentException
 
 ```FcnInvokeMgr::setArguments( argumentSets )```
-* ```argumentSets``` _array_, items any of below 
+* ```argumentSets``` _array_, elements any of below 
   * name, _string_
   * _ArgumentDto_
     * note ```ArgumentDto``` below

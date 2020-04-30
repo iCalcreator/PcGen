@@ -44,22 +44,15 @@ final class FcnInvokeMgr extends BaseA
     private $name = null;
 
     /**
-     * @param EntityMgr|string    $class  string : one of null, self, $this, 'otherClass', '$class'
-     * @param string              $fcnName
-     * @param string|array|VarDto $arguments
+     * @param EntityMgr|string $class  string : one of null, self, $this, 'otherClass', '$class'
+     * @param string           $fcnName
+     * @param array            $arguments
      * @return static
      */
-    public static function factory( $class, $fcnName, $arguments = null) {
+    public static function factory( $class, $fcnName, array $arguments = null) {
         $instance = self::init()->setName( $class, $fcnName );
-        switch( true ) {
-            case empty( $arguments ) :
-                break;
-            case ( is_string( $arguments ) || ( $arguments instanceof VarDto )):
-                $instance->setArguments( [ $arguments ] );
-                break;
-            default :
-                $instance->setArguments( $arguments );
-                break;
+        if( ! empty( $arguments )) {
+            $instance->setArguments( $arguments );
         }
         return $instance;
     }

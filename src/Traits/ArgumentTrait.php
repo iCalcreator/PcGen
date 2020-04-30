@@ -253,18 +253,16 @@ trait ArgumentTrait
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setArguments( $arguments = null ) {
+    public function setArguments( array $arguments = null ) {
+        static $ARGUMENT = 'argument';
+        $this->arguments = [];
         if( empty( $arguments )) {
-            $this->arguments = [];
             return $this;
-        }
-        if( is_string( $arguments )) {
-            $arguments = [ $arguments ];
         }
         foreach( $arguments as $argSet ) {
             switch( true ) {
                 case empty( $argSet ) :
-                    throw new InvalidArgumentException( BaseA::$ERR0 );
+                    throw new InvalidArgumentException( sprintf( BaseA::$ERR1, $ARGUMENT ));
                     break;
                 case ( $argSet instanceof ArgumentDto ) :
                     $this->addArgument( $argSet );

@@ -50,7 +50,7 @@ abstract class BaseA implements PcGenInterface
     protected static $COMMA     = ',';
     protected static $SP0       = '';
     protected static $SP1       = ' ';
-    protected static $ERR0      = 'Empty arguments';
+    protected static $ERR1      = 'Empty argument %s';
     public    static $ERRx      = 'Invalid argument(s) %s';
 
     /**

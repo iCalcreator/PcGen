@@ -113,10 +113,10 @@ class VariableMgr extends BaseC
                 $string .= PHP_EOL . 'closure : ' . var_export( $this->renderClosureBody( self::$SP0 ), true );
                 break;
             case $this->isCallBackSet() : // callable
-                $string .= ', callback' . var_export( $this->renderCallBlack( self::$SP0 ), true );
+                $string .= ', callback' . implode( self::$SP0, $this->renderCallBlack( self::$SP0 ));
                 break;
             default :
-                $string .= ', initValue : ' . var_export( $this->renderInitValue( self::$SP0 ), true );
+                $string .= ', initValue : ' . implode( self::$SP0, $this->renderInitValue( self::$SP0 ));
                 break;
         } // end switch
         return $string;

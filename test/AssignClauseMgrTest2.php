@@ -82,6 +82,12 @@ class AssignClauseMgrTest2 extends TestCase
         $acm = AssignClauseMgr::init()
             ->setTarget( $target[0], $target[1], $target[2] );
         $initNo = array_rand( array_flip( [ 1, 2, 3 ] ));
+        if( empty( $argset )) {
+            $argset = null;
+        }
+        elseif( ! is_array( $argset )) {
+            $argset = [ $argset ];
+        }
         switch( true ) {
             case (( 1 == $initNo ) ||
                 empty( $method[0] ) ||

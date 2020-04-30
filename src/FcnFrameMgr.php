@@ -65,13 +65,15 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
 
     /**
      * @param string $name
-     * @param string|array $arguments
+     * @param array $arguments
      * @return static
      */
-    public static function factory( $name, $arguments ) {
-        return self::init()
-            ->setName( $name )
-            ->setArguments( $arguments );
+    public static function factory( $name, array $arguments = null ) {
+        $instance = self::init()->setName( $name );
+        if( ! empty( $arguments )) {
+            $instance->setArguments( $arguments );
+        }
+        return $instance;
     }
 
     /**
@@ -237,6 +239,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @throws InvalidArgumentException
      */
     public function setVarUse( $varUse = null ) {
+        static $CLOSUREUSE = 'closure use';
         if( null === $varUse ) {
             $this->varUses = [];
             return $this;
@@ -247,7 +250,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         foreach( $varUse as $argSet ) {
             switch( true ) {
                 case empty( $argSet ) :
-                    throw new InvalidArgumentException( self::$ERR0 );
+                    throw new InvalidArgumentException( sprintf( self::$ERR1, $CLOSUREUSE ));
                     break;
                 case ( $argSet instanceof ArgumentDto ) :
                     $this->addVarUse( $argSet );

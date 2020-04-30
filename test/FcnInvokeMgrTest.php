@@ -152,6 +152,12 @@ class FcnInvokeMgrTest extends TestCase
      * @param string       $expFcnName
      */
     public function FcnInvokeMgrTest3( $case, $class, $name, $argSet, $expFcnName ) {
+        if( empty( $argSet )) {
+            $argSet = null;
+        }
+        elseif( ! is_array( $argSet )) {
+            $argSet = [ $argSet ];
+        }
         switch( array_rand( [ 1, 2, 3 ] )) {
             case 1 :
                 $fim = FcnInvokeMgr::factory( $class, $name, $argSet );

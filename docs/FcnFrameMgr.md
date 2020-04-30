@@ -18,9 +18,9 @@ Inherited [Common methods]
 
 ---
 
-```FcnFrameMgr::factory( name, arguments )```
+```FcnFrameMgr::factory( name [, arguments ] )```
 * ```name```       _string_, function/method name
-* ```arguments``` _string_|_array_, note ```FcnFrameMgr::setArguments()``` below
+* ```arguments``` _array_, note ```FcnFrameMgr::setArguments()``` below
 * Static
 * Return _static_
 ---
@@ -87,7 +87,7 @@ Inherited [Common methods]
 * throws InvalidArgumentException
 
 ```FcnFrameMgr::setArguments( argumentSets )```
-* ```argumentSets``` _array_, items any of below 
+* ```argumentSets``` _array_, elements any of below 
   * name, _string_, argument name
   * _ArgumentDto_
     * note ```ArgumentDto``` below

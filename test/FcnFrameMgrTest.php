@@ -593,6 +593,12 @@ class FcnFrameMgrTest extends TestCase
      */
     public function fcnFrameMgrTest2( $case, $args = null ) {
         $case += 200;
+        if( empty( $args )) {
+            $args = null;
+        }
+        elseif( ! is_array( $args )) {
+            $args = [ $args ];
+        }
         if( 1 == array_rand( [ 1, 2 ] )) {
             $ffg = FcnFrameMgr::init(PHP_EOL, '    ')
                 ->setName('theFunctionName' )
@@ -848,6 +854,12 @@ class FcnFrameMgrTest extends TestCase
      */
     public function fcnFrameMgrTest7( $case, $args = null ) {
         $case += 900;
+        if( empty( $args )) {
+            $args = null;
+        }
+        elseif( ! is_array( $args )) {
+            $args = [ $args ];
+        }
         $ffg = FcnFrameMgr::init( PHP_EOL, '' )
             ->setVisibility()
             ->setArguments( $args )
@@ -1041,7 +1053,7 @@ class FcnFrameMgrTest extends TestCase
      */
     public function fcnFrameMgrTest23() {
         try {
-            FcnFrameMgr::init()->addArgument( null );
+            FcnFrameMgr::init()->addArgument( [] );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
@@ -1055,14 +1067,6 @@ class FcnFrameMgrTest extends TestCase
      * @test
      */
     public function fcnFrameMgrTest24() {
-        try {
-            FcnFrameMgr::init()->setArguments( '' );
-            $this->assertTrue( false );
-        }
-        catch( Exception $e ) {
-            $this->assertTrue( true );
-        }
-
         try {
             FcnFrameMgr::init()->setArguments( [ '' ] );
             $this->assertTrue( false );
@@ -1161,7 +1165,7 @@ class FcnFrameMgrTest extends TestCase
      */
     public function fcnFrameMgrTest29() {
         try {
-            FcnFrameMgr::init()->setArguments( 123 );
+            FcnFrameMgr::init()->setArguments( [ 123 ] );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
