@@ -237,21 +237,24 @@ final class ClassMgr extends BaseB
      * @return array
      */
     private function produceMethodsForProperties() {
-        $code = [];
-        if( $this->hasOneArrayProperty()) {
-            ClassMethodFactory::renderIteratorGetterMethods( $this->properties[0]->getVarDto(), $code );
-            $this->properties[0]->setMakeGetter( false );
-            $this->properties[0]->setMakeSetter( true );
-        }
+        $code    = [];
+        $oneOnly = $this->hasOneArrayProperty();
         foreach( $this->getPropertyIndex() as $pIx ) {
             $varDto = $this->properties[$pIx]->getVarDto();
-            if( $this->properties[$pIx]->isMakeGetter()) {
-                ClassMethodFactory::renderGetterMethod( $varDto, $code );
-                ClassMethodFactory::renderIsPropertySetMethod( $varDto, $code );
-                ClassMethodFactory::renderPropertyCountMethod( $varDto, $code );
-            }
+            switch( true ) {
+                case ( ! $this->properties[$pIx]->isMakeGetter()) :
+                    break;
+                case $oneOnly :
+                    ClassMethodFactory::renderIteratorGetterMethods( $varDto, $code );
+                    break;
+                default :
+                    ClassMethodFactory::renderGetterMethod( $varDto, $code );
+                    ClassMethodFactory::renderIsPropertySetMethod( $varDto, $code );
+                    ClassMethodFactory::renderPropertyCountMethod( $varDto, $code );
+                    break;
+            } // end switch
             if( $this->properties[$pIx]->isMakeSetter()) {
-                if( $this->properties[$pIx]->getVarDto()->isTypedArray()) {
+                if( $varDto->isTypedArray()) {
                     ClassMethodFactory::renderAppendArrayMethod( $varDto, $code );
                 }
                 ClassMethodFactory::renderSetterMethod( $varDto, $code );

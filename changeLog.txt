@@ -9,5 +9,5 @@
 1.012 FcnFrameMgr::setArguments() + factory()
 1.012 FcnInvokeMgr::setArguments() + factory()
 1.013 PHP target version
-1.014 ClassMgr, property mgnt
+1.014-5 ClassMgr, property mgnt
 
