@@ -81,12 +81,12 @@ trait ArgumentTrait
             $argumentDto = clone $argumentDto;
             // need a clone here, without type? and default, and remain original for later use
             $argumentDto->setVarType(
-                ( $argumentDto->hasTypeHintArraySpec(PHP_VERSION, $typeHint ) ? $typeHint : null )
+                ( $argumentDto->hasTypeHintArraySpec( self::getTargetPhpVersion(), $typeHint ) ? $typeHint : null )
             );
             $argumentDto->setDefault( null );
             $argumentDto->setByReference( false );
         } // end if
-        if( $argumentDto->isTypeHint( PHP_VERSION, $typeHint )) { // varType
+        if( $argumentDto->isTypeHint( self::getTargetPhpVersion(), $typeHint )) { // varType
             $row .= $typeHint . BaseA::$SP1;
         }
         if( $argumentDto->isByReference()) { // by reference

@@ -44,6 +44,13 @@ These methods are shared by all :
 * Note, baseIndent, set here, will affect the whole package
 * Return _static_
 ---
+```Class::setTargetPhpVersion( phpVersion )```
+* Alter the target PHP version, default (PHP constant) _PHP_VERSION_
+  * as for now, used for type hints
+* ```phpVersion``` _string_
+* Note, phpVersion, set here, will affect the whole package
+* static
+---
 
 <small>Return to [README] - [Summary]</small>
 

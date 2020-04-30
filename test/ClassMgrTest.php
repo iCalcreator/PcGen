@@ -548,7 +548,11 @@ class ClassMgrTest extends TestCase
             self::$prop . $case,
             ClassMgr::ARRAY_T
         )
-                         ->setArgInFactory( true );
+            ->setMakeGetter( true )
+            ->setMakeSetter( true )
+            ->setArgInFactory( true );
+
+        // ClassMgr::setTargetPhpVersion( '5.6.0' ); // test ###
 
         $cm = ClassMgr::init()
             ->setNamespace( self::$namespace . $case )

@@ -8,3 +8,6 @@
 1.011 ClassMgr::hasOneArrayProperty() bug
 1.012 FcnFrameMgr::setArguments() + factory()
 1.012 FcnInvokeMgr::setArguments() + factory()
+1.013 PHP target version
+1.014 ClassMgr, property mgnt
+

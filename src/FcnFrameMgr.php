@@ -125,7 +125,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         $code   = $this->renderClosureUseVariables( $code );
         $lastIx = count( $code ) - 1;
         $code[$lastIx] .= self::$SP1;
-        if(( 7 <= PHP_MAJOR_VERSION ) && $this->isReturnTypeSet()) {
+        if(( 7 <= substr( self::getTargetPhpVersion(), 0, 1)) && $this->isReturnTypeSet()) {
             $code[$lastIx] .= $COLONSP1 . $this->getReturnType() . self::$SP1;
         }
         $code[$lastIx] .= self::$CODEBLOCKSTART;

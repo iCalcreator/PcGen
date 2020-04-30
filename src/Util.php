@@ -48,14 +48,11 @@ class Util implements PcGenInterface
         static $PHP71TypeHints = [ self::ITERABLE_T ];
         static $PHP72TypeHints = [ self::OBJECT_KW ];
         if( null === $phpVersion ) {
-            $phpMajor = PHP_MAJOR_VERSION;
-            $phpMinor = PHP_MINOR_VERSION;
+            $phpVersion = BaseA::getTargetPhpVersion();
         }
-        else {
-            $std      = explode( $DOT, $phpVersion, 3 );
-            $phpMajor = (int)$std[ 0 ];
-            $phpMinor = (int)$std[ 1 ];
-        }
+        $std      = explode( $DOT, $phpVersion, 3 );
+        $phpMajor = (int) $std[ 0 ];
+        $phpMinor = (int) $std[ 1 ];
         $return = true;
         switch( true ) {
             case in_array( $varType, $PHP5TypeHints ) :
@@ -158,7 +155,7 @@ class Util implements PcGenInterface
     }
 
     public static function isVarPrefixed( $value ) {
-        return ( is_string( $value ) && ( BaseA::VARPREFIX == substr( $value, 0, 1 )));
+        return ( is_string( $value ) && ( self::VARPREFIX == substr( $value, 0, 1 )));
     }
 
     /**

@@ -175,14 +175,7 @@ For class property with the ```getter``` attribute set (true default), results i
 * _count\<Property>_, Return (int) number of array elements
   * array type property only
 
-For class property with the ```setter``` attribute set (true default), results in (property-)methods
-* _set\<Property>_, Set property value, return _static_
-* _append\<Property>_, Append array property element value, return _static_
-  * array type property only
-
-For class with a single array property, 
-```setter```-methods and, 
-in substitute of ```getter```-methods, 
+For class with a single array property, in substitute of ```getter```-methods, 
 _SeekableIterator_, _Countable_ and _IteratorAggregate_ interfaces are supported 
 with property methods
 * _count_, Return (int) count of elements
@@ -205,6 +198,11 @@ with property methods
 * _valid_, Checks if current position is valid, return bool
   * _Iterator_ method
 
+For class property with the ```setter``` attribute set (true default), results in (property-)methods
+* _set\<Property>_, Set property value, return _static_
+* _append\<Property>_, Append array property element value, return _static_
+  * array type property only
+---
 _PropertyMgr_ instance creation ([PropertyMgr])<br><br>
 ```PropertyMgr::factory( name [, type [, default [, summary [, description ]]]] )```
 * ```name``` _string_, argument name ( with or without leading '$')

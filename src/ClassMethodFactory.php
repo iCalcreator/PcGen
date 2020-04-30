@@ -267,7 +267,7 @@ class ClassMethodFactory implements PcGenInterface
                 ->setSummary( sprintf( $ADD1, $propName ))
                 ->setTag(
                     self::PARAM_T,
-                    $varDto->hasTypeHintArraySpec( PHP_VERSION, $typeHint )
+                    $varDto->hasTypeHintArraySpec( DocBlockMgr::getTargetPhpVersion(), $typeHint )
                         ? $typeHint
                         : self::MIXED_KW,
                     $propName
@@ -403,7 +403,9 @@ class ClassMethodFactory implements PcGenInterface
         static $DESCRIPTION = 'Required method implementing the Iterator interface';
         static $FCNNAME     = 'current';
         static $CODETMPL    = 'return $this->%s[$this->position];';
-        $returnType = $varDto->hasTypeHintArraySpec( null, $typeHint ) ? $typeHint : self::MIXED_KW;
+        $returnType = $varDto->hasTypeHintArraySpec( DocBlockMgr::getTargetPhpVersion(), $typeHint )
+            ? $typeHint
+            : self::MIXED_KW;
         return array_merge(
             DocBlockMgr::factory( self::RETURN_T, $returnType )
                 ->setInfo( $SUMMARY, $DESCRIPTION )

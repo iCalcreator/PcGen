@@ -38,20 +38,39 @@ abstract class BaseA implements PcGenInterface
      *
      * @var string|array
      */
-    protected static $CONFIGEOL     = PHP_EOL;
-    protected static $CONFIGINDENT  = '    ';
-    protected static $BASEINDENT    = '    ';
-    protected static $DEFAULTINDENT = '    ';
-    protected static $CRLFs         = [ "\r\n", "\n\r", "\n", "\r" ];
+    protected static $CONFIGEOL      = PHP_EOL;
+    protected static $CONFIGINDENT   = '    ';
+    protected static $BASEINDENT     = '    ';
+    protected static $DEFAULTINDENT  = '    ';
+    protected static $DEFAULTVERSION = PHP_VERSION;
+    public    static $TARGETVERSION  = null;
+
+    /**
+     * @return string
+     */
+    public static function getTargetPhpVersion() {
+        return self::$TARGETVERSION;
+    }
+
+    /**
+     * Set target PHP version, default current
+     *
+     * @param string $phpVersion
+     * @return void
+     */
+    public static function setTargetPhpVersion( $phpVersion ) {
+        self::$TARGETVERSION = $phpVersion;
+    }
 
     /**
      * @var string
      */
-    protected static $COMMA     = ',';
-    protected static $SP0       = '';
-    protected static $SP1       = ' ';
-    protected static $ERR1      = 'Empty argument %s';
-    public    static $ERRx      = 'Invalid argument(s) %s';
+    protected static $COMMA = ',';
+    protected static $CRLFs = [ "\r\n", "\n\r", "\n", "\r" ];
+    protected static $SP0   = '';
+    protected static $SP1   = ' ';
+    protected static $ERR1  = 'Empty argument %s';
+    public    static $ERRx  = 'Invalid argument(s) %s';
 
     /**
      * @var string
@@ -88,6 +107,9 @@ abstract class BaseA implements PcGenInterface
             $this->setIndent( $indent );
         }
         $this->baseIndent = self::$BASEINDENT;
+        if( empty( self::$TARGETVERSION )) {
+            self::$TARGETVERSION = self::$DEFAULTVERSION;
+        }
     }
 
     /**

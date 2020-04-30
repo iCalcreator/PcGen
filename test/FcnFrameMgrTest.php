@@ -394,7 +394,9 @@ class FcnFrameMgrTest extends TestCase
         static $tmpl = '    public function %1$s( %2$s%3$s ) {%4$s    }%4$s';
         $fcnName  = __FUNCTION__ . '_' . $case;
         $varDto   = VarDto::factory( $argName, $varType, $default );
-        $typeHint = ( $varDto->isTypeHint( null, $typeHint2 )) ? $typeHint2 . ' ' : '';
+        $typeHint = ( $varDto->isTypeHint( FcnFrameMgr::getTargetPhpVersion(), $typeHint2 ))
+            ? $typeHint2 . ' '
+            : '';
         $ffm      = FcnFrameMgr::init()->setName( $fcnName );
         if( 1 == array_rand( [ 1, 2 ] )) {
             $ffm->addArgument( $varDto );
