@@ -274,6 +274,14 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isSummarySet() {
+        return ( null !== $this->summary );
+
+    }
+
+    /**
      * Set (header) short description, overwrite if exists
      *
      * @param string $summary
@@ -316,6 +324,13 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
         return $this;
     }
 
+    /**
+     * @param $tagName
+     * @return bool
+     */
+    public function isTagSet( $tagName ) {
+        return array_key_exists( $tagName, $this->tags );
+    }
     /**
      * Set tag
      *

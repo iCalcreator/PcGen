@@ -387,6 +387,7 @@ class ClassMgrTest extends TestCase
                 ]
             );
         $cm->addUse( self::$use1, self::$alias1 );
+        $cm->addUse( self::$use1, self::$alias1 ); // dupls on fcqn+alias
         $cm->AddUse( self::$use2 );
         $cm->addUse( self::$use2 );             // no dupls
         $cm->addImplement( self::$interface2 ); // no dupls
@@ -632,20 +633,32 @@ class ClassMgrTest extends TestCase
     /**
      * @test
      */
-    public function classMgrTest131() {
-        try {
-            $cm = classMgr::init()->setImplements( false );
-            $this->assertTrue( false );
-        }
-        catch( Exception $e ) {
-            $this->assertTrue( true );
-        }
+    public function classMgrTest130() {
+        $this->assertTrue( classMgr::init()->setAbstract( true )->isAbstract());
+
+        $this->assertTrue(
+            classMgr::init()->setDocBlock( DocBlockMgr::init())->getDocBlock()
+            instanceof
+            DocBlockMgr
+        );
+
+        $extends = __CLASS__;
+        $cm      = classMgr::init()->setExtend( $extends );
+        $this->assertTrue( $cm->isExtendsSet());
+        $this->assertEquals( $extends, $cm->getExtend());
     }
 
     /**
      * @test
      */
     public function classMgrTest132() {
+        try {
+            $cm = classMgr::init()->setImplements( [] );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
         try {
             $cm = classMgr::init()->setImplements( [ false ] );
             $this->assertTrue( false );

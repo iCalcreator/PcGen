@@ -57,10 +57,36 @@ Inherited [Common methods]
 * Throws InvalidArgumentException
 
 ```ClassMgr::setUses( useSet )```
-* ```useSet``` _array_, each array( fqcn [, alias ] )
+* ```useSet``` _array_, each array element : array( fqcn [, alias ] )
 * Return _static_
 * Throws InvalidArgumentException
 ---
+
+```ClassMgr::getDocBlock()```
+* Return _DocBlockMgr_
+
+```ClassMgr::isDocBlockSet()```
+* Return _bool_ true, if docBlock is set, false, not
+
+```ClassMgr::setDocBlock( docBlock )```
+* ```docBlock``` _DocBlockMgr_
+* Return _static_
+* Throws InvalidArgumentException
+---
+
+```ClassMgr::isAbstract()```
+* Return _bool_ true, if class is abstract, false, not
+
+```ClassMgr::setAbstract( abstract )```
+* ```abstract``` _bool_ true, class is abstract, false, not (default)
+* Return _static_
+---
+
+```ClassMgr::getExtends()```
+* Return _string_
+
+```ClassMgr::isExtendsSet()```
+* Return _bool_ true, if extends is set, false, not
 
 ```ClassMgr::setExtends( extend )```
 * ```extend``` _string_
@@ -74,7 +100,7 @@ Inherited [Common methods]
 * Throws InvalidArgumentException
 
 ```ClassMgr::setImplements( implementSet )```
-* ```implementSet``` _array_, array( implements )
+* ```implementSet``` _array_, string[], fqcn's
 * Return _static_
 * Throws InvalidArgumentException
 ---

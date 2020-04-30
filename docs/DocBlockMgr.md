@@ -30,6 +30,9 @@ Inherited [Common methods]
 ---
 
 
+```DocBlockMgr::isSummarySet()```
+* Return _bool_ true, if summary is set, false, not
+
 ```DocBlockMgr::setSummary( summary )```
 * ```summary``` _string_, short (top) description
 * Return _static_
@@ -43,6 +46,10 @@ Inherited [Common methods]
 * ```longDescr``` _string|array_, will have a leading emptyline
 * Return _static_
 ---
+
+```DocBlockMgr::isTagSet( tagName )```
+* ```tagName``` _string_, convenient constants found in PcGenInterface 
+* Return _bool_ true, if ```tagName``` is set, false, not
 
 ```DocBlockMgr::setTag( tagName [, tagType [, tagText [, tagComment [, tagExt ]]]] )```
 * Note, annotations are not supported, only [phpdoc] tags

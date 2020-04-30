@@ -52,6 +52,27 @@ final class ClassMgr extends BaseB
     private $namespace = null;
 
     /**
+     * Class use / imports
+     *
+     * @var array
+     */
+    private $uses = null;
+
+    /**
+     * The class docBlock
+     *
+     * @var DocBlockMgr
+     */
+    private $docBlock = null;
+
+    /**
+     * True if class is abstract
+     *
+     * @var bool
+     */
+    private $abstract = false;
+
+    /**
      * Class extends
      *
      * @var string
@@ -64,13 +85,6 @@ final class ClassMgr extends BaseB
      * @var array
      */
     private $implements = null;
-
-    /**
-     * Class use / imports
-     *
-     * @var array
-     */
-    private $uses = null;
 
     /**
      * @var bool
@@ -143,16 +157,22 @@ final class ClassMgr extends BaseB
         $TMPL1 = 'namespace %s;';
         $TMPL2 = 'use %s;';
         $TMPL3 = 'use %s as %s;';
+        $TMPL4 = 'abstract ';
         $TMPL5 = ' extends ';
         $TMPL6 = ' implements ';
-        $dbg = DocBlockMgr::init()
-            ->setBaseIndent()
-            ->setSummary(ucfirst( $this->getTargetType()) . self::$SP1 . $this->getName());
+        if( ! $this->isDocBlockSet()) {
+            $this->docBlock = DocBlockMgr::init();
+        }
+        if( ! $this->docBlock->isSummarySet()) {
+            $this->docBlock->setSummary(ucfirst( $this->getTargetType()) . self::$SP1 . $this->getName());
+        }
         $this->setBaseIndent( self::$DEFAULTINDENT );
         $code = [];
         if( ! empty( $this->namespace )) {
             $code[] = sprintf( $TMPL1, $this->namespace );
-            $dbg->setTag( self::PACKAGE_T, $this->namespace );
+            if( ! $this->docBlock->isTagSet( self::PACKAGE_T )) {
+                $this->docBlock->setTag( self::PACKAGE_T, $this->namespace );
+            }
         }
         if( ! empty( $this->uses )) {
             $code[] = self::$SP0;
@@ -161,8 +181,9 @@ final class ClassMgr extends BaseB
                 $code[] = ctype_digit((string) $alias ) ? sprintf( $TMPL2, $fqcn ) : sprintf( $TMPL3, $fqcn, $alias );
             }
         }
-        $code = array_merge( $code, $dbg->toArray());
-        $code[] = $this->getTargetType() . self::$SP1 . $this->getName();
+        $code   = array_merge( $code, $this->docBlock->setBaseIndent()->toArray());
+        $row    = $this->isAbstract() ? $TMPL4 : self::$SP0;
+        $code[] = $row . $this->getTargetType() . self::$SP1 . $this->getName();
         if( ! empty( $this->extend )) {
             $code[] = $this->indent . $TMPL5 . $this->extend;
         }
@@ -315,9 +336,9 @@ final class ClassMgr extends BaseB
     }
 
     /**
-     * Set array of class use set , each array of ( fqcn [, alias ] )
+     * Set array of class use set , each array element : array( fqcn [, alias ] )
      *
-     * @param string|array $uses
+     * @param array $uses
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
@@ -326,10 +347,6 @@ final class ClassMgr extends BaseB
             throw new InvalidArgumentException( self::$ERR0 );
         }
         $this->uses = [];
-        if( is_string( $uses )) {
-            $this->addUse( $uses );
-            return $this;
-        }
         foreach( $uses as $useSet ) {
             if( empty( $useSet )) {
                 throw new InvalidArgumentException( self::$ERR0 );
@@ -340,6 +357,62 @@ final class ClassMgr extends BaseB
             );
         } // end foreach
         return $this;
+    }
+
+    /**
+     * @return DocBlockMgr
+     */
+    public function getDocBlock() {
+        return $this->docBlock;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDocBlockSet() {
+        return ( null !== $this->docBlock );
+    }
+
+    /**
+     * @param DocBlockMgr $docBlock
+     * @return ClassMgr
+     */
+    public function setDocBlock( $docBlock ) {
+        $this->docBlock = $docBlock;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAbstract() {
+        return $this->abstract;
+    }
+
+    /**
+     * Set class as abstract
+     *
+     * @param bool $abstract
+     * @return ClassMgr
+     */
+    public function setAbstract( $abstract ) {
+        $this->abstract = (bool) $abstract;
+        return $this;
+    }
+
+    /**
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function getExtend() {
+        return $this->extend;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExtendsSet() {
+        return ( null !== $this->extend );
     }
 
     /**
@@ -373,18 +446,15 @@ final class ClassMgr extends BaseB
     /**
      * Set class interface implements
      *
-     * @param string|array $implements
+     * @param array $implements
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setImplements( $implements ) {
+    public function setImplements( array $implements ) {
         if( empty( $implements )) {
             throw new InvalidArgumentException( self::$ERR0 );
         }
         $this->implements = [];
-        if( ! is_array( $implements )) {
-            $implements = [ $implements ];
-        }
         foreach( $implements as $implement ) {
             if( empty( $implement )) {
                 throw new InvalidArgumentException( self::$ERR0 );

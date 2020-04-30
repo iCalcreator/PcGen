@@ -63,15 +63,21 @@ class DocBlockMgrTest extends TestCase
      * @test
      */
     public function docBlockGenDemoTest0() {
-        $codeDocBlock = DocBlockMgr::init()
+        $dbm = DocBlockMgr::init()
                 // set indent to 0, default four spaces
                 ->setIndent()
                 // set eol, default PHP_EOL
                 ->setEol( PHP_EOL )
+
                 // set top summary
-                ->setSummary( 'This is a top (shorter) summary' )
+                // ->setSummary( 'This is a top (shorter) summary' )
                 // set longer description (string)
-                ->setDescription( 'This is a longer description' )
+                // ->setDescription( 'This is a longer description' )
+                ->setInfo(
+                        'This is a top (shorter) summary',
+                        'This is a longer description'
+                )
+
                 // set another longer description (array)
                 ->setDescription(
                     [
@@ -81,10 +87,12 @@ class DocBlockMgrTest extends TestCase
                 )
                 // set tags using DocBlockGenInterface constants
                 ->setTag( DocBlockMgr::RETURN_T, DocBlockMgr::ARRAY_T )
-                ->setTag( DocBlockMgr::PACKAGE_T, __NAMESPACE__ )
+                ->setTag( DocBlockMgr::PACKAGE_T, __NAMESPACE__ );
             // string output (with row trailing eols)
-            ->toString();
+        $codeDocBlock = $dbm->toString();
         $this->assertStringEndsWith( PHP_EOL, $codeDocBlock );
+        $this->assertTrue( $dbm->isSummarySet());
+        $this->assertTrue( $dbm->isTagSet( DocBlockMgr::PACKAGE_T ));
 
         if( DISPLAYdbm ) {
             echo __METHOD__ . ' : ' . PHP_EOL . $codeDocBlock . PHP_EOL;

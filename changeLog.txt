@@ -1,0 +1,5 @@
+1.01 - 1.04 markdown fixes
+1.05 new DocBlockMgr::isSummarySet()
+1.06 new DocBlockMgr::isTagSet()
+1.07 new ClassMgr::abstract + is-, setDecBock methods  ClassMgr::initCode() adapt
+1.08 new ClassMgr::docBlock + get-, isSet-, setDecBock methods  ClassMgr::initCode() adapt
