@@ -9,12 +9,10 @@ These methods are shared by all :
 ```Class::__construct( [ eol [, indent ]] )```
 * ```eol```     _string_, default PHP_EOL
 * ```indent```  _string_, default four spaces, for no indent, use '' 
-* Note, eol/indent, set here, will affect the whole package
 
 ```Class::init( [ eol [, indent ]] )```
 * ```eol```     _string_, default PHP_EOL
 * ```indent```  _string_, default four spaces, for no indent, use ''
-* Note, eol/indent, set here, will affect the whole package
 * Static
 * Return _static_
 ---
@@ -30,26 +28,40 @@ These methods are shared by all :
 
 ```Class::setEol( eol )```
 * ```eol``` _string_, eol chars
-* Note, eol, set here, will affect the whole package
 * Return _static_
 
 ```Class::setIndent( indent )```
 * ```indent``` _string_, default four spaces, indentations after baseIndent
-* Note, indent, set here, will affect the whole package
 * Return _static_
 
 ```Class::setbaseIndent( indent )```
 * The base, leftmost, indent
 * ```indent``` _string_, default four spaces
-* Note, baseIndent, set here, will affect the whole package
 * Return _static_
 ---
+
+```Class::setDefaultEol( eol )```
+* ```eol``` _string_, eol chars
+* Note, eol, set here, will affect the whole package
+* Static
+
+```Class::setDefaultIndent( indent )```
+* ```indent``` _string_, default four spaces, indentations after baseIndent
+* Note, indent, set here, will affect the whole package
+* Static
+
+```Class::setDefaultBaseIndent( indent )```
+* The base, leftmost, indent
+* ```indent``` _string_, default four spaces
+* Note, indent, set here, will affect the whole package
+* Static
+
 ```Class::setTargetPhpVersion( phpVersion )```
 * Alter the target PHP version, default (PHP constant) _PHP_VERSION_
   * as for now, used for type hints
 * ```phpVersion``` _string_
 * Note, phpVersion, set here, will affect the whole package
-* static
+* Static
 ---
 
 <small>Return to [README] - [Summary]</small>

@@ -531,7 +531,7 @@ class ClassMgrTest extends TestCase
         }
 
         if( DISPLAYcm ) {
-            echo __METHOD__ . ' ' . $case . ' : ' . PHP_EOL . $code . PHP_EOL;
+            echo __FUNCTION__ . ' ' . $case . ' : ' . PHP_EOL . $code . PHP_EOL;
         }
 
     }
@@ -617,7 +617,7 @@ class ClassMgrTest extends TestCase
         );
 
         if( DISPLAYcm ) {
-            echo __METHOD__ . ' ' . $case . ' : ' . PHP_EOL . $code . PHP_EOL;
+            echo __FUNCTION__ . ' ' . $case . ' : ' . PHP_EOL . $code . PHP_EOL;
         }
     }
 

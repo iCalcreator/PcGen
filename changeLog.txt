@@ -1,13 +1,20 @@
-1.01 - 1.04 markdown fixes
-1.05 new DocBlockMgr::isSummarySet()
-1.06 new DocBlockMgr::isTagSet()
-1.07 new ClassMgr::abstract + is-/set-methods  ClassMgr::initCode() adapt
-1.08 new ClassMgr::docBlock + get-/isSet-/set-methods  ClassMgr::initCode() adapt
-1.09 VariableMgr::__toString() upd
-1.010 Exception mgnt
-1.011 ClassMgr::hasOneArrayProperty() bug
-1.012 FcnFrameMgr::setArguments() + factory()
-1.012 FcnInvokeMgr::setArguments() + factory()
-1.013 PHP target version
+
+1.016 indent mgnt, BaseX
+
 1.014-5 ClassMgr, property mgnt
+1.013 PHP target version
+
+1.012 FcnInvokeMgr::setArguments() + factory()
+1.012 FcnFrameMgr::setArguments() + factory()
+1.011 ClassMgr::hasOneArrayProperty() bug
+1.010 Exception mgnt
+1.09 VariableMgr::__toString() upd
+
+1.08 new ClassMgr::docBlock + get-/isSet-/set-methods  ClassMgr::initCode() adapt
+1.07 new ClassMgr::abstract + is-/set-methods  ClassMgr::initCode() adapt
+1.06 new DocBlockMgr::isTagSet()
+1.05 new DocBlockMgr::isSummarySet()
+
+1.01 - 1.04 markdown fixes
+
 

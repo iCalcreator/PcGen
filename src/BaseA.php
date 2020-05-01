@@ -34,14 +34,35 @@ abstract class BaseA implements PcGenInterface
     const FACTORY = 'factory';
 
     /**
-     * Defaults
+     * Default
      *
-     * @var string|array
+     * @var string
      */
-    protected static $CONFIGEOL      = PHP_EOL;
-    protected static $CONFIGINDENT   = '    ';
-    protected static $BASEINDENT     = '    ';
-    protected static $DEFAULTINDENT  = '    ';
+    protected static $DEFAULTEOL        = PHP_EOL;
+    protected static $DEFAULTINDENT     = '    ';
+    protected static $DEFAULTBASEINDENT = '    ';
+
+    /**
+     * @param array|string $eol
+     */
+    public static function setDefaultEol( $eol ) {
+        self::$DEFAULTEOL = $eol;
+    }
+
+    /**
+     * @param string $indent
+     */
+    public static function setDefaultIndent( $indent ) {
+        self::$DEFAULTINDENT = $indent;
+    }
+
+    /**
+     * @param string $indent
+     */
+    public static function setDefaultBaseIndent( $indent ) {
+        self::$DEFAULTBASEINDENT = $indent;
+    }
+
     protected static $DEFAULTVERSION = PHP_VERSION;
     public    static $TARGETVERSION  = null;
 
@@ -95,18 +116,18 @@ abstract class BaseA implements PcGenInterface
      */
     public function __construct( $eol = null, $indent = null ) {
         if( null === $this->eol ) {
-            $this->eol = self::$CONFIGEOL;
+            $this->eol = self::$DEFAULTEOL;
         }
         if( null !== $eol ) {
             $this->setEol( $eol );
         }
         if( null === $this->indent ) {
-            $this->indent = self::$CONFIGINDENT;
+            $this->indent = self::$DEFAULTINDENT;
         }
         if( null !== $indent ) {
             $this->setIndent( $indent );
         }
-        $this->baseIndent = self::$BASEINDENT;
+        $this->baseIndent = self::$DEFAULTBASEINDENT;
         if( empty( self::$TARGETVERSION )) {
             self::$TARGETVERSION = self::$DEFAULTVERSION;
         }
@@ -154,7 +175,7 @@ abstract class BaseA implements PcGenInterface
     public function setEol( $eol ) {
         $eol = Util::nullByteClean( $eol );
         if( empty( $eol )) {
-            $this->eol =  self::$CONFIGEOL;
+            $this->eol =  self::$DEFAULTEOL;
             return $this;
         }
         if( ! in_array( $eol, self::$CRLFs )) {
@@ -164,7 +185,7 @@ abstract class BaseA implements PcGenInterface
             }
             throw new InvalidArgumentException( sprintf( self::$ERRx, implode( self::$SP1, $ords )));
         }
-        $this->eol =  self::$CONFIGEOL = $eol;
+        $this->eol = $eol;
         return $this;
     }
 
@@ -180,7 +201,7 @@ abstract class BaseA implements PcGenInterface
      * @return static
      */
     public function setIndent( $indent = null ) {
-        $this->indent = self::$CONFIGINDENT = ( null === $indent ) ? self::$SP0 : Util::nullByteClean( $indent );
+        $this->indent = ( null === $indent ) ? self::$SP0 : Util::nullByteClean( $indent );
         return $this;
     }
 

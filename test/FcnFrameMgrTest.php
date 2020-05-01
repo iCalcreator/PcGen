@@ -797,7 +797,7 @@ class FcnFrameMgrTest extends TestCase
         $this->assertNotFalse( strpos( $code, 'return $this->argument[$position]' ), $casex . PHP_EOL . $code );
 
         if( DISPLAYffm ) {
-            echo __METHOD__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
+            echo __FUNCTION__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
         }
         $ffg->unsetReturnValue();
     }
@@ -841,7 +841,7 @@ class FcnFrameMgrTest extends TestCase
         $this->assertNotFalse( strpos( $code, 'return $argument[$position]' ), $casex . PHP_EOL . $code );
 
         if( DISPLAYffm ) {
-            echo __METHOD__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
+            echo __FUNCTION__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
         }
         $ffg->unsetReturnValue();
     }
@@ -874,7 +874,7 @@ class FcnFrameMgrTest extends TestCase
             $ffg->setVarUse();
 
             if( DISPLAYffm ) {
-                echo __METHOD__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
+                echo __FUNCTION__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
             }
             return;
         }
@@ -887,7 +887,7 @@ class FcnFrameMgrTest extends TestCase
             $ffg->setVarUse();
 
             if( DISPLAYffm ) {
-                echo __METHOD__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
+                echo __FUNCTION__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
             }
             return;
         }
@@ -912,7 +912,7 @@ class FcnFrameMgrTest extends TestCase
         $ffg->setVarUse();
 
         if( DISPLAYffm ) {
-            echo __METHOD__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
+            echo __FUNCTION__ . ' : case ' . $casex . ' : ' . PHP_EOL . $code . PHP_EOL . PHP_EOL; // test ###
         }
 
         // FcnFrameMgr VarDto tests
@@ -953,7 +953,7 @@ class FcnFrameMgrTest extends TestCase
         $this->assertNOTFalse( strpos( $code, 'use (' ), $casex . PHP_EOL . $code );
         $ffg->setVarUse();
 
-        echo __METHOD__ . ' : case ' . $casex . ' ok !' . PHP_EOL;
+        echo __FUNCTION__ . ' : case ' . $casex . ' ok !' . PHP_EOL;
     }
 
     public static function argumentDtoTest9DataProvider() {

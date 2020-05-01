@@ -35,7 +35,9 @@ class BaseBTest extends TestCase
      */
     public function baseBTest1() {
         $eol = "\r\n";
-        $ffg = FcnFrameMgr::init( $eol, '  ' )
+        $ffg = FcnFrameMgr::init()
+            ->setEol( $eol )
+            ->setIndent( '  ' )
             ->setBaseIndent()
             ->setVisibility()
             ->setName( 'halloWorld' )
@@ -64,24 +66,21 @@ class BaseBTest extends TestCase
 
         $this->assertEquals(
             'function halloWorld( $argument ) {' . $eol .
-            '   /* body row 1 */' . $eol .
-            '   /* body row 2 */' . $eol .
-            '   /* body row 3 */' . $eol .
-            '   /* body row 4 */' . $eol .
-            '   /* body row 5 */' . $eol .
-            '   /* body row 6 */' . $eol .
-            '   /* body row 7 */' . $eol .
-            '   /* body row 8 */' . $eol .
-            '   /* body row 9 */' . $eol .
-            '   /* body row 10 */' . $eol .
-            '   /* body row 11 */' . $eol .
-            '   /* body row 12 */' . $eol .
+            '  /* body row 1 */' . $eol .
+            '  /* body row 2 */' . $eol .
+            '  /* body row 3 */' . $eol .
+            '  /* body row 4 */' . $eol .
+            '  /* body row 5 */' . $eol .
+            '  /* body row 6 */' . $eol .
+            '  /* body row 7 */' . $eol .
+            '  /* body row 8 */' . $eol .
+            '  /* body row 9 */' . $eol .
+            '  /* body row 10 */' . $eol .
+            '  /* body row 11 */' . $eol .
+            '  /* body row 12 */' . $eol .
             '}' . $eol,
             $output
         );
-        $ffg->setEol( PHP_EOL );
-        $ffg->setIndent( '    ' );
-        $ffg->setBaseIndent( '    ' );
     }
 
 }

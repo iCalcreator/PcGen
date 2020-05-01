@@ -23,6 +23,7 @@
  */
 namespace Kigkonsult\PcGen;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 class BaseATest extends TestCase
@@ -34,54 +35,91 @@ class BaseATest extends TestCase
      * @test
      */
     public function baseATest1() {
-        $vm = VariableMgr::init();
-
+        VariableMgr::setDefaultEol( "\n\r" );
         $this->assertEquals(
             "\n\r",
-            $vm->setEol( "\n\r" )->getEol()
+            VariableMgr::init()->getEol()
         );
 
         $this->assertEquals(
             PHP_EOL,
-            $vm->setEol( PHP_EOL )->getEol()
+            VariableMgr::init()->setEol( PHP_EOL )->getEol()
         );
+        $this->assertEquals(
+            "\n\r",
+            VariableMgr::init()->getEol()
+        );
+        VariableMgr::setDefaultEol( PHP_EOL );
 
         $this->assertEquals(
             PHP_EOL,
-            $vm->setEol( '' )->getEol()
+            VariableMgr::init()->setEol( '' )->getEol()
         );
 
+        try {
+            $vm = VariableMgr::init()->setEol( 'error' );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
     }
 
     /**
-     * Testing set indent
+     * Testing indent
      *
      * @test
      */
     public function baseATest2() {
-        $vm = VariableMgr::init();
-
+        VariableMgr::setDefaultIndent( '  ' );
         $this->assertEquals(
-            '    public $theVariableName11 = null;' . PHP_EOL,
-            $vm->setName( 'theVariableName11' )->toString()
+            '  ',
+            VariableMgr::init()->getIndent()
         );
 
-        $vm = VariableMgr::init()->setbaseIndent( '  ' );
         $this->assertEquals(
-            '  protected $theVariableName12 = null;' . PHP_EOL,
-            $vm->setName( 'theVariableName12' )->setVisibility( VariableMgr::PROTECTED_ )->toString()
+            '    ',
+            VariableMgr::init()->setIndent( '    ' )->getIndent()
         );
+        $this->assertEquals(
+            '  ',
+            VariableMgr::init()->getIndent()
+        );
+        VariableMgr::setDefaultIndent( '    ' );
 
-        $eol    = "\r\n";
-        $indent = '   ';
-        $vm = VariableMgr::init( $eol, $indent );
-        $this->assertEquals( $eol, $vm->getEol());
-        $this->assertEquals( $indent, $vm->getIndent());
-
-        $vm->seteol( PHP_EOL ); // reset
-        $vm->setIndent( '    ' ); // reset indent
-        $vm->setBaseIndent( '    ' ); // reset baseIndent
-
+        $this->assertEquals(
+            '    ',
+            VariableMgr::init()->getIndent()
+        );
     }
+
+    /**
+     * Testing baseIndent
+     *
+     * @test
+     */
+    public function baseATest3() {
+        VariableMgr::setDefaultBaseIndent( '  ' );
+        $this->assertEquals(
+            '  ',
+            VariableMgr::init()->getBaseIndent()
+        );
+
+        $this->assertEquals(
+            '    ',
+            VariableMgr::init()->setBaseIndent( '    ' )->getBaseIndent()
+        );
+        $this->assertEquals(
+            '  ',
+            VariableMgr::init()->getBaseIndent()
+        );
+        VariableMgr::setDefaultBaseIndent( '    ' );
+
+        $this->assertEquals(
+            '    ',
+            VariableMgr::init()->getBaseIndent()
+        );
+    }
+
 
 }

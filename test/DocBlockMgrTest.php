@@ -95,7 +95,7 @@ class DocBlockMgrTest extends TestCase
         $this->assertTrue( $dbm->isTagSet( DocBlockMgr::PACKAGE_T ));
 
         if( DISPLAYdbm ) {
-            echo __METHOD__ . ' : ' . PHP_EOL . $codeDocBlock . PHP_EOL;
+            echo __FUNCTION__ . ' : ' . PHP_EOL . $codeDocBlock . PHP_EOL;
         }
     }
 
@@ -122,7 +122,7 @@ class DocBlockMgrTest extends TestCase
         $this->docBlockMgrTester( $code );
 
         if( DISPLAYdbm ) {
-            echo __METHOD__ . ' : ' . PHP_EOL . $code . PHP_EOL;
+            echo __FUNCTION__ . ' : ' . PHP_EOL . $code . PHP_EOL;
         }
     }
 

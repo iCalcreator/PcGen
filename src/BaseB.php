@@ -79,14 +79,18 @@ abstract class BaseB extends BaseA
     }
 
     /**
-     * Return body, all rows has leading baseIndent + indent
+     * Return body, all rows has (at least) leading baseIndent
      *
+     * @param string $indent
      * @return array
      */
-    public function getBody() {
+    public function getBody( $indent = null ) {
         $output = [];
+        if( empty( $indent )) {
+            $indent = self::$SP0;
+        }
         foreach( $this->body as $row ) {
-            $output[] = ( empty( $row )) ? self::$SP0 : $this->baseIndent . $this->indent . $row;
+            $output[] = ( empty( $row )) ? self::$SP0 : $this->baseIndent . $indent . $row;
         }
         return $output;
     }
@@ -99,31 +103,41 @@ abstract class BaseB extends BaseA
     }
 
     /**
-     * Set and save body as array, eol-safe code
+     * Set and save body as array, all rows with the same level of of ltrim, all rtrim'd
      *
      * @param string|string[] $body
      * @return static
      */
     public function setBody( ...$body ) {
-        $repl         = bin2hex( openssl_random_pseudo_bytes( 16 ));
-        $ind          = $this->baseIndent . $this->indent;
-        $indLen       = strlen( $ind );
-        $this->body   = [];
+        $repl = bin2hex( openssl_random_pseudo_bytes( 16 ));
+        $tmp  = [];
         foreach( $body as $bodyPart ) {
             if( ! is_array( $bodyPart )) {
                 $bodyPart = [ $bodyPart ];
             }
             foreach( $bodyPart as $row ) {
-                if( self::$SP0 == trim( $row )){
+                $tmp[] = ( self::$SP0 == trim( $row )) ? self::$SP0 : rtrim( $row );
+            }
+        } // end array
+        $this->body = [];
+        if( 1 == count( $tmp )) {
+            $this->body[] = $tmp[0];
+        }
+        else {
+            $lSpaceLen = empty( $tmp[0] )
+                ? 0
+                : strlen( $tmp[0] ) - strlen( ltrim( $tmp[0] ));
+            foreach( $tmp as $row ) {
+                if( empty( $row )) {
                     $this->body[] = self::$SP0;
                     continue;
                 }
-                if( $ind == substr( $row, 0, $indLen )) {
-                    $row = substr( $row, $indLen );
+                if( ! empty( $lSpaceLen ) && empty( ltrim( substr( $row, 0, $lSpaceLen )))) {
+                    $row = substr( $row, $lSpaceLen );
                 }
-                $this->body[] = rtrim( $row ); // opt remove row trailing eol+space
+                $this->body[] = $row;
             }
-        } // end array
+        }
         $this->body = implode( $repl, $this->body );
         $this->body = rtrim( str_replace( self::$CRLFs, $repl, $this->body ), $this->eol );
         $this->body = explode( $repl, $this->body );

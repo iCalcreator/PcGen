@@ -520,11 +520,11 @@ class AssignClauseMgrTest extends TestCase
      * @param string  $expected
      */
     public function AssignClauseMgrTest2( $case, array $targetArgSet, array $sourceArgSet, $operator, $expected ) {
-
+/*
         echo $case .
             ' target : ' . $targetArgSet[0] . ' - ' . $targetArgSet[1] . ' - ' . $targetArgSet[2] .
             ' source : ' . $sourceArgSet[0] . ' - ' . $sourceArgSet[1] . ' - ' . $sourceArgSet[2] . PHP_EOL; // test ###
-
+*/
         $acm = AssignClauseMgr::factory(
             $targetArgSet[0], $targetArgSet[1], $targetArgSet[2],
             $sourceArgSet[0], $sourceArgSet[1], $sourceArgSet[2] )

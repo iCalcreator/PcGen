@@ -192,18 +192,14 @@ class VariableMgrTest extends TestCase
      */
     public function closureTest41() {
         $body = ' /* this is the closure body */';
-        $closure = FcnFrameMgr::init( PHP_EOL, '    ' )
+        $closure = FcnFrameMgr::init()
+            ->setBaseIndent()
             ->setVisibility()
             ->setArguments( [ 'arg' ] )
             ->setBody( $body )
             ->toString();
 
-        // echo 'ffm : ' . FcnFrameMgr::init()->showIndents() . PHP_EOL; // test ###
-
-        //        $vm   = VariableMgr::init( PHP_EOL, '    ' )->setVisibility()->setBaseIndent();
         $vm   = VariableMgr::init()->setVisibility()->setBaseIndent();
-
-        // echo 'vm  : ' . $vm->showIndents() . PHP_EOL; // test ###
 
         $output = $vm->setName( 'theVariableName41' )->setBody( $closure )->toString();
         $exp =
@@ -226,13 +222,17 @@ class VariableMgrTest extends TestCase
      * @test
      */
     public function closureTest42() {
-        $vm = VariableMgr::init( PHP_EOL, '    ' )->setStatic( true );
         $closure = FcnFrameMgr::init()
+            ->setBaseIndent()
             ->setVisibility()
             ->setArguments( [ 'arg' ] )
             ->setBody( [ '', ' /* this is the closure body */', '' ] )
             ->toArray();
-        $output = $vm->setName( 'theVariableName42' )->setBody( $closure )->toString();
+        $output = VariableMgr::init()
+            ->setStatic( true )
+            ->setName( 'theVariableName42' )
+            ->setBody( $closure )
+            ->toString();
         $exp =
             '    public static $theVariableName42 = function( $arg ) {' . PHP_EOL .
             '' . PHP_EOL .

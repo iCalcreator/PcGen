@@ -95,7 +95,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         $code = array_merge(
             $this->initCode(),
             $this->setPropSetCode( $BEFORE ),
-            $this->getBody(),
+            $this->getBody( $this->indent ),
             $this->setPropSetCode( $AFTER ),
             $this->exitCode()
         );

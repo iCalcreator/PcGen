@@ -171,21 +171,10 @@ class VariableMgr extends BaseC
      * @return array
      */
     private function renderClosureBody( $row ) {
-        static $SP2 = '  ';
-        $body       = $this->getBody();
-        $body[0]    = $row . ltrim( $body[0] );
-        $xIx        = array_reverse( array_keys( $body ))[0];
-        for( $key = 1; $key < $xIx; $key++ ) {
-            if( empty( trim( $body[$key] ))) {
-                $body[$key] = self::$SP0;
-                continue;
-            }
-            while( $SP2 == substr( $body[$key], 0, 2 )) {
-                $body[$key] = substr( $body[$key], 2 );
-            }
-            $body[$key] = $this->baseIndent . $this->indent . $body[$key];
-        }
-        $body[$xIx] = $this->baseIndent . ltrim( $body[$xIx] );
+        $body          = $this->getBody();
+        $body[0]       = $row . ltrim( $body[0] );
+        $lastIx        = array_reverse( array_keys( $body ))[0];
+        $body[$lastIx] = $this->baseIndent . ltrim( $body[$lastIx] );
         return $body;
     }
 
