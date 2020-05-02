@@ -233,6 +233,7 @@ class VariableMgr extends BaseC
                 $initValue = sprintf( self::$QUOTE, $initValue );
                 break;
             default :
+                $initValue = self::NULL_T;
                 break;
         }
         $row .= $initValue . self::$CLOSECLAUSE;

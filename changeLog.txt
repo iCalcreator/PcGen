@@ -1,4 +1,6 @@
 
+1.1 indent rework etc
+
 1.016 indent mgnt, BaseX
 
 1.014-5 ClassMgr, property mgnt

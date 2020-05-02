@@ -56,6 +56,7 @@ Inherited [Common methods]
 ```FcnFrameMgr::addArgument( argument )```
 * ```argument``` _ArgumentDto_
   * note ```ArgumentDto``` below
+  * opt with set directives for _by-reference_, _updClassProp_, _nextVarPropIndex_, below 
 * Return _static_
 
 ```FcnFrameMgr::addArgument( varDto [, by-reference [, updClassProp [, nextVarPropIndex ]]] )```
@@ -64,9 +65,9 @@ Inherited [Common methods]
 * ```by-reference``` _bool_, 
   * if true argument is going to be passed as reference
   * default false
-* ```updClassProp``` _int_, default ```ArgumentDto::BEFORE```
-  * ```ArgumentDto::BEFORE``` : argument (value) will update the class property before opt set method body
-  * ```ArgumentDto::AFTER``` : argument (value) will update the class property after opt set method body (but before opt. set return(value))
+* ```updClassProp``` _int_, default ```ArgumentDto::NONE```
+  * ```ArgumentDto::BEFORE``` : argument (value) will update class instance property before opt set method body
+  * ```ArgumentDto::AFTER``` : argument (value) will update class instance property after opt set method body (but before opt. set return(value))
   * ```ArgumentDto::NONE``` : no update
   * default no update
 * ```nextVarPropIndex``` _bool_
@@ -134,6 +135,7 @@ Inherited [Common methods]
 
 ```FcnFrameMgr::setBody( ...body )```
 * ```body``` _string|array_, (multiple) logic code (chunks) row(s), 
+  * note, code without 'baseIndent' 
 * Return _static_
 ---
 
@@ -204,7 +206,7 @@ _VarDto_ instance creation ([VarDto])<br><br>
 * ```description``` _string_|_array_, the [phpdoc] description
 ---
 
-Return to PcGen [README], [Summary] 
+<small>Return to PcGen [README], [Summary]</small> 
 
 [ArgumentDto]:ArgumentDto.md
 [ChainInvokeMgr]:ChainInvokeMgr.md

@@ -116,8 +116,8 @@ class VarDto implements PcGenInterface
      */
     public function __toString() {
         return $this->name .
-            ' (' . var_export( $this->varType, true ) . ')  : ' .
-            var_export( $this->default, true );
+            ' (' . str_replace( [PHP_EOL, ' ' ], '', var_export( $this->varType, true )) . ') : ' .
+            str_replace( [PHP_EOL, ' ' ], '', var_export( $this->default, true ));
     }
 
     /**
@@ -278,8 +278,7 @@ class VarDto implements PcGenInterface
      * @return bool
      */
     public function isDefaultTypedNull() {
-        static $NULLs = [ null, self::NULL_T ];
-        return in_array( $this->default, $NULLs );
+        return ( self::NULL_T == $this->default );
     }
 
     /**

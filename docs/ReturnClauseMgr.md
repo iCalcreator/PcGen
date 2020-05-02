@@ -19,12 +19,18 @@ Inherited [Common methods]
 ---
 
 ```ReturnClauseMgr::factory( [ class [, variable, [, index]]] )```
-* ```class``` _string_|[EntityMgr] if string, one of null, self, $this, 'otherClass', '$class'
+* ```class``` _string_ if string, one of null, self, $this, 'otherClass', '$class'
   * convenient constants found in PcGenInterface 
 * ```variable``` _string_ variable/property name
   * uppercase is autodetected as CONSTANT
   * variable $-prefixed
 * ```index```  _int_|_string_ opt array index, if _string_, index will be $-prefixed 
+* Return static
+* Throws InvalidException
+
+```ReturnClauseMgr::factory( entity )```
+* ```entity``` [EntityMgr]
+  *  note ```EntityMgr``` below
 * Return static
 * Throws InvalidException
 ---
@@ -57,7 +63,7 @@ Inherited [Common methods]
 * Return _bool_ true if not null
 
 ```ReturnClauseMgr::setSource( class [, variable, [, index ]] )```
-* ```class``` _string_|[EntityMgr] if string, one of null, self, $this, 'otherClass', '$class'
+* ```class``` _string_ one of null, self, $this, 'otherClass', '$class'
   * convenient constants found in PcGenInterface 
 * ```variable``` _string_ class/variable/property name
   * uppercase is autodetected as CONSTANT
@@ -66,53 +72,51 @@ Inherited [Common methods]
 * Return static
 * Throws InvalidArgumentException
 
-```ReturnClauseMgr::getClass()```
-* Return _string_ one of null, self, $this, 'otherClass', '$class'
-
-```ReturnClauseMgr::setClass( class )```
-* ```class``` _string_, one of null or (entity) self, $this, 'otherClass', '$class'
-  * convenient constants found in PcGenInterface 
+```ReturnClauseMgr::setSource( entity )```
+* ```entity``` [EntityMgr]
+  *  note ```EntityMgr``` below
 * Return static
 * Throws InvalidArgumentException
 
-```ReturnClauseMgr::getVariable()```
-* Return _string_
 
-```ReturnClauseMgr::setVariable( variable )```
-* ```variable``` _string_ (entity) variable/property name
-  * uppercase is autodetected as CONSTANT
-  * variable $-prefixed
-* Return static
-* Throws InvalidArgumentException
-
-```ReturnClauseMgr::getIndex()```
-* Return _int_|_string_
-
-```ReturnClauseMgr::setIndex( index )```
-* ```index```  _int_|_string_ (entity) opt variable/property array index
-* Return static
-* Throws InvalidArgumentException
-
-```ReturnClauseMgr::setIsConst( isConst )```
+```ReturnClauseMgr::setSourceIsConst( isConst )```
 * ```isConst``` _bool_
-  * true : force (entity) ```$class::CONSTANT```
-  * false : NOT, (entity) default ```$class->$constant``` 
+  * true : force ```$class::CONSTANT```
+  * false : NOT, (default) ```$class->$constant``` 
+* Return _static_
+
+
+```ReturnClauseMgr::setSourceIsStatic( isStatic )```
+* ```isConst``` _bool_
+  * true : force ```$class::variable```
+  * false : NOT, default, ```$class->$variable``` 
 * Return _static_
 ---
 
-```AssignClauseMgr::getFcnInvoke()```
+```ReturnClauseMgr::getFcnInvoke()```
 * Return [ChainInvokeMgr] (manages single or chained [FcnInvokeMgr]s)
 
-```AssignClauseMgr::isFcnInvokeSet()```
+```ReturnClauseMgr::isFcnInvokeSet()```
 * Return _bool_ true if not null
 
-```AssignClauseMgr::setFcnInvoke( fcnInvoke )```
+```ReturnClauseMgr::setFcnInvoke( fcnInvoke )```
 * ```fcnInvoke``` [FcnInvokeMgr] | [FcnInvokeMgr]\[]  
 * Return static
 * Throws InvalidArgumentException
 ---
 
-Return to PcGen [README], [Summary] 
+
+#### Misc
+
+_EntityMgr_ instance creation ([EntityMgr])<br><br>
+```EntityMgr::factory( class , fcnName )```
+* ```class```, _string_, one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
+  * convenient constants found in PcGenInterface
+* ```fcnName``` _string_, the name
+---
+
+
+<small>Return to PcGen [README], [Summary]</small> 
 
 [ChainInvokeMgr]:ChainInvokeMgr.md
 [Common methods]:CommonMethods.md

@@ -79,7 +79,7 @@ abstract class BaseB extends BaseA
     }
 
     /**
-     * Return body, all rows has (at least) leading baseIndent
+     * Return body code rows, all rows has (at least) leading baseIndent
      *
      * @param string $indent
      * @return array
@@ -103,7 +103,7 @@ abstract class BaseB extends BaseA
     }
 
     /**
-     * Set and save body as array, all rows with the same level of of ltrim, all rtrim'd
+     * Set body code without 'baseIndent'
      *
      * @param string|string[] $body
      * @return static

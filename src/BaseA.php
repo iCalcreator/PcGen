@@ -113,8 +113,9 @@ abstract class BaseA implements PcGenInterface
      *
      * @param string $eol
      * @param string $indent
+     * @param string $baseIndent
      */
-    public function __construct( $eol = null, $indent = null ) {
+    public function __construct( $eol = null, $indent = null, $baseIndent = null ) {
         if( null === $this->eol ) {
             $this->eol = self::$DEFAULTEOL;
         }
@@ -127,7 +128,12 @@ abstract class BaseA implements PcGenInterface
         if( null !== $indent ) {
             $this->setIndent( $indent );
         }
-        $this->baseIndent = self::$DEFAULTBASEINDENT;
+        if( null === $this->baseIndent ) {
+            $this->baseIndent = self::$DEFAULTBASEINDENT;
+        }
+        if( null !== $baseIndent ) {
+            $this->setBaseIndent( $baseIndent );
+        }
         if( empty( self::$TARGETVERSION )) {
             self::$TARGETVERSION = self::$DEFAULTVERSION;
         }
@@ -136,12 +142,20 @@ abstract class BaseA implements PcGenInterface
     /**
      * BaseClass descendents factory method
      *
-     * @param string $eol
-     * @param string $indent
+     * @param string|BaseA $base
+     * @param string       $indent
+     * @param string       $baseIndent
      * @return static
      */
-    public static function init( $eol = null, $indent = null ) {
-        return new static( $eol, $indent );
+    public static function init( $base = null, $indent = null, $baseIndent = null ) {
+        if( $base instanceof BaseA ) {
+            return new static(
+                $base->getEol(),
+                $base->getIndent(),
+                $base->getBaseIndent()
+            );
+        }
+        return new static( $base, $indent, $baseIndent );
     }
 
     /**

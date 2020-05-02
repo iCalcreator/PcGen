@@ -2,17 +2,27 @@
 
 #### Common Methods Methods
 
-These methods are shared by all :
+These methods are shared by all but *Dto :
 
 ---
 
-```Class::__construct( [ eol [, indent ]] )```
+```Class::__construct( [ eol [, indent [, baseIndent ]]] )```
 * ```eol```     _string_, default PHP_EOL
 * ```indent```  _string_, default four spaces, for no indent, use '' 
+* ```baseIndent```  _string_, default four spaces, for no indent, use '' 
+  * The base, leftmost, indent
 
-```Class::init( [ eol [, indent ]] )```
+```Class::init( [ eol [, indent [, baseIndent ]]] )```
 * ```eol```     _string_, default PHP_EOL
 * ```indent```  _string_, default four spaces, for no indent, use ''
+* ```baseIndent```  _string_, default four spaces, for no indent, use '' 
+  * The base, leftmost, indent
+* Static
+* Return _static_
+
+```Class::init( baseClass )```
+* ```baseClass``` _BaseA_ any *Mgr class
+  * updates eol, indent, baseIndent from ```baseClass```
 * Static
 * Return _static_
 ---
@@ -26,15 +36,25 @@ These methods are shared by all :
 * Throws RuntimeException
 ---
 
+```Class::getEol()```
+* Return _string_
+
 ```Class::setEol( eol )```
 * ```eol``` _string_, eol chars
 * Return _static_
+---
+
+```Class::getIndent()```
+* Return _string_
 
 ```Class::setIndent( indent )```
 * ```indent``` _string_, default four spaces, indentations after baseIndent
-* Return _static_
+---
 
-```Class::setbaseIndent( indent )```
+```Class::getBaseIndent()```
+* Return _string_
+
+```Class::setBaseIndent( indent )```
 * The base, leftmost, indent
 * ```indent``` _string_, default four spaces
 * Return _static_

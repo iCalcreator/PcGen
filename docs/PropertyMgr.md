@@ -66,7 +66,7 @@ Inherited [VariableMgr] methods
  * Return _static_
 ---
 
-Return to PcGen [README], [Summary] 
+<small>Return to PcGen [README], [Summary]</small> 
 
 [Common methods]:CommonMethods.md
 [README]:../README.md

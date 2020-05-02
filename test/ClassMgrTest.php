@@ -96,7 +96,7 @@ class ClassMgrTest extends TestCase
                     PropertyMgr::factory(
                         self::$prop . 4,
                         ClassMgr::FLOAT_T,
-                        4.444,
+                        PropertyMgr::NULL_T,
                         4 . $SUMMARY . ClassMgr::FLOAT_T,
                         4 . $DESCRIPTION . ClassMgr::FLOAT_T . ' WITH getter/setter/argInFactory'
                     )
@@ -161,7 +161,7 @@ class ClassMgrTest extends TestCase
                 VarDto::factory(
                     self::$prop . 4,
                     ClassMgr::FLOAT_T,
-                    4.444,
+                    PropertyMgr::NULL_T,
                     4 . $SUMMARY . ClassMgr::FLOAT_T,
                     4 . $DESCRIPTION . ClassMgr::FLOAT_T . ' NO argInFactory'
                 ),
@@ -214,7 +214,7 @@ class ClassMgrTest extends TestCase
                     VarDto::factory(
                         self::$prop . 4,
                         ClassMgr::FLOAT_T,
-                        4.444,
+                        PropertyMgr::NULL_T,
                         4 . $SUMMARY . ClassMgr::FLOAT_T,
                         4 . $DESCRIPTION . ClassMgr::FLOAT_T
                     )
@@ -277,7 +277,7 @@ class ClassMgrTest extends TestCase
                 [
                     self::$prop . 4,
                     ClassMgr::FLOAT_T,
-                    4.444,
+                    PropertyMgr::NULL_T,
                     4 . $SUMMARY . ClassMgr::FLOAT_T,
                     4 . $DESCRIPTION . ClassMgr::FLOAT_T,
                 ],
@@ -534,6 +534,73 @@ class ClassMgrTest extends TestCase
             echo __FUNCTION__ . ' ' . $case . ' : ' . PHP_EOL . $code . PHP_EOL;
         }
 
+    }
+
+    /**
+     * Testing factory, arguments with and without set-methods
+     *
+     * @test
+     */
+    public function classMgrTest11() {
+        $classMgr = ClassMgr::init()
+            ->setName( 'case11' )
+            ->setFactory( true )
+            ->addProperty( VarDto::factory( 'without1' ), false, false, true )
+            ->addProperty( VarDto::factory( 'with2' ), false, true, true )
+            ->addProperty( VarDto::factory( 'without3' ), false, false, true )
+            ->addProperty( VarDto::factory( 'with4' ), false, true, true );
+        $code = $classMgr->toString();
+        for( $testX = 0; $testX < 2; $testX++ ) {
+            $this->assertTrue(
+                ( false !== strpos( $code, '        $instance->without1 = $without1;' ) ),
+                'Error in case ' . __FUNCTION__ . '-' . 1 . PHP_EOL . $code
+            );
+            $this->assertTrue(
+                ( false !== strpos( $code, '        $instance->setWith2( $with2 );' ) ),
+                'Error in case ' . __FUNCTION__ . '-' . 4 . PHP_EOL . $code
+            );
+            $this->assertTrue(
+                ( false !== strpos( $code, '        $instance->without3 = $without3;' ) ),
+                'Error in case ' . __FUNCTION__ . '-' . 3 . PHP_EOL . $code
+            );
+            $this->assertTrue(
+                ( false !== strpos( $code, '        $instance->setWith4( $with4 );' ) ),
+                'Error in case ' . __FUNCTION__ . '-' . 4 . PHP_EOL . $code
+            );
+            if( 1 == $testX ) {
+                $classMgr->addProperty( VarDto::factory( 'without5' ), false, false, true );
+                $code = $classMgr->toString();
+                $this->assertTrue(
+                    ( false !== strpos( $code, '        $instance->without5 = $without5;' ) ),
+                    'Error in case ' . __FUNCTION__ . '-' . 3 . PHP_EOL . $code
+                );
+            }
+            else {
+                if( DISPLAYcm ) {
+                    echo __FUNCTION__ . ' : ' . PHP_EOL . $code . PHP_EOL;
+                }
+            }
+        } // end for
+    }
+
+    /**
+     * Testing factory without arguments
+     *
+     * @test
+     */
+    public function classMgrTest12() {
+        $code = ClassMgr::init()
+            ->setName( 'case12' )
+            ->setFactory( true )
+            ->toString();
+
+        $this->assertTrue(
+            ( false !== strpos( $code, '        return new static();')),
+            'Error in case ' . __FUNCTION__ . '-' . 1 . PHP_EOL . $code
+        );
+        if( DISPLAYcm ) {
+            echo __FUNCTION__ . ' : ' . PHP_EOL . $code . PHP_EOL;
+        }
     }
 
     /**

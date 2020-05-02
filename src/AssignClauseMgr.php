@@ -129,10 +129,15 @@ final class AssignClauseMgr extends BaseR1
                 $this->target = $class;
                 break;
             case (( null === $class ) && ( null === $variable )) :
-                $this->target = EntityMgr::init();
+                $this->target = EntityMgr::init( $this );
                 break;
             case ( null === $this->target ) :
-                $this->target = EntityMgr::factory( $class, $variable, $index );
+                $this->target = EntityMgr::init( $this )
+                    ->setClass( $class )
+                    ->setVariable( $variable );
+                if( null !== $index ) {
+                    $this->target->setIndex( $index );
+                }
                 break;
             default :
                 $this->getTarget()->setClass( $class )->setVariable( $variable )->setIndex( $index );
@@ -155,7 +160,12 @@ final class AssignClauseMgr extends BaseR1
         if( Util::isVarPrefixed( $property )) {
             $property = substr( $property, 1 );
         }
-        $this->target = EntityMgr::factory( self::THIS_KW, $property, $index );
+        $this->target = EntityMgr::init( $this )
+            ->setClass( self::THIS_KW )
+            ->setVariable( $property );
+        if( null !== $index ) {
+            $this->target->setIndex( $index );
+        }
         return $this;
     }
 
@@ -174,7 +184,11 @@ final class AssignClauseMgr extends BaseR1
         if( ! Util::isVarPrefixed( $variable )) {
             $variable = self::VARPREFIX . $variable;
         }
-        $this->target = EntityMgr::factory( null, $variable, $index );
+        $this->target = EntityMgr::init( $this )
+            ->setVariable( $variable );
+        if( null !== $index ) {
+            $this->target->setIndex( $index );
+        }
         return $this;
     }
 
@@ -183,6 +197,9 @@ final class AssignClauseMgr extends BaseR1
      * @return static
      */
     public function setTargetIsConst( $isConst = true ) {
+        if( null === $this->target ) {
+            $this->setTarget();
+        }
         $this->getTarget()->setIsConst((bool) $isConst );
         return $this;
     }
@@ -191,7 +208,7 @@ final class AssignClauseMgr extends BaseR1
      * @return bool
      */
     public function isTargetStatic() {
-        return $this->getTarget()->isStatic();
+        return $this->isTargetSet() && $this->getTarget()->isStatic();
     }
 
     /**
@@ -199,71 +216,10 @@ final class AssignClauseMgr extends BaseR1
      * @return static
      */
     public function setTargetIsStatic( $staticStatus = true ) {
+        if( null === $this->target ) {
+            $this->setTarget();
+        }
         $this->getTarget()->setIsStatic((bool) $staticStatus );
         return $this;
     }
-
-    /**
-     * Set (EntityMgr) source as class ('this' class instance) property, opt with index
-     *
-     * @param mixed      $property
-     * @param int|string $index
-     * @return static
-     * @throws InvalidArgumentException
-     */
-    public function setThisPropertySource( $property, $index = null ) {
-        if( ! is_string( $property )) {
-            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $property, true )));
-        }
-        if( Util::isVarPrefixed( $property )) {
-            $property = substr( $property, 1 );
-        }
-        $this->source = EntityMgr::factory( self::THIS_KW, $property, $index );
-        return $this;
-    }
-
-    /**
-     * Set (EntityMgr) source as plain variable, opt with index
-     *
-     * @param mixed      $variable
-     * @param int|string $index
-     * @return static
-     * @throws InvalidArgumentException
-     */
-    public function setVariableSource( $variable, $index = null ) {
-        if( ! is_string( $variable )) {
-            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $variable, true )));
-        }
-        if( ! Util::isVarPrefixed( $variable )) {
-            $variable = self::VARPREFIX . $variable;
-        }
-        $this->source = EntityMgr::factory( null, $variable, $index );
-        return $this;
-    }
-
-    /**
-     * @param bool $isConst
-     * @return static
-     */
-    public function setSourceIsConst( $isConst = true ) {
-        $this->getSource()->setIsConst((bool) $isConst );
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSourceStatic() {
-        return $this->getSource()->isStatic();
-    }
-
-    /**
-     * @param bool $staticStatus
-     * @return static
-     */
-    public function setSourceIsStatic( $staticStatus = true ) {
-        $this->getSource()->setIsStatic((bool) $staticStatus );
-        return $this;
-    }
-
 }

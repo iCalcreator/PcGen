@@ -122,8 +122,8 @@ class FcnInvokeMgrTest extends TestCase
     public function FcnInvokeMgrTest3DataProvider() {
         $testData = [];
 
-        foreach( self::FcnInvokeMgrTest3ArgumentProvider() as $argSet ) {
-            foreach( self::FcnInvokeMgrFunctionProvider() as $function ) {
+        foreach( self::FcnInvokeMgrFunctionProvider() as $function ) {
+            foreach( self::FcnInvokeMgrTest3ArgumentProvider() as $argSet ) {
 
                 $testData[] = [
                     $argSet[0] . '-' . $function[0],

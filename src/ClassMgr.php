@@ -148,7 +148,7 @@ final class ClassMgr extends BaseB
         foreach( ClassMethodFactory::$IMPLEMENTS as $implement ) {
             $this->addImplement( $implement );
         }
-        $this->addProperty( ClassMethodFactory::getPositionProperty());
+        $this->addProperty( ClassMethodFactory::getPositionProperty( $this ));
     }
 
     /**
@@ -162,8 +162,9 @@ final class ClassMgr extends BaseB
         $TMPL5 = ' extends ';
         $TMPL6 = ' implements ';
         if( ! $this->isDocBlockSet()) {
-            $this->docBlock = DocBlockMgr::init();
+            $this->docBlock = DocBlockMgr::init( $this );
         }
+        $this->docBlock->setBaseIndent();
         if( ! $this->docBlock->isSummarySet()) {
             $this->docBlock->setSummary(ucfirst( $this->getTargetType()) . self::$SP1 . $this->getName());
         }
@@ -182,7 +183,7 @@ final class ClassMgr extends BaseB
                 $code[] = ctype_digit((string) $alias ) ? sprintf( $TMPL2, $fqcn ) : sprintf( $TMPL3, $fqcn, $alias );
             }
         }
-        $code   = array_merge( $code, $this->docBlock->setBaseIndent()->toArray());
+        $code   = array_merge( $code, $this->docBlock->toArray());
         $row    = $this->isAbstract() ? $TMPL4 : self::$SP0;
         $code[] = $row . $this->getTargetType() . self::$SP1 . $this->getName();
         if( ! empty( $this->extend )) {
@@ -201,7 +202,7 @@ final class ClassMgr extends BaseB
         $hasProperties = ! empty( $this->properties );
         return array_merge(
             ( $hasProperties     ? $this->defineProperties() : [] ),
-            ( $this->construct   ? ClassMethodFactory::renderConstructorMethod( $this->getName()) : [] ),
+            ( $this->construct   ? ClassMethodFactory::renderConstructorMethod( $this ) : [] ),
             ( $this->factory     ? ClassMethodFactory::renderFactoryMethod( $this ) : [] ),
             ( $this->isBodySet() ? array_merge( [ self::$SP0 ], $this->getBody()) : [] ),
             ( $hasProperties     ? $this->produceMethodsForProperties() : [] )
@@ -214,19 +215,21 @@ final class ClassMgr extends BaseB
     private function defineProperties() {
         $code = [];
         foreach( $this->getPropertyIndex() as $pIx ) {
-            $propertyMgr = $this->properties[$pIx];
-            $dbg = DocBlockMgr::init()
+            $propertyMgr = $this->properties[$pIx]
+                ->setBaseIndent( $this->getBaseIndent())
+                ->setIndent( $this->getIndent());
+            $docBlockMgr = DocBlockMgr::init( $this )
                 ->setSummary( $propertyMgr->getVarDto()->getSummary())
                 ->setDescription( $propertyMgr->getVarDto()->getDescription());
             $varType = $propertyMgr->getVarDto()->getParamTagVarType();
             if( $propertyMgr->isConst()) {
-                $dbg->setDescription( self::CONST_ . self::$SP1 . $varType);
+                $docBlockMgr->setDescription( self::CONST_ . self::$SP1 . $varType);
             }
             else {
-                $dbg->setTag( self::VAR_T, $varType );
+                $docBlockMgr->setTag( self::VAR_T, $varType );
             }
             $code = array_merge( $code,
-                $dbg->toArray(),
+                $docBlockMgr->toArray(),
                 $propertyMgr->toArray()
             );
         } // end foreach
@@ -240,24 +243,26 @@ final class ClassMgr extends BaseB
         $code    = [];
         $oneOnly = $this->hasOneArrayProperty();
         foreach( $this->getPropertyIndex() as $pIx ) {
-            $varDto = $this->properties[$pIx]->getVarDto();
+            $property = $this->properties[$pIx]
+                ->setBaseIndent( $this->getBaseIndent())
+                ->setIndent( $this->getIndent());
             switch( true ) {
                 case ( ! $this->properties[$pIx]->isMakeGetter()) :
                     break;
                 case $oneOnly :
-                    ClassMethodFactory::renderIteratorGetterMethods( $varDto, $code );
+                    ClassMethodFactory::renderIteratorGetterMethods( $property, $code );
                     break;
                 default :
-                    ClassMethodFactory::renderGetterMethod( $varDto, $code );
-                    ClassMethodFactory::renderIsPropertySetMethod( $varDto, $code );
-                    ClassMethodFactory::renderPropertyCountMethod( $varDto, $code );
+                    ClassMethodFactory::renderGetterMethod( $property, $code );
+                    ClassMethodFactory::renderIsPropertySetMethod( $property, $code );
+                    ClassMethodFactory::renderPropertyCountMethod( $property, $code );
                     break;
             } // end switch
             if( $this->properties[$pIx]->isMakeSetter()) {
-                if( $varDto->isTypedArray()) {
-                    ClassMethodFactory::renderAppendArrayMethod( $varDto, $code );
+                if( $property->getVarDto()->isTypedArray()) {
+                    ClassMethodFactory::renderAppendArrayMethod( $property, $code );
                 }
-                ClassMethodFactory::renderSetterMethod( $varDto, $code );
+                ClassMethodFactory::renderSetterMethod( $property, $code );
             }
         } // end foreach
         return $code;
@@ -526,21 +531,26 @@ final class ClassMgr extends BaseB
         switch( true ) {
             case ( $name instanceof PropertyMgr ) :
                 $property = $name;
+                $property->setEol( $this->getEol());
+                $property->setBaseIndent( $this->getBaseIndent());
+                $property->setIndent( $this->getIndent());
                 break;
             case ( $name instanceof VariableMgr ) :
                 $name = $name->getVarDto();
             // fall through
             case ( $name instanceof VarDto ) :
-                $property = PropertyMgr::factory( $name )
-                    ->setMakeGetter(( null === $type )        ? true  : (bool) $type )     // getter
-                    ->setMakeSetter(( null === $default )     ? true  : (bool) $default )  // setter
-                    ->setArgInFactory( ( null === $summary ) ? false : (bool) $summary ); // arg in factory
+                $property = PropertyMgr::init( $this )
+                    ->setVarDto( $name )
+                    ->setMakeGetter( Util::getIfSet( $type, null, self::BOOL_T, true ))
+                    ->setMakeSetter( Util::getIfSet( $default, null, self::BOOL_T, true ))
+                    ->setArgInFactory( Util::getIfSet( $summary, null, self::BOOL_T, false ));
                 break;
             case is_string( $name ) :
-                $property = PropertyMgr::factory( VarDto::factory( $name, $type, $default, $summary, $description ))
-                    ->setMakeGetter( ( null === $getter )          ? true  : (bool) $getter )        // getter
-                    ->setMakeSetter( ( null === $setter )          ? true  : (bool) $setter )        // setter
-                    ->setArgInFactory( ( null === $argInFactory ) ? false : (bool) $argInFactory ); // arg in factory
+                $property = PropertyMgr::init( $this )
+                    ->setVarDto( VarDto::factory( $name, $type, $default, $summary, $description ))
+                    ->setMakeGetter( Util::getIfSet( $getter, null, self::BOOL_T, true ))
+                    ->setMakeSetter( Util::getIfSet( $setter, null, self::BOOL_T, true ))
+                    ->setArgInFactory( Util::getIfSet( $argInFactory, null, self::BOOL_T, false ));
                 break;
             default :
                 throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $name, true )));
@@ -630,9 +640,7 @@ final class ClassMgr extends BaseB
                 case ( $property instanceof VariableMgr ) :
                     $property = $property->getVarDto();
                     // fall through
-                case ( $property instanceof VarDto ) :
-                    // fall through
-                case ( is_string( $property )) :
+                case (( $property instanceof VarDto ) || is_string( $property )) :
                     $this->addProperty(
                         PropertyMgr::factory( $property )
                             ->setMakeGetter( true)
@@ -646,31 +654,23 @@ final class ClassMgr extends BaseB
                 case ( $property[0] instanceof VarDto ) :
                     $this->addProperty(
                         PropertyMgr::factory( $property[0] )
-                            ->setMakeGetter( Util::getIfSet( $property, 1, self::BOOL_T, true ) )  // make getter,
-                            ->setMakeSetter( Util::getIfSet( $property, 2, self::BOOL_T, true ) )  // make getter
-                            ->setArgInFactory( Util::getIfSet( $property, 1, self::BOOL_T, false ) ) // argInFactory
+                            ->setMakeGetter( Util::getIfSet( $property, 1, self::BOOL_T, true ))
+                            ->setMakeSetter( Util::getIfSet( $property, 2, self::BOOL_T, true ))
+                            ->setArgInFactory( Util::getIfSet( $property, 1, self::BOOL_T, false ))
                     );
                     break;
                 default :
                     $this->addProperty(
                         PropertyMgr::factory(
-                            VarDto::factory(
-                                Util::getIfSet( $property, 0 ),                           // variable,
-                                Util::getIfSet( $property, 1 ),                           // varType,
-                                Util::getIfSet( $property, 2 ),                           // default
-                                Util::getIfSet( $property, 3, self::STRING_T ),           // summary
-                                Util::getIfSet( $property, 4, self::ARRAY_T )             // description
-                            )
+                            Util::getIfSet( $property, 0 ),                 // variable,
+                            Util::getIfSet( $property, 1 ),                 // varType,
+                            Util::getIfSet( $property, 2 ),                 // default
+                            Util::getIfSet( $property, 3, self::STRING_T ), // summary
+                            Util::getIfSet( $property, 4, self::ARRAY_T )   // description
                         )
-                            ->setMakeGetter(
-                                Util::getIfSet( $property, 5, self::BOOL_T, true )  // make getter
-                            )
-                            ->setMakeGetter(
-                                Util::getIfSet( $property, 6, self::BOOL_T, true )  // make getter
-                            )
-                            ->setArgInFactory(
-                                Util::getIfSet( $property, 7, self::BOOL_T, false ) // argInFactory
-                            )
+                            ->setMakeGetter( Util::getIfSet( $property, 5, self::BOOL_T, true ))
+                            ->setMakeGetter( Util::getIfSet( $property, 6, self::BOOL_T, true ))
+                            ->setArgInFactory( Util::getIfSet( $property, 7, self::BOOL_T, false ))
                     );
                     break;
             } // end switch

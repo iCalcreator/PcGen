@@ -142,9 +142,7 @@ class VarDtoTest extends TestCase
                 $this->assertEquals( $args[2], $varDto->getDefault(),
                                      sprintf( self::$FMT, $case, $x, 3 ) . var_export( $args, true ));
             }
-            else {
-                $this->assertTrue( $varDto->isDefaultTypedNull());
-            }
+            $this->assertFalse( $varDto->isDefaultTypedNull());
 
             if( isset( $args[3] )) {
                 $this->assertTrue( $varDto->isSummarySet());

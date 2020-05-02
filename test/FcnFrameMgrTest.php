@@ -756,6 +756,25 @@ class FcnFrameMgrTest extends TestCase
             ->setArguments( $args )
             ->setBody( self::compressArgs( $args ));
         $this->classReturnTester( $case . '-I', $ffg );
+        $found = false;
+        foreach( $args as $aIx => $argset ) {
+            if( $argSet->isByReference()) {
+                $found = $aIx;
+                break;
+            }
+        }
+        if( false !== $found ) { // test use of by-reference (todo move to ArgumentDtoTest)
+            $code     = $ffg->toString();
+            $expected = ' & $' . $args[$found]->getName();
+            $this->assertTrue(
+                ( false !== strpos( $code, $expected )),
+                __FUNCTION__ . ' case ' . $case . PHP_EOL . $code
+            );
+
+            if( DISPLAYffm ) {
+                echo __FUNCTION__ . ' case ' . $case . PHP_EOL . $code . PHP_EOL;
+            }
+        }
     }
 
     /**
@@ -878,7 +897,7 @@ class FcnFrameMgrTest extends TestCase
             }
             return;
         }
-        if( is_string( $args )) {
+        if( is_string( $args[0] )) {
             $casex = $case . '-G2';
             $ffg->setVarUse( $args );
             $code = $ffg->toString();
@@ -1105,7 +1124,7 @@ class FcnFrameMgrTest extends TestCase
      *
      * @test
      */
-    public function fcnFrameMgrTest26a() {
+    public function fcnFrameMgrTest26() {
         try {
             FcnFrameMgr::init()->setVarUse( [ '' ] );
             $this->assertTrue( false );
@@ -1113,14 +1132,7 @@ class FcnFrameMgrTest extends TestCase
         catch( Exception $e ) {
             $this->assertTrue( true );
         }
-    }
 
-    /**
-     * Testing invalid set function use variable
-     *
-     * @test
-     */
-    public function fcnFrameMgrTest26b() {
         try {
             FcnFrameMgr::init()->setVarUse( [ true ] );
             $this->assertTrue( false );
@@ -1174,13 +1186,6 @@ class FcnFrameMgrTest extends TestCase
             $this->assertTrue( true );
         }
 
-        try {
-            FcnFrameMgr::init()->setArguments( [ 123 ] );
-            $this->assertTrue( false );
-        }
-        catch( Exception $e ) {
-            $this->assertTrue( true );
-        }
     }
 
     /**
@@ -1189,13 +1194,21 @@ class FcnFrameMgrTest extends TestCase
      * @test
      */
     public function fcnFrameMgrTest33() {
-        $rv = FcnFrameMgr::init()->setReturnValue( null, 'test' )->getReturnValue();
-        $this->assertTrue( $rv instanceof ReturnClauseMgr );
-        $this->assertEquals( 'test', $rv->getFixedSourceValue());
+        $rvm = FcnFrameMgr::init()->setReturnValue( null, 123 )->getReturnValue();
+        $this->assertTrue( $rvm instanceof ReturnClauseMgr );
+        $this->assertEquals( 123, $rvm->getFixedSourceValue());
 
-        $rv = FcnFrameMgr::init()->setReturnValue( null, '$test' )->getReturnValue();
-        $this->assertTrue( $rv instanceof ReturnClauseMgr );
-        $this->assertEquals( '$test', $rv->getVariable());
+        $rvm = FcnFrameMgr::init()->setReturnFixedValue( 'test' )->getReturnValue();
+        $this->assertTrue( $rvm instanceof ReturnClauseMgr );
+        $this->assertEquals( 'test', $rvm->getFixedSourceValue());
+
+        $rvm = FcnFrameMgr::init()->setReturnValue( null, '$test' )->getReturnValue();
+        $this->assertTrue( $rvm instanceof ReturnClauseMgr );
+        $this->assertTrue( ( false !== strpos( $rvm->toString(), '$test')));
+
+        $rvm = FcnFrameMgr::init()->setReturnThis()->getReturnValue();
+        $this->assertTrue( $rvm instanceof ReturnClauseMgr );
+        $this->assertTrue( ( false !== strpos( $rvm->toString(), '$this')));
     }
 
     /**

@@ -24,7 +24,6 @@
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
-use Kigkonsult\PcGen\Dto\VarDto;
 use Kigkonsult\PcGen\Traits\ArgumentTrait;
 use RuntimeException;
 
@@ -37,6 +36,10 @@ use RuntimeException;
  */
 final class FcnInvokeMgr extends BaseA
 {
+    /**
+     * @var string
+     */
+    private static $ERR = 'Not initiated, no (class+)name set !!';
 
     /**
      * @var EntityMgr
@@ -99,7 +102,10 @@ final class FcnInvokeMgr extends BaseA
                 break;
             case ( ! empty( $fcnName )) :
                 $fcnName    = Assert::assertPhpVar( $fcnName ); // skip $-class
-                $this->name = EntityMgr::factory( $class, $fcnName, null, false );
+                $this->name = EntityMgr::init( $this )
+                    ->setClass( $class )
+                    ->setVariable( $fcnName )
+                    ->setForceVarPrefix( false );
                 break;
             default :
                 throw new InvalidArgumentException(
@@ -121,9 +127,8 @@ final class FcnInvokeMgr extends BaseA
      * @throws InvalidArgumentException
      */
     public function setClass( $class ) {
-        static $ERR1 = 'Not initiated';
         if( empty( $this->name )) {
-            throw new RuntimeException( $ERR1 );
+            throw new RuntimeException( self::$ERR );
         }
         $this->name->setClass( $class );
         return $this;
@@ -139,9 +144,8 @@ final class FcnInvokeMgr extends BaseA
      * @throws InvalidArgumentException
      */
     public function setIsStatic( $staticStatus ) {
-        static $ERR = 'No (class+)name set !!';
         if( null === $this->name ) {
-            throw new InvalidArgumentException( $ERR );
+            throw new InvalidArgumentException( self::$ERR );
         }
         $this->getName()->setIsStatic((bool) $staticStatus );
         return $this;

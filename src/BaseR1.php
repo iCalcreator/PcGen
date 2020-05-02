@@ -131,19 +131,111 @@ abstract class BaseR1 extends BaseA
                 $this->source = $class;
                 break;
             case (( null === $class ) && ( null === $variable )) :
-                $this->source = EntityMgr::init();
+                $this->source = EntityMgr::init( $this );
                 break;
             case ( ! empty( $class ) && is_string( $variable )) :
-                $this->source = EntityMgr::factory( $class, $variable, $index );
+                $this->source = EntityMgr::init( $this )
+                    ->setClass( $class )
+                    ->setVariable( $variable );
+                if( null !== $index ) {
+                    $this->source->setIndex( $index );
+                }
                 break;
             case ( is_scalar( $variable ) && ! Util::isConstant( $variable ) && ! Util::isVarPrefixed( $variable )) :
                 // and empty class
                 $this->setFixedSourceValue( $variable );
                 break;
             default :
-                $this->source = EntityMgr::factory( $class, $variable, $index );
+                $this->source = EntityMgr::init( $this );
+                if( null !== $class ) {
+                    $this->source->setClass( $class );
+                }
+                if( null !== $variable ) {
+                    $this->source->setVariable( $variable );
+                }
+                if( null !== $index ) {
+                    $this->source->setIndex( $index );
+                }
                 break;
         }
+        return $this;
+    }
+
+    /**
+     * Set source (EntityMgr) as class ('this' class instance) property, opt with index
+     *
+     * @param mixed      $property
+     * @param int|string $index
+     * @return static
+     * @throws InvalidArgumentException
+     */
+    public function setThisPropertySource( $property, $index = null ) {
+        if( ! is_string( $property )) {
+            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $property, true )));
+        }
+        if( Util::isVarPrefixed( $property )) {
+            $property = substr( $property, 1 );
+        }
+        $this->source = EntityMgr::init( $this )
+            ->setClass( self::THIS_KW )
+            ->setVariable( $property );
+        if( null !== $index ) {
+            $this->source->setIndex( $index );
+        }
+        return $this;
+    }
+
+    /**
+     * Set source (EntityMgr) as plain variable, opt with index
+     *
+     * @param mixed      $variable
+     * @param int|string $index
+     * @return static
+     * @throws InvalidArgumentException
+     */
+    public function setVariableSource( $variable, $index = null ) {
+        if( ! is_string( $variable )) {
+            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $variable, true )));
+        }
+        if( ! Util::isVarPrefixed( $variable )) {
+            $variable = self::VARPREFIX . $variable;
+        }
+        $this->source = EntityMgr::init( $this )
+            ->setVariable( $variable );
+        if( null !== $index ) {
+            $this->source->setIndex( $index );
+        }
+        return $this;
+    }
+
+    /**
+     * @param bool $isConst
+     * @return static
+     */
+    public function setSourceIsConst( $isConst = true ) {
+        if( null === $this->source ) {
+            $this->setSource();
+        }
+        $this->getSource()->setIsConst((bool) $isConst );
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSourceStatic() {
+        return $this->isSourceSet() && $this->getSource()->isStatic();
+    }
+
+    /**
+     * @param bool $staticStatus
+     * @return static
+     */
+    public function setSourceIsStatic( $staticStatus = true ) {
+        if( null === $this->source ) {
+            $this->setSource();
+        }
+        $this->getSource()->setIsStatic((bool) $staticStatus );
         return $this;
     }
 
@@ -167,7 +259,7 @@ abstract class BaseR1 extends BaseA
      */
     public function appendChainedInvoke( FcnInvokeMgr $chainedInvoke ) {
         if( empty( $this->fcnInvoke )) {
-            $this->fcnInvoke = ChainInvokeMgr::init();
+            $this->fcnInvoke = ChainInvokeMgr::init( $this );
         }
         $this->fcnInvoke->appendChainedInvoke( $chainedInvoke );
         return $this;

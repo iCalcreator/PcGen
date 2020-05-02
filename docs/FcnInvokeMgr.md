@@ -5,7 +5,7 @@
 The ```FcnInvokeMgr``` class manages (single) function/method invoke
 * opt with arguments
 * ex ```FcnInvokeMgr::factory( FcnInvokeMgr::THIS_KW, 'method, [ 'arg1', 'arg2' ] )->toString()``` 
-  * give result ```$this->method( $arg1, $arg2 )```
+  * give result ```$this->method( $arg1, $arg2 )``` (+eol)
   
 Chained invokes manages by [ChainInvokeMgr].
 
@@ -17,11 +17,16 @@ Inherited [Common methods]
 ---
 
 ```FcnInvokeMgr::factory( class [, fcnName [, arguments ]] )```
-* ```class``` _EntityMgr_|_string_
-  * note ```EntityMgr``` below
-  * if _string_, one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
+* ```class``` _string_ one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
   * convenient constants found in PcGenInterface
 * ```fcnName```   _string_, function/method name
+* ```arguments``` _array_, note ```FcnInvokeMgr::setArguments()``` below
+* Static
+* Return _static_
+
+```FcnInvokeMgr::factory( entity [, null, arguments ]  )```
+* ```entity``` _EntityMgr_
+  * note ```EntityMgr``` below
 * ```arguments``` _array_, note ```FcnInvokeMgr::setArguments()``` below
 * Static
 * Return _static_
@@ -38,11 +43,17 @@ Inherited [Common methods]
 
 ```FcnInvokeMgr::setName( class [, fcnName ] )```
 * The function/method name
-* ```class``` _EntityMgr_|_string_
-  *  note ```EntityMgr``` below
-  * if _string_, one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
+* ```class``` _string_
+  * one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
   * convenient constants found in PcGenInterface
 * ```fcnName```  _string_, function/method name
+* Return _static_
+* Throws InvalidArgumentException
+
+```FcnInvokeMgr::setName( entity )```
+* The function/method name
+* ```entity``` _EntityMgr_
+  *  note ```EntityMgr``` below
 * Return _static_
 * Throws InvalidArgumentException
 ---
@@ -105,7 +116,7 @@ _VarDto_ instance creation ([VarDto])<br><br>
 * ```argName``` _string_
 ---
 
-Return to PcGen [README], [Summary] 
+<small>Return to PcGen [README], [Summary]</small> 
 
 [ArgumentDto]:ArgumentDto.md
 [ChainInvokeMgr]:ChainInvokeMgr.md

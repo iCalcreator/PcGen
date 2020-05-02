@@ -71,6 +71,7 @@ class BaseATest extends TestCase
      * @test
      */
     public function baseATest2() {
+
         VariableMgr::setDefaultIndent( '  ' );
         $this->assertEquals(
             '  ',

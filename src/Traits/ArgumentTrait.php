@@ -29,6 +29,13 @@ use Kigkonsult\PcGen\Dto\ArgumentDto;
 use Kigkonsult\PcGen\Dto\VarDto;
 use Kigkonsult\PcGen\Util;
 
+/**
+ * Trait ArgumentTrait
+ *
+ * Manages argument in Fcn*Mgr
+ *
+ * @package Kigkonsult\PcGen\Traits
+ */
 trait ArgumentTrait
 {
     /**
@@ -79,12 +86,11 @@ trait ArgumentTrait
         if( $argumentDto->isNextVarPropIndex()) {
             // add array element
             $argumentDto = clone $argumentDto;
-            // need a clone here, without type? and default, and remain original for later use
+            // need a clone here, without type? and default, and remain original for (opt) later use
             $argumentDto->setVarType(
                 ( $argumentDto->hasTypeHintArraySpec( self::getTargetPhpVersion(), $typeHint ) ? $typeHint : null )
             );
             $argumentDto->setDefault( null );
-            $argumentDto->setByReference( false );
         } // end if
         if( $argumentDto->isTypeHint( self::getTargetPhpVersion(), $typeHint )) { // varType
             $row .= $typeHint . BaseA::$SP1;
@@ -162,7 +168,7 @@ trait ArgumentTrait
     /**
      * Render arguments in separate rows
      *
-     * @param array $arguments
+     * @param ArgumentDto[] $arguments
      * @param array $code
      * @return void
      */
@@ -203,9 +209,9 @@ trait ArgumentTrait
                 break;
             case ( $name instanceof varDto ) :
                 $this->arguments[] = ArgumentDto::factory( $name )
-                    ->setByReference( (bool) $type )
+                    ->setByReference( Util::getIfSet( $type, null, self::BOOL_T, false ))
                     ->setUpdClassProperty( self::grabUpdClassProperty( ((array) $default), 0 ))
-                    ->setNextVarPropIndex( (bool) $byReference );
+                    ->setNextVarPropIndex( Util::getIfSet( $byReference, null, self::BOOL_T, false ));
                 break;
             default :
                 $this->arguments[] = ArgumentDto::factory( $name, $type, $default )
@@ -243,9 +249,9 @@ trait ArgumentTrait
      * Set of arguments
      *
      * Each array item can be :
-     *   string,
      *   ArgumentDto
      *   VarDto
+     *   string,
      *   array( VarDto, byReference, updClassProp, nextVarPropIndex )
      *   array( variable, varType, default, byReference, updClassProp, intoNextVarPropArrItem )
      *
@@ -276,29 +282,21 @@ trait ArgumentTrait
                 case( $argSet[0] instanceof varDto ) :
                     $this->addArgument(
                         ArgumentDto::factory( $argSet[0] )
-                            ->setByReference(
-                                Util::getIfSet( $argSet, 1, BaseA::BOOL_T, false )
-                            )
+                            ->setByReference( Util::getIfSet( $argSet, 1, BaseA::BOOL_T, false ))
                             ->setUpdClassProperty( self::grabUpdClassProperty( $argSet, 2 ))
-                            ->setNextVarPropIndex(
-                                Util::getIfSet( $argSet, 3, BaseA::BOOL_T, false )
-                            )
+                            ->setNextVarPropIndex( Util::getIfSet( $argSet, 3, BaseA::BOOL_T, false ))
                     );
                     break;
                 default :
                     $this->addArgument(
                         ArgumentDto::factory(
-                            $argSet[0],                        // variable
+                            $argSet[0],                       // variable
                             Util::getIfSet( $argSet, 1 ), // varType
                             Util::getIfSet( $argSet, 2 )  // default
                         )
-                            ->setByReference(
-                                Util::getIfSet( $argSet, 3, BaseA::BOOL_T, false )
-                            )
+                            ->setByReference( Util::getIfSet( $argSet, 3, BaseA::BOOL_T, false ))
                             ->setUpdClassProperty( self::grabUpdClassProperty( $argSet, 4 ))
-                            ->setNextVarPropIndex(
-                                Util::getIfSet( $argSet, 5, BaseA::BOOL_T, false )
-                            )
+                            ->setNextVarPropIndex( Util::getIfSet( $argSet, 5, BaseA::BOOL_T, false ))
                     );
                     break;
             } // end switch

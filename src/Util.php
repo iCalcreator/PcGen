@@ -90,30 +90,41 @@ class Util implements PcGenInterface
     }
 
     /**
-     * Return the typed array value or the default one
+     * Return the typed (arg) value or the default one
      *
-     * @param array      $array
+     * @param mixed      $arg
      * @param string|int $key
      * @param string     $type
      * @param mixed      $default
      * @return mixed
      */
-    public static function getIfSet( array $array, $key, $type = null, $default = null ) {
-        if( ! array_key_exists( $key, $array )) {
-            return $default;
+    public static function getIfSet( $arg, $key = null, $type = null, $default = null ) {
+        switch( true ) {
+            case (( null === $arg ) && ( null === $key )) :
+                return $default;
+                break;
+            case ( ! is_array( $arg )) :
+                $value = $arg;
+                break;
+            case ( ! array_key_exists( $key, $arg )) :
+                return $default;
+                break;
+            default :
+                $value = $arg[ $key ];
+                break;
         }
         switch( $type ) {
             case self::BOOL_T :
-                return (bool)$array[ $key ];
+                return (bool) $value;
                 break;
             case self::STRING_T :
-                return (string)$array[ $key ];
+                return (string) $value;
                 break;
             case self::ARRAY_T :
-                return (array)$array[ $key ];
+                return (array) $value;
                 break;
             default :
-                return $array[ $key ];
+                return $value;
                 break;
         } // end switch
     }

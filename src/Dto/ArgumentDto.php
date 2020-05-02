@@ -81,6 +81,16 @@ final class ArgumentDto extends VarDto
     }
 
     /**
+     * @return string
+     */
+    public function __toString() {
+        return parent::__toString() .
+            ', byReference: ' . ( $this->byReference ? '+' : '-' ) .
+            ', updClassProp: ' . $this->updClassProp .
+            ', nextVarPropIndex: ' . ( $this->byReference ? '+' : '-' );
+    }
+
+    /**
      * @return bool
      */
     public function isByReference() {

@@ -6,8 +6,8 @@ The ```ClassMgr``` class manages PHP class(default), interface, trait
 * namespace
 * class use
 * extends and interfaces
-* construct and factory method
-* properties with getter and setter methods 
+* opt. construct and factory method
+* properties opt. with getter and setter methods 
 * using [DocBlockMgr], [FcnFrameMgr], [PropertyMgr] and [FcnInvokeMgr] doing the hard work
 
 ###### Methods
@@ -61,6 +61,9 @@ Inherited [Common methods]
 * Return _static_
 * Throws InvalidArgumentException
 ---
+DocBlock is always set up up with
+* name (if summary not set)
+* package tag (if not set : namespace)
 
 ```ClassMgr::getDocBlock()```
 * Return _DocBlockMgr_
@@ -114,7 +117,7 @@ Inherited [Common methods]
 * Initiated to _false_, no factory method
 * ```factory``` _bool_, true (default) : directive to generate class factory
   * default no body
-  * populated pedending on property set attribute ```argInFactory```, below  
+  * populated depending on property set attribute ```argInFactory```, below  
 * Return _static_
 * Static
 ---
@@ -122,6 +125,7 @@ Inherited [Common methods]
 ```ClassMgr::addProperty( property )```
 * ```property``` [PropertyMgr]
     * note ```PropertyMgr``` below
+    * opt with set directives for _getter_, _setter_, _argInFactory_, below 
 * Return _static_
 
 ```ClassMgr::addProperty( varDto [, getter [, setter [, argInFactory ]]] )```
@@ -130,7 +134,8 @@ Inherited [Common methods]
 * ```getter``` _bool_, default true, directive to generate getter methods for property (below)
   * if single array class property, _Iterator_ is implemented (below)
 * ```setter``` _bool_, default true, directive to generate setter method(s) for property (below)
-* ```argInFactory``` _bool_, default false, directive to use property as argument and value set in class factory method (only if ```ClassMgr::setFactory( true )```)
+* ```argInFactory``` _bool_, default false, directive to use property as argument and value set in class factory method
+  * only if ```ClassMgr::setFactory( true )```
 * Return _static_
 * Throws InvalidArgumentException
 
@@ -145,7 +150,8 @@ Inherited [Common methods]
 * ```getter``` _bool_, default true, directive to generate getter methods for property (below)
   * if single array class property, _Iterator_ is implemented (below)
 * ```setter``` _bool_, default true, directive to generate setter method(s) for property (below)
-* ```argInFactory``` _bool_, default false, directive to use property as argument and value set in class factory method (only if ```ClassMgr::setFactory( true )```)
+* ```argInFactory``` _bool_, default false, directive to use property as argument and value set in class factory method
+  * only if ```ClassMgr::setFactory( true )```
 * Return _static_
 * Throws InvalidArgumentException
 
@@ -153,8 +159,9 @@ Inherited [Common methods]
 * ```propertySet``` _array_, elements any of below 
   * _PropertyMgr_
     * note ```PropertyMgr``` below
+    * opt with set directives _getter_, _setter_, _argInFactory_, above 
   * array( _VarDto_ [, getter [, setter [, argInFactory ]]] )
-    * note ```VarDto``` below
+    * note ```VarDto``` below, _getter_, _setter_, _argInFactory_, above
   * array( name [, varType [, default [, summary [, description [, getter [, setter [, argInFactory ]]]]]]] )
     * note ```ClassMgr::addProperty()``` above
 * Return _static_
@@ -162,7 +169,8 @@ Inherited [Common methods]
 ---
 
 ```ClassMgr::setBody( ...body )```
-* ```body``` _string|array_, (multiple) class (methods) logic code (chunks) row(s), 
+* ```body``` _string|array_, (multiple) class (methods) logic code (chunks) row(s)
+  * note, code without 'baseIndent' 
 * Return _static_
 ---
 

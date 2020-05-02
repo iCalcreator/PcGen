@@ -134,6 +134,18 @@ Inherited [Common methods]
 * ```index```  _int_|_string_ opt array index
 * Return static
 * Throws InvalidArgumentException
+
+```AssignClauseMgr::setSourceIsConst( isConst )```
+* ```isConst``` _bool_
+  * true : force ```$class::CONSTANT```
+  * false : NOT, (default) ```$class->$constant``` 
+* Return _static_
+
+```AssignClauseMgr::setSourceIsStatic( isStatic )```
+* ```isConst``` _bool_
+  * true : force ```$class::variable```
+  * false : NOT, default, ```$class->$variable``` 
+* Return _static_
 ---
 
 ```AssignClauseMgr::getFcnInvoke()```

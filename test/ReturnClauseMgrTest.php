@@ -335,7 +335,7 @@ class ReturnClauseMgrTest extends TestCase
         $rcm = ReturnClauseMgr::init( PHP_EOL, '    ' )->setBaseIndent( '    ' );
         switch( true ) {
             case ( false !== strpos( $subject, 'CONSTANT' )) :
-                $rcm->setIsConst( true )
+                $rcm->setSourceIsConst( true )
                     ->setSource( $prefix, $subject, $index );
                 $case .= '-1';
                 break;
@@ -450,10 +450,10 @@ class ReturnClauseMgrTest extends TestCase
      */
     public function returnClauseMgrTest2( $case, $prefix = null, $subject = null, $index = null, $expected = null ) {
         $rcm = ReturnClauseMgr::factory( $prefix, $subject, $index )
-                              ->setIsStatic();
+                              ->setSourceIsStatic();
 
         $code = $rcm->toString();
-        $this->assertTrue( $rcm->isStatic());
+        $this->assertTrue( $rcm->isSourceStatic());
         $this->assertEquals(
             $expected . PHP_EOL,
             $code,
@@ -480,11 +480,6 @@ class ReturnClauseMgrTest extends TestCase
      */
     public function returnClauseMgrTest5() {
         $rcm = ReturnClauseMgr::init();
-        $this->assertEquals( 'test', $rcm->setClass( 'test' )->getClass());
-        $this->assertEquals( 'test', $rcm->setVariable( 'test' )->getVariable());
-        $this->assertEquals( 7, $rcm->setIndex( 7 )->getIndex());
-        $this->assertEquals( '$test', $rcm->setIndex( 'test' )->getIndex());
-
         $this->assertEquals( '[]', $rcm->setFixedSourceValue( '[]' )->getFixedSourceValue());
     }
 
@@ -501,24 +496,21 @@ class ReturnClauseMgrTest extends TestCase
         }
 
         try {
-            ReturnClauseMgr::init()
-                           ->setVariable( '' );
+            ReturnClauseMgr::init()->setSource( null, '' );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
             $this->assertTrue( true );
         }
         try {
-            ReturnClauseMgr::init()
-                           ->setVariable( [] );
+            ReturnClauseMgr::init()->setSource( null, [] );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
             $this->assertTrue( true );
         }
         try {
-            ReturnClauseMgr::init()
-                           ->setIndex( '[]' );
+            ReturnClauseMgr::init()->setSource( null, null, '[]' );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
@@ -552,12 +544,5 @@ class ReturnClauseMgrTest extends TestCase
             $this->assertTrue( true );
         }
 
-        try {
-            echo ReturnClauseMgr::init()->setVariable( [] )->toString();
-            $this->assertTrue( false );
-        }
-        catch( Exception $e ) {
-            $this->assertTrue( true );
-        }
     }
 }

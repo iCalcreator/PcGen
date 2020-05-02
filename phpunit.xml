@@ -97,6 +97,7 @@
             <file>./src/ReturnClauseMgr.php</file>
             <file>./src/Traits/ArgumentTrait.php</file>
             <file>./src/Traits/OperatorTrait.php</file>
+            <file>./src/Util.php</file>
             <file>./src/VariableMgr.php</file>
         </whitelist>
     </filter>

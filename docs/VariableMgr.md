@@ -95,6 +95,7 @@ Inherited [Common methods]
 
 ```VariableMgr::setBody( ...body )```
 * ```body``` _string_|_array_, (multiple) (closure?) logic code (chunks) row(s), 
+  * note, code without 'baseIndent' 
 * Return _static_
 ---
 
@@ -116,7 +117,7 @@ _VarDto_ instance creation (go to [VarDto])<br><br>
 * ```description``` _string_|_array_
 ---
 
-Return to PcGen [README], [Summary] 
+<small>Return to PcGen [README], [Summary]</small> 
 
 [Common methods]:CommonMethods.md
 [FcnInvokeMgr]:FcnInvokeMgr.md

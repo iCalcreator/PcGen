@@ -103,7 +103,7 @@ Used in [ClassMgr], [FcnFrameMgr] and [FcnInvokeMgr], defining (simpler) argumen
 * Return _static_
 ---
 
-Return to PcGen [README], [Summary] 
+<small>Return to PcGen [README], [Summary]</small> 
 
 [ClassMgr]:ClassMgr.md
 [FcnFrameMgr]:FcnFrameMgr.md

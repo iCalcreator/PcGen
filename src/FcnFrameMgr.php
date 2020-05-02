@@ -84,8 +84,6 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      */
     public function toArray() {
         static $ERR = 'No function directives';
-        static $BEFORE = 1;
-        static $AFTER  = 9;
         if( ! $this->isNameSet() &&
             empty( $this->getArgumentCount()) &&
             ! $this->isBodySet() &&
@@ -94,9 +92,9 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         }
         $code = array_merge(
             $this->initCode(),
-            $this->setPropSetCode( $BEFORE ),
+            $this->getPropValueSetCode( ArgumentDto::BEFORE ),
             $this->getBody( $this->indent ),
-            $this->setPropSetCode( $AFTER ),
+            $this->getPropValueSetCode( ArgumentDto::AFTER ),
             $this->exitCode()
         );
         return Util::nullByteClean( $code );
@@ -163,30 +161,20 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
     }
 
     /**
-     * Produce (method) code setting property value from param (placed before/after opt body)
+     * Produce code setting class instance property value from (same named) param (placed before/after opt body)
      *
-     * Opt ReturnValue after body
+     * Opt ReturnValue after (and after body)
      *
      * @param int $firstLast   1=before, 9 = after, 0 = none
      * @return array
      */
-    private function setPropSetCode( $firstLast ) {
+    private function getPropValueSetCode( $firstLast ) {
         $code = [];
         foreach( $this->getArgumentIndex() as $argIx ) {
             $argumentDto = $this->getArgument( $argIx );
-            if( $firstLast != $argumentDto->getUpdClassProp()) {
-                continue;
+            if( $firstLast == $argumentDto->getUpdClassProp()) {
+                $code = array_merge( $code, ClassMethodFactory::renderPropValueSetCode( $argumentDto, $this ));
             }
-            $code = array_merge( $code,
-                AssignClauseMgr::init()
-                    ->setTarget(
-                        self::THIS_KW,
-                        $argumentDto->getName(),
-                        ( $argumentDto->isNextVarPropIndex() ? self::ARRAY2_T : null )
-                    )
-                    ->setSource( null, self::VARPREFIX . $argumentDto->getName() )
-                    ->toArray()
-            );
         }
         return $code;
     }
@@ -198,7 +186,13 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      */
     private function exitCode() {
         return array_merge(
-            ( $this->isReturnValueSet() ? $this->returnValue->toArray() : [] ),
+            (
+                $this->isReturnValueSet()
+                    ? $this->returnValue->setIndent( $this->getIndent())
+                           ->setBaseIndent( $this->getBaseIndent())
+                           ->toArray()
+                    : []
+            ),
             [ $this->baseIndent . self::$CODEBLOCKEND ]
         );
     }
@@ -217,10 +211,12 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
                 $this->varUses[] = $name;
                 break;
             case ( $name instanceof VarDto ) :
-                $this->varUses[] = ArgumentDto::factory( $name )->setByReference( (bool) $byReference );
+                $this->varUses[] = ArgumentDto::factory( $name )
+                    ->setByReference( (bool) $byReference );
                 break;
             case is_string( $name ) :
-                $this->varUses[] = ArgumentDto::factory( $name )->setByReference( (bool) $byReference );
+                $this->varUses[] = ArgumentDto::factory( $name )
+                    ->setByReference( (bool) $byReference );
                 break;
             default :
                 throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $name, true )));
@@ -234,18 +230,15 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      *
      * Each argument is a variable, an ArgumentDto, VarDto OR an array( VarDto/variable (, byReference ))
      *
-     * @param string|array $varUse
+     * @param array $varUse
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVarUse( $varUse = null ) {
+    public function setVarUse( array $varUse = null ) {
         static $CLOSUREUSE = 'closure use';
+        $this->varUses = [];
         if( null === $varUse ) {
-            $this->varUses = [];
             return $this;
-        }
-        if( ! is_array( $varUse )) {
-            $varUse = [ $varUse ];
         }
         foreach( $varUse as $argSet ) {
             switch( true ) {
@@ -255,10 +248,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
                 case ( $argSet instanceof ArgumentDto ) :
                     $this->addVarUse( $argSet );
                     break;
-                case ( $argSet instanceof VarDto ) :
-                    $this->addVarUse( ArgumentDto::factory( $argSet ));
-                    break;
-                case is_string( $argSet ) :
+                case (( $argSet instanceof VarDto ) || is_string( $argSet )) :
                     $this->addVarUse( ArgumentDto::factory( $argSet ));
                     break;
                 case ! is_array( $argSet ) :
@@ -267,13 +257,13 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
                 case ( $argSet[0] instanceof VarDto ) :
                     $this->addVarUse(
                         ArgumentDto::factory( $argSet[0] )
-                            ->setByReference( Util::getIfSet( $argSet, 1, self::BOOL_T, false ) )
+                            ->setByReference( Util::getIfSet( $argSet, 1, self::BOOL_T, false ))
                     );
                     break;
                 default :
                     $this->addVarUse(
                         ArgumentDto::factory( $argSet[0] )
-                            ->setByReference( Util::getIfSet( $argSet, 1, self::BOOL_T, false ) )
+                            ->setByReference( Util::getIfSet( $argSet, 1, self::BOOL_T, false ))
                     );
             } // end switch
         } // end foreach
@@ -305,7 +295,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         if( empty( $prefix ) && is_scalar( $source ) && ! is_string( $source )) {
             return $this->setReturnFixedValue( $source );
         }
-        $this->returnValue = ReturnClauseMgr::factory( $prefix, $source, $index );
+        $this->returnValue = ReturnClauseMgr::init( $this )
+            ->setSource( $prefix, $source, $index );
         return $this;
     }
 
@@ -318,7 +309,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      */
     public function setReturnFixedValue( $value ) {
         static $DOUBLE = 'double';
-        $this->returnValue = ReturnClauseMgr::init()->setFixedSourceValue( $value );
+        $this->returnValue = ReturnClauseMgr::init( $this )->setFixedSourceValue( $value );
         $valueType = gettype( $value );
         $this->setReturnType((( $DOUBLE == $valueType ) ? self::FLOAT_T : $valueType ));
         return $this;
