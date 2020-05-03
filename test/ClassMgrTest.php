@@ -316,8 +316,6 @@ class ClassMgrTest extends TestCase
     public function classMgrTest1( $case, array $properties, array $expected ) {
         $case += 10;
 
-        echo __FUNCTION__ . ' start ' . $case . PHP_EOL; // test ###
-
         $cm = ClassMgr::init( PHP_EOL, '    ' )
             ->setInterface()
             ->setTrait()

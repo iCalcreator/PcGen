@@ -52,11 +52,10 @@ class ClassMethodFactory implements PcGenInterface
         $TMPL3 = '__construct';
         return array_merge(
             DocBlockMgr::init( $classMgr )
-                ->setBaseIndent( $classMgr->getBaseIndent())
                 ->setSummary( sprintf( $TMPL1, $classMgr->getName(), $TMPL2 ))
                 ->toArray(),
-            FcnFrameMgr::init( $classMgr )->setName( $TMPL3 )
-                ->setBaseIndent( $classMgr->getBaseIndent())
+            FcnFrameMgr::init( $classMgr )
+                ->setName( $TMPL3 )
                 ->setReturnType( self::SELF_KW )
                 ->toArray()
         );
@@ -75,10 +74,8 @@ class ClassMethodFactory implements PcGenInterface
         static $INSTANCEINIT    = '$instance = new static();';
         static $RETURNINSTANCE  = 'return $instance;';
         $docBlock = DocBlockMgr::init( $classMgr )
-            ->setBaseIndent( $classMgr->getBaseIndent())
             ->setSummary( sprintf( $SUMMAY, $classMgr->getName(), $FACTORY ));
         $fcnMgr = FcnFrameMgr::init( $classMgr )
-            ->setBaseIndent( $classMgr->getBaseIndent())
             ->setStatic()
             ->setName( $FACTORY )
             ->setReturnType( self::SELF_KW );
@@ -109,45 +106,36 @@ class ClassMethodFactory implements PcGenInterface
     }
 
     /**
-     * Render property assign code
+     * Render class instance property assign code, using set-method or direct
      *
      * @param PropertyMgr $property
      * @param array       $code
      * @return void
      */
     private static function renderPropertyAssignSetCode( PropertyMgr $property, array &$code ) {
+        static $SP0 = '';
         static $INSTANCE = '$instance';
         static $SET = 'set';
         static $END = ';';
         $propName = $property->getVarDto()->getName();
+        $target   = EntityMgr::init( $property )
+            ->setClass( $INSTANCE )
+            ->setForceVarPrefix( false );
         if( $property->isMakeSetter() ) { // use property set-method
-            $row  = FcnInvokeMgr::init()
-                ->setIndent()
-                ->setBaseIndent()
-                ->setName(
-                    EntityMgr::init( $property )
-                        ->setClass( $INSTANCE )
-                        ->setVariable( $SET . ucfirst( $propName ))
-                        ->setForceVarPrefix( false )
-                )
+            $row  = FcnInvokeMgr::init( $property->getEol(), $SP0, $SP0 )
+                ->setName( $target->setVariable( $SET . ucfirst( $propName )))
                 ->addArgument( $propName )
                 ->toString();
             $code[] = rtrim( $row ) . $END;
             return;
         }
         // update class property direct, has no set-method
-        $code[] = AssignClauseMgr::init()
-            ->setIndent()
-            ->setBaseIndent()
-            ->setTarget(
-                EntityMgr::init( $property )
-                    ->setClass( $INSTANCE )
-                    ->setVariable( $propName )
-                    ->setForceVarPrefix( false )
-            )
-            ->setVariableSource( $propName )
-            ->toString();
-
+        $code = array_merge( $code,
+            AssignClauseMgr::init( $property->getEol(), $SP0, $SP0 )
+                ->setTarget( $target->setVariable( $propName ))
+                ->setVariableSource( $propName )
+                ->toArray()
+        );
     }
 
     /**
@@ -195,8 +183,7 @@ class ClassMethodFactory implements PcGenInterface
         static $FCNNAME    = 'is%sSet';
         static $NULLCODE   = 'return ( null !== $this->%s );';
         static $BOOLCODE   = 'return ( %s !== $this->%s );';
-        static $SCALARCODE = 'return ( %s != $this->%s );';
-        static $ARRAYCODE  = 'return ( [] != $this->%s );';
+        static $ARRAYCODE  = 'return ! empty( $this->%s );';
         $propName = $property->getVarDto()->getName();
         $varType  = $property->getVarDto()->getParamTagVarType();
         if( self::BOOL_T == $varType ) {
@@ -204,7 +191,7 @@ class ClassMethodFactory implements PcGenInterface
         }
         $initValue = $property->getVarDto()->getDefault();
         switch( true ) {
-            case ( null === $initValue ) :
+            case (( null === $initValue ) || ( self::NULL_T == $initValue )):
                 $val  = self::NULL_T;
                 $body = sprintf( $NULLCODE, $propName );
                 break;
@@ -213,14 +200,14 @@ class ClassMethodFactory implements PcGenInterface
                 $body = sprintf( $BOOLCODE, $val, $propName );
                 break;
             case is_scalar( $initValue ) :
-                $val  = Util::renderScalarValue( $initValue );
-                $body = sprintf( $SCALARCODE, $val, $propName );
+                $val  = self::NULL_T;
+                $body = sprintf( $NULLCODE, $propName );
                 break;
             default : // array
                 $val  = self::ARRAY2_T;
                 $body = sprintf( $ARRAYCODE, $propName );
                 break;
-        }
+        } // end switch
         $code = array_merge( $code,
             DocBlockMgr::init( $property )
                 ->setSummary( sprintf( $SUMMARY, $propName, $val ))
@@ -280,7 +267,6 @@ class ClassMethodFactory implements PcGenInterface
         $propName = $varDto->getName();
         $code = array_merge( $code,
             DocBlockMgr::init( $property )
-                ->setBaseIndent( $property->getBaseIndent())
                 ->setSummary( sprintf( $ADD1, $propName ))
                 ->setTag(
                     self::PARAM_T,
@@ -292,7 +278,6 @@ class ClassMethodFactory implements PcGenInterface
                 ->setTag( self::RETURN_T, self::STATIC_KW )
                 ->toArray(),
             FcnFrameMgr::init( $property )
-                ->setBaseIndent( $property->getBaseIndent())
                 ->setName( $ADD2 . ucfirst( $propName ))
                 ->addArgument(
                     ArgumentDto::factory( $varDto )
@@ -318,7 +303,6 @@ class ClassMethodFactory implements PcGenInterface
         $propName = $varDto->getName();
         $code     = array_merge( $code,
             DocBlockMgr::init( $property )
-                ->setBaseIndent( $property->getBaseIndent())
                 ->setSummary( ucfirst( $SET ) . $SP1 . $propName )
                 ->setTag( self::PARAM_T, $varDto->getParamTagVarType(), $propName )
                 ->setTag( self::RETURN_T, self::STATIC_KW )

@@ -199,13 +199,15 @@ class Util implements PcGenInterface
         if( ! is_scalar( $value )) {
             throw new RuntimeException( sprintf( BaseA::$ERRx, var_export( $value, true )));
         }
-        static $TRUE  = 'true';
-        static $FALSE = 'false';
-        static $DOT   = '.';
-        static $ZERO0 = '0.0';
-        static $SP0   = '';
-        static $ZERO  = '0';
-        static $QUOTE = '\'%s\'';
+        static $TRUE   = 'true';
+        static $FALSE  = 'false';
+        static $DOT    = '.';
+        static $ZERO0  = '0.0';
+        static $SP0    = '';
+        static $ZERO   = '0';
+        static $Q1     = '\'';
+        static $QUOTE1 = '\'%s\'';
+        static $QUOTE2 = '"%s"';
         switch( true ) {
             case is_bool( $value ) :
                 return $value ? $TRUE : $FALSE;
@@ -230,7 +232,8 @@ class Util implements PcGenInterface
                 }
                 break;
             default :
-                return sprintf( $QUOTE, $value );
+                $tmpl = ( false !== strpos( $value, $Q1 )) ? $QUOTE2 : $QUOTE1;
+                return sprintf( $tmpl, $value );
                 break;
         }
     }
