@@ -189,7 +189,7 @@ class VarDto implements PcGenInterface
      */
     public function hasTypeHintArraySpec( $phpVersion = null, & $typeHint = null ) {
         if( empty( $this->varType ) ||
-            ! is_string( $this->varType ) ||
+//          ! is_string( $this->varType ) ||
             ( self::ARRAY_T == $this->varType ) ||
             ( self::ARRAY2_T == $this->varType ) ||
             ( self::ARRAY2_T != substr( $this->varType, -2 ))) {
@@ -243,6 +243,8 @@ class VarDto implements PcGenInterface
     }
 
     /**
+     * Return bool true if the default value is array
+     *
      * @return bool
      */
     public function isDefaultArray() {
@@ -259,6 +261,8 @@ class VarDto implements PcGenInterface
     }
 
     /**
+     * Return bool true if the default value is typed array
+     *
      * @return bool
      */
     public function isDefaultTypedArray() {

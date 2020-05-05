@@ -95,6 +95,22 @@ class FcnFrameMgrTest extends TestCase
         ];
 
         $testData[] = [
+            342,
+            'arg342',
+            FcnFrameMgr::INT_T,
+            '342',
+            '$arg342 = 342'
+        ];
+
+        $testData[] = [
+            343,
+            'arg343',
+            FcnFrameMgr::STRING_T,
+            343,
+            '$arg343 = "343"'
+        ];
+
+        $testData[] = [
             35,
             'arg35',
             FcnFrameMgr::INT_T,
@@ -237,7 +253,15 @@ class FcnFrameMgrTest extends TestCase
             'arg53',
             FcnFrameMgr::STRING_T,
             'arg53',
-            '$arg53 = \'arg53\''
+            '$arg53 = "arg53"'
+        ];
+
+        $testData[] = [
+            54,
+            'arg54',
+            FcnFrameMgr::STRING_T,
+            '054',
+            '$arg54 = "054"'
         ];
 
         $testData[] = [
@@ -269,23 +293,63 @@ class FcnFrameMgrTest extends TestCase
             'arg614',
             FcnFrameMgr::ARRAY_T,
             [ true, false, 0, 1, -1, 1.1, -1.1, 'value614' ],
-            '$arg614 = [ true, false, 0, 1, -1, 1.1, -1.1, \'value614\', ]'
+            '$arg614 = [ true, false, 0, 1, -1, 1.1, -1.1, "value614", ]'
         ];
 
         $testData[] = [
             615,
             'arg615',
-            FcnFrameMgr::ARRAY_T,
-            [],
-            '$arg615 = []'
+            FcnFrameMgr::ARRAY_T,  // no spec but int content (NO octal)
+            [ '06151', '06152', '06153', ],
+            '$arg615 = [ 06151, 06152, 06153, ]'
         ];
 
         $testData[] = [
-            621,
-            'arg621',
+            616,
+            'arg616',
+            FcnFrameMgr::ARRAY_T, // no spec but octal int content
+            [ 06161, 06162, 06163, ],
+            '$arg616 = [ 3185, 3186, 3187, ]'
+        ];
+
+        $testData[] = [
+            617,
+            'arg617',
+            FcnFrameMgr::INTARRAY_T,  // spec as int, here octal
+            [ '06151', '06152', '06153', ],
+            '$arg617 = [ 06151, 06152, 06153, ]'
+        ];
+
+        $testData[] = [
+            618,
+            'arg618',
+            FcnFrameMgr::STRINGARRAY_T, // spec as string but octal int content, cast to int's
+            [ 06161, 06162, 06163, ],
+            '$arg618 = [ "3185", "3186", "3187", ]'
+        ];
+
+        $testData[] = [
+            619,
+            'arg619',
+            FcnFrameMgr::STRINGARRAY_T, // spec as string but octal int content
+            [ '0619' ],
+            '$arg619 = [ "0619", ]'
+        ];
+
+        $testData[] = [
+            620,
+            'arg620',
+            FcnFrameMgr::ARRAY_T,
+            [],
+            '$arg620 = []'
+        ];
+
+        $testData[] = [
+            620,
+            'arg620',
             FcnFrameMgr::ARRAY2_T,
             null,
-            '$arg621'
+            '$arg620'
         ];
 
         $testData[] = [

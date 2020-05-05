@@ -109,6 +109,7 @@ interface PcGenInterface
      */
 
     const CONST_            = 'const';
+    const FACTORY           = 'factory';
     const VARPREFIX         = '$';
 
 }

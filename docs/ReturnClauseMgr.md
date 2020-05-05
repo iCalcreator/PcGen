@@ -5,8 +5,8 @@
 The ```ReturnClauseMgr``` manages **return** code of 
 * source class property or variable (value), opt (int/variable) index
 * (scalar) fixedSourceValue
+* PHP expression
 * single function/method or chained invokes
-* (but not 'body' code)
 * ex ```return $this->property[32];```
 
 Note, return (result from) function/method invoke is managed by [VariableMgr]::setBody() (or [PropertyMgr]) and use of [FcnInvokeMgr]
@@ -52,6 +52,13 @@ Inherited [Common methods]
 
 ```ReturnClauseMgr::setFixedSourceValue( fixedSourceValue )```
 * ```fixedSourceValue``` _bool_|_int_|_float_|_string_, scalar
+* Return _static_
+* Throws InvalidException
+---
+
+```ReturnClauseMgr::setSourceExpression( expression )```
+* Set a PHP expression
+* ```expression``` _string_
 * Return _static_
 * Throws InvalidException
 ---

@@ -107,14 +107,14 @@ trait ArgumentTrait
             case ( null === $initValue ) :
                 $row .= $SPEQSP . BaseA::NULL_T;
                 break;
-            case ( is_string( $initValue ) && in_array( $initValue, VarDto::$ARRAYs, true )) :
+            case $argumentDto->isDefaultTypedArray() :
                 $row .= $SPEQSP . BaseA::ARRAY2_T;
                 break;
             case ( is_string( $initValue ) && ( BaseA::NULL_T == $initValue )) :
                 $row .= $SPEQSP . BaseA::NULL_T;
                 break;
             case is_scalar( $initValue ) :
-                $row .= $SPEQSP . Util::renderScalarValue( $initValue );
+                $row .= $SPEQSP . Util::renderScalarValue( $initValue, $argumentDto->getVarType());
                 break;
             case $argumentDto->isDefaultArray() :
                 $row .= $SPEQSP;
@@ -122,8 +122,9 @@ trait ArgumentTrait
                     $row .= BaseA::ARRAY2_T;
                     break;
                 }
+                $expType = $argumentDto->hasTypeHintArraySpec( null, $typeHint ) ? $typeHint : null;
                 foreach( $initValue as & $item ) {
-                    $item = Util::renderScalarValue( $item ) . BaseA::$COMMA . BaseA::$SP1;
+                    $item = Util::renderScalarValue( $item, $expType ) . BaseA::$COMMA . BaseA::$SP1;
                 }
                 $row .= $ARRSTART . implode( BaseA::$SP0, $initValue ) . $ARREND;
                 break;

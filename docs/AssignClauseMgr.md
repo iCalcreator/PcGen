@@ -8,11 +8,7 @@ The ```AssignClauseMgr``` manages the code assign
   * source class property or variable (value), opt (int/variable) index
   * (scalar) fixedSourceValue
   * single function/method or chained invokes
-  * (but not 'body' code)
-* the target and source (inner class) [EntityMgr] sets has
-  * ```class``` - one of null, self, $this, 'otherClass', '$class'
-  * ```variable``` - variable/property name
-  * ```index``` - opt array index
+  * PHP expression
 * default assign operator is ```=```
 * ex result ```$this->property = OtherClass::CONSTANT;```
 
@@ -99,6 +95,13 @@ Inherited [Common methods]
 ```AssignClauseMgr::setFixedSourceValue( fixedSourceValue )```
 * Set a fixed (scalar) source
 * ```fixedSourceValue``` _bool_|_int_|_float_|_string_, scalar
+* Return _static_
+* Throws InvalidException
+---
+
+```AssignClauseMgr::setSourceExpression( expression )```
+* Set a PHP expression
+* ```expression``` _string_
 * Return _static_
 * Throws InvalidException
 ---

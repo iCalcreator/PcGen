@@ -81,12 +81,21 @@ class ReturnClauseMgrTest extends TestCase
         ];
 
         $testData[] = [
+            //  6x    * null class + int as string
+            142,
+            null,
+            '008',
+            null,
+            '        return 008;'
+        ];
+
+        $testData[] = [
             //  6x    * null class + string
             15,
             null,
             'string15',
             null,
-            '        return \'string15\';'
+            '        return "string15";'
         ];
 
         $testData[] = [
@@ -481,6 +490,23 @@ class ReturnClauseMgrTest extends TestCase
     public function returnClauseMgrTest5() {
         $rcm = ReturnClauseMgr::init();
         $this->assertEquals( '[]', $rcm->setFixedSourceValue( '[]' )->getFixedSourceValue());
+    }
+
+    /**
+     * @test
+     */
+    public function returnClauseMgrTest6() {
+        $rcm = ReturnClauseMgr::init();
+        try {
+            $rcm->setSourceExpression( 123 );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+
+        $expression = 'array_rand( [ 1,2 ] )';
+        $this->assertEquals( $expression, $rcm->setSourceExpression( $expression )->getFixedSourceValue());
     }
 
     /**

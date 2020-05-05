@@ -110,6 +110,7 @@ final class ClassMgr extends BaseB
     public function __construct( $eol = null, $indent = null ) {
         parent::__construct( $eol, $indent );
         $this->targetType = self::$class;
+        $this->docBlock   = DocBlockMgr::init( $this );
     }
 
     /**
@@ -161,9 +162,6 @@ final class ClassMgr extends BaseB
         $TMPL4 = 'abstract ';
         $TMPL5 = ' extends ';
         $TMPL6 = ' implements ';
-        if( ! $this->isDocBlockSet()) {
-            $this->docBlock = DocBlockMgr::init( $this );
-        }
         $this->docBlock->setBaseIndent();
         if( ! $this->docBlock->isSummarySet()) {
             $this->docBlock->setSummary(ucfirst( $this->getTargetType()) . self::$SP1 . $this->getName());

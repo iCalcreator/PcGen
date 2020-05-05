@@ -42,6 +42,11 @@ abstract class BaseR1 extends BaseA
     protected $fixedSourceValue = null;
 
     /**
+     * @var bool   true if fixedSourceValue is a PHP expression
+     */
+    protected $isExpression = false;
+
+    /**
      * @var EntityMgr
      */
     protected $source = null;
@@ -79,7 +84,10 @@ abstract class BaseR1 extends BaseA
      * @return bool|float|int|string
      */
     public function getFixedSourceValue( $strict = true ) {
-        return $strict ? $this->fixedSourceValue : Util::renderScalarValue( $this->fixedSourceValue );
+        if( $strict || $this->isExpression ) {
+            return $this->fixedSourceValue;
+        }
+        return Util::renderScalarValue( $this->fixedSourceValue );
     }
 
     /**
@@ -99,6 +107,20 @@ abstract class BaseR1 extends BaseA
             throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $fixedSourceValue, true  )));
         }
         $this->fixedSourceValue = $fixedSourceValue;
+        $this->isExpression     = false;
+        return $this;
+    }
+
+    /**
+     * @param string $expression  any PHP expression
+     * @return static
+     */
+    public function setSourceExpression( $expression ) {
+        if( ! is_string( $expression )) {
+            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $expression, true  )));
+        }
+        $this->fixedSourceValue = rtrim( trim( $expression ), self::$END );
+        $this->isExpression     = true;
         return $this;
     }
 

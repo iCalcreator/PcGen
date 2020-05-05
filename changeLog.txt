@@ -1,4 +1,7 @@
 
+1.1.7 BaseR1, allow expression source
+1.1.6 Util::renderInitValue() upd
+1.1.5 ClassMgr::__construct() docBlock init
 
 1.1.4 ClassMethodFactory::renderIsPropertySetMethod() bug
 1.1.3 Util::renderScalarValue() quote bug

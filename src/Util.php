@@ -191,11 +191,12 @@ class Util implements PcGenInterface
     }
 
     /**
-     * @param bool|float|int|string
+     * @param bool|float|int|string $value
+     * @param string                $expType  (string?)
      * @return string
      * @throws RuntimeException
      */
-    public static function renderScalarValue( $value ) {
+    public static function renderScalarValue( $value, $expType = null ) {
         if( ! is_scalar( $value )) {
             throw new RuntimeException( sprintf( BaseA::$ERRx, var_export( $value, true )));
         }
@@ -205,34 +206,35 @@ class Util implements PcGenInterface
         static $ZERO0  = '0.0';
         static $SP0    = '';
         static $ZERO   = '0';
-        static $Q1     = '\'';
+        static $Q2     = '"';
         static $QUOTE1 = '\'%s\'';
         static $QUOTE2 = '"%s"';
         switch( true ) {
             case is_bool( $value ) :
                 return $value ? $TRUE : $FALSE;
                 break;
-            case Util::isInt( $value ) :
-                return (string)$value;
+            case ( Util::isInt( $value ) && ( self::STRING_T != $expType )) :
+                return (string) $value;
                 break;
             case Util::isFloat( $value ) :
                 switch( true ) {
                     case empty( $value ) :
-                        return $ZERO0;
+                        $value = $ZERO0;
                         break;
                     case ( 0.0001 > abs( $value )) :
                         // make float to string AND preserve fraction
                         $value     *= 1000000;
                         $precision = strlen( $value ) - strpos( $value, $DOT ) - 1 + 7;
-                        return rtrim( number_format( ( $value / 1000000 ), $precision, $DOT, $SP0 ), $ZERO );
+                        $value = rtrim( number_format( ( $value / 1000000 ), $precision, $DOT, $SP0 ), $ZERO );
                         break;
                     default :
                         $precision = strlen( $value ) - strpos( $value, $DOT ) - 1;
-                        return number_format( $value, $precision, $DOT, $SP0 );
+                        $value = number_format( $value, $precision, $DOT, $SP0 );
                 }
+                return ( self::STRING_T != $expType ) ? $value : sprintf( $QUOTE1, $value );
                 break;
             default :
-                $tmpl = ( false !== strpos( $value, $Q1 )) ? $QUOTE2 : $QUOTE1;
+                $tmpl = ( false !== strpos( $value, $Q2 )) ? $QUOTE1 : $QUOTE2;
                 return sprintf( $tmpl, $value );
                 break;
         }

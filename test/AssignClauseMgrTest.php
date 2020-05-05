@@ -580,7 +580,32 @@ class AssignClauseMgrTest extends TestCase
     /**
      * @test
      */
-    public function AssignClauseMgrTest6() {
+    public function returnClauseMgrTest6() {
+        $acm = AssignClauseMgr::init();
+        try {
+            $acm->setSourceExpression( 123 );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+
+        $expression = 'array_rand( [ 1,2 ] )';
+        $this->assertEquals( $expression, $acm->setSourceExpression( $expression )->getFixedSourceValue());
+
+        $acm->setVariableTarget( 'variable' )
+            ->setIndent()
+            ->setBaseIndent();
+        $this->assertEquals(
+            '$variable = array_rand( [ 1,2 ] );' . PHP_EOL,
+            $acm->toString()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function AssignClauseMgrTest7() {
         $acm = AssignClauseMgr::init();
         $this->assertEquals(
             AssignClauseMgr::SELF_KW,

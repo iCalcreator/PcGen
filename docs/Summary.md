@@ -37,12 +37,14 @@ For function/method invoke, opt with argument
 [AssignClauseMgr] assign target (variable/property) value from
 * variable/property value
 * (scalar) fixedSourceValue
+* PHP expression
 * constant
 * function/method invoke(s)
     
 [ReturnClauseMgr] manages function/method return of 
 * variable/property value
 * (scalar) fixedSourceValue
+* PHP expression
 * constant  
 * function/method invoke(s)
    

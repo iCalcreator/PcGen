@@ -126,7 +126,7 @@ class VariableMgrTest extends TestCase
             '        0,' . PHP_EOL .
             '        331,' . PHP_EOL .
             '        3.31,' . PHP_EOL .
-            '        \'three_dot_three_one\',' . PHP_EOL .
+            '        "three_dot_three_one",' . PHP_EOL .
             '    ];' . PHP_EOL;
         $output = $vm->setName( 'theVariableName331' )
             ->setStatic( true )
@@ -171,7 +171,7 @@ class VariableMgrTest extends TestCase
             ->setInitValue( 'test37' )
             ->toString();
         $this->assertEquals(
-            '    $theVariableName37 = \'test37\';' . PHP_EOL,
+            '    $theVariableName37 = "test37";' . PHP_EOL,
             $output,
             'test string, 37'
         );
@@ -255,7 +255,7 @@ class VariableMgrTest extends TestCase
             ->setName( 'constant5')
             ->setInitValue( 'constant5' )
             ->toString();
-        $exp    = '    const CONSTANT5 = \'constant5\';' . PHP_EOL;
+        $exp    = '    const CONSTANT5 = "constant5";' . PHP_EOL;
         $this->assertEquals( $exp, $output, 'error in ' . PHP_EOL . $exp );
         if( DISPLAYvm ) {
             echo __FUNCTION__ . ' : ' . PHP_EOL . $output . PHP_EOL;

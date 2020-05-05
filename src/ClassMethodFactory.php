@@ -68,16 +68,15 @@ class ClassMethodFactory implements PcGenInterface
      * @return array
      */
     public static function renderFactoryMethod( ClassMgr $classMgr ) {
-        static $SUMMAY  = 'Class %s %s method';
-        static $FACTORY = 'factory';
+        static $SUMMARY = 'Class %s %s method';
         static $RETURNNEWSTATIC = 'return new static();';
         static $INSTANCEINIT    = '$instance = new static();';
         static $RETURNINSTANCE  = 'return $instance;';
         $docBlock = DocBlockMgr::init( $classMgr )
-            ->setSummary( sprintf( $SUMMAY, $classMgr->getName(), $FACTORY ));
+            ->setSummary( sprintf( $SUMMARY, $classMgr->getName(), self::FACTORY ));
         $fcnMgr = FcnFrameMgr::init( $classMgr )
             ->setStatic()
-            ->setName( $FACTORY )
+            ->setName( self::FACTORY )
             ->setReturnType( self::SELF_KW );
         if( empty( $classMgr->getPropertyCount())) {
             $docBlock->setTag( self::RETURN_T, self::STATIC_KW );
@@ -112,7 +111,7 @@ class ClassMethodFactory implements PcGenInterface
      * @param array       $code
      * @return void
      */
-    private static function renderPropertyAssignSetCode( PropertyMgr $property, array &$code ) {
+    private static function renderPropertyAssignSetCode( PropertyMgr $property, array & $code ) {
         static $SP0 = '';
         static $INSTANCE = '$instance';
         static $SET = 'set';

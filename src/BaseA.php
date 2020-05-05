@@ -29,11 +29,6 @@ abstract class BaseA implements PcGenInterface
 {
 
     /**
-     * class constant
-     */
-    const FACTORY = 'factory';
-
-    /**
      * Default
      *
      * @var string

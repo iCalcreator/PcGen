@@ -137,7 +137,7 @@ class ClassMgrTest extends TestCase
                         VarDto::factory(
                             self::$prop . 7,
                             ClassMgr::ARRAY_T,
-                            [ true, false, 0, 1, -1, 1.1, -1.1, 'value614' ],
+                            [ true, false, 0, 1, -1, 1.1, -1.1, "value614" ],
                             7 . $SUMMARY . ClassMgr::ARRAY_T,
                             7 . $DESCRIPTION . ClassMgr::ARRAY_T . ' WITH getter/setter/argInFactory'
                         )
@@ -470,7 +470,7 @@ class ClassMgrTest extends TestCase
 
         foreach( $expected[0] as $expNo ) {  // test constants
             $this->assertTrue(
-                ( false !== strpos( $code, 'const PROP' . $expNo . ' = \'prop' . $expNo . '\'' )),
+                ( false !== strpos( $code, 'const PROP' . $expNo . ' = "prop' . $expNo . '"' )),
                 'Error in case ' . 'P1-' . $case . '-' . $expNo . PHP_EOL . $code
             );
             $this->assertTrue(

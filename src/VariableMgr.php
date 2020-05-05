@@ -210,10 +210,11 @@ class VariableMgr extends BaseC
      */
     private function renderInitValue( $row ) {
         $initValue = $this->varDto->getDefault();
+        $expType   = $this->varDto->getVarType();
         $code      = [];
         switch( true ) {
             case is_bool( $initValue ) || Util::isFloat( $initValue ) || Util::isInt( $initValue ) :
-                $initValue = Util::renderScalarValue( $initValue );
+                $initValue = Util::renderScalarValue( $initValue, $expType );
                 break;
             case $this->varDto->isDefaultTypedNull() :
                 $initValue = self::NULL_T;
@@ -222,15 +223,17 @@ class VariableMgr extends BaseC
                 $initValue = self::ARRAY2_T;
                 break;
             case $this->varDto->isDefaultArray() :
-                $code[] = $row . self::$ARRSTART;
-                foreach( $initValue as $value ){
-                    $code[] = $this->baseIndent . $this->indent . Util::renderScalarValue( $value ) . self::$COMMA;
+                $code[]  = $row . self::$ARRSTART;
+                $indent  = $this->baseIndent . $this->indent;
+                $expType = $this->varDto->hasTypeHintArraySpec( null, $typeHint ) ? $typeHint : null;
+                foreach( $initValue as $value ) {
+                    $code[] = $indent . Util::renderScalarValue( $value,$expType ) . self::$COMMA;
                 }
                 $code[] = $this->baseIndent . self::$ARREND . self::$CLOSECLAUSE;
                 return $code;
                 break;
             case is_string( $initValue ) :
-                $initValue = sprintf( self::$QUOTE, $initValue );
+                $initValue = Util::renderScalarValue( $initValue, $expType );
                 break;
             default :
                 $initValue = self::NULL_T;
