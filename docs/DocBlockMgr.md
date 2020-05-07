@@ -18,6 +18,7 @@ Inherited [Common methods]
 * ```tagText``` _string_
 * ```tagComment``` _string_
 * ```tagExt``` _string_
+* For eol and indents, defaults are used
 * Static
 * Return _static_
 ---

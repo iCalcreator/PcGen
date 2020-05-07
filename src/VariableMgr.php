@@ -203,12 +203,13 @@ class VariableMgr extends BaseC
     }
 
     /**
-     * Return array, fixed value
+     * Return array, fixed value. Assoc array with key, non-assoc without
      *
      * @param string $row
      * @return array
      */
     private function renderInitValue( $row ) {
+        static $KEYFMT = '"%s" => ';
         $initValue = $this->varDto->getDefault();
         $expType   = $this->varDto->getVarType();
         $code      = [];
@@ -226,8 +227,12 @@ class VariableMgr extends BaseC
                 $code[]  = $row . self::$ARRSTART;
                 $indent  = $this->baseIndent . $this->indent;
                 $expType = $this->varDto->hasTypeHintArraySpec( null, $typeHint ) ? $typeHint : null;
-                foreach( $initValue as $value ) {
-                    $code[] = $indent . Util::renderScalarValue( $value,$expType ) . self::$COMMA;
+                foreach( $initValue as $key => $value ) {
+                    $row = $indent;
+                    if( ! Util::isInt( $key )) {
+                        $row .= sprintf( $KEYFMT, $key );
+                    }
+                    $code[] = $row . Util::renderScalarValue( $value, $expType ) . self::$COMMA;
                 }
                 $code[] = $this->baseIndent . self::$ARREND . self::$CLOSECLAUSE;
                 return $code;

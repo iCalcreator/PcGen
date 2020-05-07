@@ -34,6 +34,7 @@ Inherited [Common methods]
   * uppercase is autodetected as CONSTANT
   * variable $-prefixed
 * ```sourceIndex```  _int_|_string_ opt array index
+* For eol and indents, defaults are used
 * Return static
 ---
 

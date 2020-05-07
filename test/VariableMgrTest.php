@@ -135,6 +135,19 @@ class VariableMgrTest extends TestCase
             ->toString();
         $this->assertEquals( $exp, $output, 'test array, 331' );
 
+        $arr = [ 'key1' => 'value1', 'key2' => 'value2', ];
+        $exp =
+            '    static $theVariableName332 = [' . PHP_EOL .
+            '        "key1" => "value1",' . PHP_EOL .
+            '        "key2" => "value2",' . PHP_EOL .
+            '    ];' . PHP_EOL;
+        $output = $vm->setName( 'theVariableName332' )
+            ->setStatic( true )
+            ->setVisibility()
+            ->setInitValue( $arr )
+            ->toString();
+        $this->assertEquals( $exp, $output, 'test array, 332' );
+
         if( DISPLAYvm ) {
             echo __FUNCTION__ . ' : ' . PHP_EOL . $output . PHP_EOL;
         }

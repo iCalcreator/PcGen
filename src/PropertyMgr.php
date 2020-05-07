@@ -57,6 +57,16 @@ final class PropertyMgr extends VariableMgr
     private $argInFactory = false;
 
     /**
+     * @param VariableMgr $variableMgr
+     * @return static
+     */
+    public function cloneFromParent( VariableMgr $variableMgr ) {
+        return $this->setVarDto( $variableMgr->getVarDto())
+            ->setStatic( $variableMgr->isStatic())
+            ->setVisibility( $variableMgr->getVisibility());
+    }
+
+    /**
      * @return bool
      */
     public function isMakeGetter() {

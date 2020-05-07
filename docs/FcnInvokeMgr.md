@@ -21,6 +21,7 @@ Inherited [Common methods]
   * convenient constants found in PcGenInterface
 * ```fcnName```   _string_, function/method name
 * ```arguments``` _array_, note ```FcnInvokeMgr::setArguments()``` below
+* For eol and indents, defaults are used
 * Static
 * Return _static_
 

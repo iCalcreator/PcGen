@@ -21,6 +21,7 @@ Inherited [Common methods]
 ```FcnFrameMgr::factory( name [, arguments ] )```
 * ```name```       _string_, function/method name
 * ```arguments``` _array_, note ```FcnFrameMgr::setArguments()``` below
+* For eol and indents, defaults are used
 * Static
 * Return _static_
 ---

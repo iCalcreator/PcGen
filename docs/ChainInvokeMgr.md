@@ -16,6 +16,9 @@ Inherited [Common methods]
 
 ```ChainInvokeMgr::factory( ...FcnInvoke )```
 * ```FcnInvoke``` any number of [FcnInvokeMgr]
+* For eol and indents, defaults are used
+* Return static
+* Throws InvalidArgumentException
 ---
 
 ```ChainInvokeMgr::toArray()```

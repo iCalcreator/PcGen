@@ -131,9 +131,9 @@ DocBlock is always set up up with
 ```ClassMgr::addProperty( varDto [, getter [, setter [, argInFactory ]]] )```
 * ```varDto``` [VarDto]
   * note *VarDto* below
-* ```getter``` _bool_, default true, directive to generate getter methods for property (below)
+* ```getter``` _bool_, default false, directive to generate getter methods for property (below)
   * if single array class property, _Iterator_ is implemented (below)
-* ```setter``` _bool_, default true, directive to generate setter method(s) for property (below)
+* ```setter``` _bool_, default false, directive to generate setter method(s) for property (below)
 * ```argInFactory``` _bool_, default false, directive to use property as argument and value set in class factory method
   * only if ```ClassMgr::setFactory( true )```
 * Return _static_
@@ -147,9 +147,9 @@ DocBlock is always set up up with
   * convenient constants found in PcGenInterface
 * ```summary``` _string__, default null
 * ```description``` _string|array_, default null
-* ```getter``` _bool_, default true, directive to generate getter methods for property (below)
+* ```getter``` _bool_, default false, directive to generate getter methods for property (below)
   * if single array class property, _Iterator_ is implemented (below)
-* ```setter``` _bool_, default true, directive to generate setter method(s) for property (below)
+* ```setter``` _bool_, default false, directive to generate setter method(s) for property (below)
 * ```argInFactory``` _bool_, default false, directive to use property as argument and value set in class factory method
   * only if ```ClassMgr::setFactory( true )```
 * Return _static_

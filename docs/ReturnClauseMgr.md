@@ -25,6 +25,7 @@ Inherited [Common methods]
   * uppercase is autodetected as CONSTANT
   * variable $-prefixed
 * ```index```  _int_|_string_ opt array index, if _string_, index will be $-prefixed 
+* For eol and indents, defaults are used
 * Return static
 * Throws InvalidException
 

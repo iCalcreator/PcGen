@@ -1,4 +1,9 @@
 
+1.1.11 VariableMgr::renderInitValue() assoc array keys
+1.1.10 ClassMgr::addProperty()+setProperties() changed defaults
+1.1.9  ClassMgr::defineProperties() const first
+1.1.8  PcGenInterface bug
+
 1.1.7 BaseR1, allow expression source
 1.1.6 Util::renderInitValue() upd
 1.1.5 ClassMgr::__construct() docBlock init

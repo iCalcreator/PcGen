@@ -25,6 +25,7 @@ Inherited [Common methods]
   * uppercase is autodetected as CONSTANT or use ```EntityMgr::setIsConst()``` below
   * variable will be $-prefixed
 * ```index```  _int_|_string_ opt array index
+* For eol and indents, defaults are used
 * Return static
 * Throws InvalidArgumentException
 ---

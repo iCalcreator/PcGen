@@ -51,7 +51,7 @@ class ClassMgrTest extends TestCase
                 [   // property set start
                     //     PropertyMgr
                     //         constant
-                    PropertyMgr::factory(
+                    1 => PropertyMgr::factory(
                         VarDto::factory(
                             self::$prop . 1,
                             ClassMgr::STRING_T,
@@ -64,7 +64,7 @@ class ClassMgrTest extends TestCase
 
                     //     PropertyMgr
                     //         static, int, set with getter/setter BUT NO getter/setter out
-                    PropertyMgr::factory(
+                    2 => PropertyMgr::factory(
                         self::$prop . 2,
                         ClassMgr::INT_T,
                         null,
@@ -79,7 +79,7 @@ class ClassMgrTest extends TestCase
 
                 //     PropertyMgr
                 //         static, int, without getter/setter
-                    PropertyMgr::factory(
+                    3 => PropertyMgr::factory(
                         VarDto::factory(
                         self::$prop . 3,
                         ClassMgr::INT_T,
@@ -93,7 +93,7 @@ class ClassMgrTest extends TestCase
 
                 //     PropertyMgr
                 //         'public' : float : with getter/setter AND argInfactory
-                    PropertyMgr::factory(
+                    4 => PropertyMgr::factory(
                         self::$prop . 4,
                         ClassMgr::FLOAT_T,
                         PropertyMgr::NULL_T,
@@ -106,7 +106,7 @@ class ClassMgrTest extends TestCase
 
                 //     PropertyMgr
                 //         'public' : float : with getter/setter AND argInfactory
-                    PropertyMgr::factory(
+                    5 => PropertyMgr::factory(
                         VarDto::factory(
                             self::$prop . 5,
                             ClassMgr::FLOAT_T,
@@ -121,7 +121,7 @@ class ClassMgrTest extends TestCase
 
                 //     PropertyMgr
                 //         'public' : array : with getter/setter AND argInfactory
-                    PropertyMgr::factory(
+                    6 => PropertyMgr::factory(
                         self::$prop . 6,
                         ClassMgr::ARRAY_T,
                         [],
@@ -133,7 +133,7 @@ class ClassMgrTest extends TestCase
                 //     PropertyMgr
                 //         'public' : array : without getter/setter and argInfactory
                     //     same array test as in fcnFrameMgrTest1, case 614
-                    PropertyMgr::factory(
+                    7 => PropertyMgr::factory(
                         VarDto::factory(
                             self::$prop . 7,
                             ClassMgr::ARRAY_T,
@@ -143,13 +143,24 @@ class ClassMgrTest extends TestCase
                         )
                     )
                         ->setArgInFactory( true ),
+                    //         constant
+                    8 => PropertyMgr::factory(
+                        VarDto::factory(
+                            self::$prop . 8,
+                            ClassMgr::STRING_T,
+                            '' . self::$prop . '8',
+                            8 . $SUMMARY . ClassMgr::CONST_ . 'ant',
+                            8 . $DESCRIPTION . ClassMgr::CONST_ . 'ant'
+                        )
+                    )
+                        ->setIsConst(),
             ],  // property set end
             [
-                [ 1 ],     // constants
-                [ 2, 3 ],  // static
+                [ 1, 8 ],     // constants
+                [ 2, 3 ],     // static
                 [ 4, 5, 6, 7 ],  // public with methods
-                [ ],  // public without methods
-                [ 1, 2, 3, 4, 5, 6, 7 ] // all
+                [ ],          // public without methods
+                [ 1, 2, 3, 4, 5, 6, 7, 8 ] // all
             ],
         ]; // test set 1 end
 
@@ -157,23 +168,23 @@ class ClassMgrTest extends TestCase
             3,
             [   // property set start
                 //     3 : VarDto
-                //         'public' : float with getter/setter, NO argInFactory
-                VarDto::factory(
+                //         'public' : float without getter/setter...
+                4 => VarDto::factory(
                     self::$prop . 4,
                     ClassMgr::FLOAT_T,
                     PropertyMgr::NULL_T,
                     4 . $SUMMARY . ClassMgr::FLOAT_T,
-                    4 . $DESCRIPTION . ClassMgr::FLOAT_T . ' NO argInFactory'
+                    4 . $DESCRIPTION . ClassMgr::FLOAT_T
                 ),
 
                 //     3 : VarDto
-                //         'public' string[], array : with getter/setter, NO argInFactory
-                VarDto::factory(
+                //         'public' string[], array : with getter/setter
+                6 => VarDto::factory(
                     self::$prop . 6,
                     ClassMgr::CALLABLEARRAY_T,
                     null,
                     6 . $SUMMARY . ClassMgr::CALLABLEARRAY_T,
-                    6 . $DESCRIPTION . ClassMgr::CALLABLEARRAY_T . ' NO argInFactory'
+                    6 . $DESCRIPTION . ClassMgr::CALLABLEARRAY_T
                 )
             ],
             [
@@ -190,11 +201,11 @@ class ClassMgrTest extends TestCase
             [   // property set start
                 //     4 : variable
                 //         'public' : ???? : with getter/setter
-                self::$prop . 4,
+                4 => self::$prop . 4,
 
                 //     4 : VarDto
                 //         'public' : ????  : with getter/setter
-                self::$prop . 6,
+                6 => self::$prop . 6,
             ],
             [
                 [],     // constants
@@ -210,7 +221,7 @@ class ClassMgrTest extends TestCase
             [   // property set start
                 //     6 :_ array( VarDto, getter, setter )
                 //         'public' : float,  : with getter/setter (default)
-                [
+                4 => [
                     VarDto::factory(
                         self::$prop . 4,
                         ClassMgr::FLOAT_T,
@@ -218,11 +229,10 @@ class ClassMgrTest extends TestCase
                         4 . $SUMMARY . ClassMgr::FLOAT_T,
                         4 . $DESCRIPTION . ClassMgr::FLOAT_T
                     )
-
                 ],
                 //     6 :_ array( VarDto, getter, setter )
                 //         'public'int : with getter/setter
-                [
+                5 => [
                     VarDto::factory(
                         self::$prop . 5,
                         ClassMgr::FLOAT_T,
@@ -233,7 +243,7 @@ class ClassMgrTest extends TestCase
                 ],
                 //     6 :_ array( VarDto, getter, setter )
                 //         'public' array : without getter/setter
-                [
+                6 => [
                     VarDto::factory(
                         self::$prop . 6,
                         ClassMgr::ARRAY_T,
@@ -244,7 +254,7 @@ class ClassMgrTest extends TestCase
                 ],
                 //     6 :_ array( VarDto, getter, setter )
                 //         'public' : array : without getter/setter
-                    PropertyMgr::factory(
+                7 => PropertyMgr::factory(
                         VarDto::factory(
                             self::$prop . 7,
                             ClassMgr::ARRAY_T,
@@ -274,7 +284,7 @@ class ClassMgrTest extends TestCase
                 //         'public' : string, int, float, array : with/without getter/setter
                 //     7 : array( variable, varType, default, summary, description, getter, setter )
                 //         'public' : float,  : with getter/setter (default)
-                [
+                4 => [
                     self::$prop . 4,
                     ClassMgr::FLOAT_T,
                     PropertyMgr::NULL_T,
@@ -315,6 +325,36 @@ class ClassMgrTest extends TestCase
      */
     public function classMgrTest1( $case, array $properties, array $expected ) {
         $case += 10;
+        foreach( $properties as $pIx => $propArg ) {
+            if( ! in_array( $pIx, $expected[2] )) // force private property and public methods
+                continue;
+            switch( true ) {
+                case is_string( $propArg ) :
+                    $properties[ $pIx ] = [ $propArg, null, null, null, null, true, true, true ];
+                    break;
+                case ( $propArg instanceof VarDto ) :
+                    $properties[$pIx]    = [ $propArg ];
+                    $properties[$pIx][1] = true;
+                    $properties[$pIx][2] = true;
+                    $properties[$pIx][3] = true;
+                    break;
+                case ( is_array( $propArg ) && ( $propArg[0] instanceof VariableMgr )) :
+                    $properties[$pIx][1] = true;
+                    $properties[$pIx][2] = true;
+                    $properties[$pIx][3] = true;
+                    break;
+                case ( is_array( $propArg ) && ( $propArg[0] instanceof VarDto )) :
+                    $properties[$pIx][1] = true;
+                    $properties[$pIx][2] = true;
+                    $properties[$pIx][3] = true;
+                    break;
+                case is_array( $propArg ) :
+                    $properties[$pIx][5] = true;
+                    $properties[$pIx][6] = true;
+                    $properties[$pIx][7] = true;
+                    break;
+            }
+        }
 
         $cm = ClassMgr::init( PHP_EOL, '    ' )
             ->setInterface()
@@ -390,8 +430,31 @@ class ClassMgrTest extends TestCase
         $cm->addUse( self::$use2 );             // no dupls
         $cm->addImplement( self::$interface2 ); // no dupls
 
-        foreach( $properties as $property ) {
-            $cm->addProperty( $property );
+        foreach( $properties as $pIx => $propArg ) {
+            if( ! in_array( $pIx, $expected[2] )) { // force private property and public methods
+                $cm->addProperty( $propArg );
+                continue;
+            }
+            switch( true ) {
+                case ( $propArg instanceof VarDto ) :
+                    $cm->addProperty( $propArg, true, true, true );
+                    break;
+                case is_string( $propArg ) :
+                    $cm->addProperty( $propArg, null, null, null, null, true, true, true );
+                    break;
+                case ( is_array( $propArg ) && ( $propArg[0] instanceof VariableMgr )) :
+                    $cm->addProperty( $propArg[0], true, true, true  );
+                    break;
+                case ( is_array( $propArg ) && ( $propArg[0] instanceof VarDto )) :
+                    $cm->addProperty( $propArg[0], true, true, true  );
+                    break;
+                case is_array( $propArg ) :
+                    $propArg = array_pad( $propArg, 5, null );
+                    $cm->addProperty( $propArg[0], $propArg[1], $propArg[2], $propArg[3], $propArg[4], true, true, true  );
+                    break;
+                default :
+                    $cm->addProperty( $propArg );
+            }
         }
         $this->classMgrTest1Tester( $case, $cm->toString(), $expected );
     }

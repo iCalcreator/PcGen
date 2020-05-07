@@ -28,6 +28,7 @@ Inherited [Common methods]
 * ```default```, _mixed_, the argument value if null
 * ```summary``` _string_
 * ```description``` _string_|_array
+* For eol and indents, defaults are used
 * Return static
 * Throws InvalidArgumentException
 ---
@@ -68,7 +69,8 @@ Inherited [Common methods]
 ---
 
 ```VariableMgr::setInitValue( value )```
-* ```value``` _mixed_, (aka default) variable/property init PHP primitive or array value
+* ```value``` _mixed_, variable/property init (or default) PHP primitive or array value
+  * assoc array are produced with keys and values, non assoc not
 * Return _static_
 ---
 
