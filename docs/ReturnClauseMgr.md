@@ -88,6 +88,7 @@ Inherited [Common methods]
 
 
 ```ReturnClauseMgr::setSourceIsConst( isConst )```
+ * Results in uppercase constant
 * ```isConst``` _bool_
   * true : force ```$class::CONSTANT```
   * false : NOT, (default) ```$class->$constant``` 
@@ -95,6 +96,7 @@ Inherited [Common methods]
 
 
 ```ReturnClauseMgr::setSourceIsStatic( isStatic )```
+ * Results in uppercase constant
 * ```isConst``` _bool_
   * true : force ```$class::variable```
   * false : NOT, default, ```$class->$variable``` 

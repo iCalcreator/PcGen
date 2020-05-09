@@ -163,7 +163,7 @@ abstract class BaseR1 extends BaseA
                     $this->source->setIndex( $index );
                 }
                 break;
-            case ( is_scalar( $variable ) && ! Util::isConstant( $variable ) && ! Util::isVarPrefixed( $variable )) :
+            case ( is_scalar( $variable ) && ! Util::isVarPrefixed( $variable )) :
                 // and empty class
                 $this->setFixedSourceValue( $variable );
                 break;

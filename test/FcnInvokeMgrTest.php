@@ -249,6 +249,18 @@ class FcnInvokeMgrTest extends TestCase
     /**
      * @test
      */
+    public function FcnInvokeMgrTest35() {
+        $this->assertEquals(
+            '$class->method()' . PHP_EOL,
+            FcnInvokeMgr::factory( null, 'method' )
+                ->setClass( '$class' )
+                ->toString()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function FcnInvokeMgrTest36() {
         $this->assertEquals(
             '$class->method()' . PHP_EOL,

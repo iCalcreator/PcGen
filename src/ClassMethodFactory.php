@@ -56,7 +56,6 @@ class ClassMethodFactory implements PcGenInterface
                 ->toArray(),
             FcnFrameMgr::init( $classMgr )
                 ->setName( $TMPL3 )
-                ->setReturnType( self::SELF_KW )
                 ->toArray()
         );
     }

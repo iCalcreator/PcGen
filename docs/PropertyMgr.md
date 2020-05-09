@@ -61,6 +61,7 @@ Inherited [VariableMgr] methods
 ```PropertyMgr::setIsConst( const )```
 
  * ```const``` _bool_, true : constant, false : no constant, default 
+ * Results in uppercase constant
  * Note, if true, makeGetter/makeSetter alters to false, visibility to _PUBLIC_
  * if required, use the ```setVisibility()```-method after this one
  * Return _static_

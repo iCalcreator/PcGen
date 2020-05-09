@@ -93,7 +93,7 @@ class AssignClauseMgrTest extends TestCase
             null,
             'CONSTANT16',
             null,
-            'CONSTANT16;'
+            '"CONSTANT16";'
         ];
 
         $testData[] = [
@@ -139,7 +139,7 @@ class AssignClauseMgrTest extends TestCase
             AssignClauseMgr::SELF_KW,
             'CONSTANT21',
             null,
-            'self::CONSTANT21;'
+            'self::$CONSTANT21;'
         ];
 
         $testData[] = [
@@ -148,7 +148,7 @@ class AssignClauseMgrTest extends TestCase
             AssignClauseMgr::SELF_KW,
             'CONSTANT22',
             0,
-            'self::CONSTANT22[0];'
+            'self::$CONSTANT22[0];'
         ];
 
         $testData[] = [
@@ -220,7 +220,7 @@ class AssignClauseMgrTest extends TestCase
             AssignClauseMgr::class,
             'CONSTANT61',
             null,
-            AssignClauseMgr::class . '::CONSTANT61;'
+            AssignClauseMgr::class . '::$CONSTANT61;'
         ];
 
         $testData[] = [
@@ -229,7 +229,7 @@ class AssignClauseMgrTest extends TestCase
             AssignClauseMgr::class,
             'CONSTANT62',
             62,
-            AssignClauseMgr::class . '::CONSTANT62[62];'
+            AssignClauseMgr::class . '::$CONSTANT62[62];'
         ];
 
         $testData[] = [
@@ -238,7 +238,7 @@ class AssignClauseMgrTest extends TestCase
             AssignClauseMgr::class,
             'CONSTANT63',
             'pos63',
-            AssignClauseMgr::class . '::CONSTANT63[$pos63];'
+            AssignClauseMgr::class . '::$CONSTANT63[$pos63];'
         ];
 
         $testData[] = [
@@ -265,7 +265,7 @@ class AssignClauseMgrTest extends TestCase
             '$class73',
             'CONSTANT73',
             null,
-            '$class73::CONSTANT73;'
+            '$class73->CONSTANT73;'
         ];
 
         $testData[] = [
@@ -274,7 +274,7 @@ class AssignClauseMgrTest extends TestCase
             '$class74',
             'CONSTANT74',
             'seventyfour',
-            '$class74::CONSTANT74[$seventyfour];'
+            '$class74->CONSTANT74[$seventyfour];'
         ];
 
         $testData[] = [

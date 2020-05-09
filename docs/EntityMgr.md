@@ -22,7 +22,7 @@ Inherited [Common methods]
 * ```class``` _string_ one of null, self, $this, 'otherClass', '$class'
   * convenient constants found in PcGenInterface 
 * ```variable``` _string_ constant/variable/property name
-  * uppercase is autodetected as CONSTANT or use ```EntityMgr::setIsConst()``` below
+  * for CONSTANT use ```EntityMgr::setIsConst()``` below
   * variable will be $-prefixed
 * ```index```  _int_|_string_ opt array index
 * For eol and indents, defaults are used
@@ -55,7 +55,7 @@ Inherited [Common methods]
 
 ```EntityMgr::setVariable( variable )```
 * ```variable``` _string_ constant/variable/property name
-  * uppercase is autodetected as CONSTANT or use ```EntityMgr::setIsConst()``` below
+  * for CONSTANT use ```EntityMgr::setIsConst()``` below
   * variable will be $-prefixed
 * Return _static_
 * Throws InvalidArgumentException
@@ -71,6 +71,7 @@ Inherited [Common methods]
 ---
 
 ```EntityMgr::setIsConst( const )```
+* Results in uppercase constant
 * ```const``` _bool_, true : constant, false : NOT, default 
 * Return _static_
 ---

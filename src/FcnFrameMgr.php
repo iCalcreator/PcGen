@@ -226,7 +226,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
     }
 
     /**
-     * String closure use string|array of closure use variable variable(s)
+     * String closure use string|array, closure use variable variable(s)
      *
      * Each argument is a variable, an ArgumentDto, VarDto OR an array( VarDto/variable (, byReference ))
      *
@@ -285,7 +285,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
     }
 
     /**
-     * @param string     $prefix null, 'self', 'static', 'this', fqcn, '$class'
+     * @param string     $prefix null, 'parent', 'self', 'static', 'this', fqcn, '$class'
      * @param mixed      $source int, float, string, '$name', constant
      * @param int|string $index  int, string (array index)
      * @return static

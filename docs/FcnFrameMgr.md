@@ -6,7 +6,7 @@ The ```FcnFrameMgr``` class manages PHP function/method/closure frame (shell) co
 * arguments, closures use variables
 * method property(/variable) set code
 * input of body (logic)
-* method return (this, self, constant, property, variable, scalar) code
+* method return (this, parent, self, constant, property, variable, scalar) code
 * default visibility is ```PUBLIC```  
 
 Note, invoke of functions/methods is managed by [FcnInvokeMgr]/[ChainInvokeMgr]
@@ -142,9 +142,9 @@ Inherited [Common methods]
 
 ```FcnFrameMgr::setReturnValue( class [, source [, index ]] )```
 * Set directive for method/function end-up return code, aliases below
-* ```class``` _string_ one of null, 'self', 'static', 'this', fqcn, '$class'
+* ```class``` _string_ one of null, 'parent', 'self', 'static', 'this', fqcn, '$class'
   * Convenient constants found in PcGenInterface
-* ```source``` _string_  (if CONSTANT, uppercase char)
+* ```source``` _string_
 * ```index``` _int_|string_ array index
 * Return _static_
 * Throws InvalidArgumentException

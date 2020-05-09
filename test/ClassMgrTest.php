@@ -156,10 +156,10 @@ class ClassMgrTest extends TestCase
                         ->setIsConst(),
             ],  // property set end
             [
-                [ 1, 8 ],     // constants
-                [ 2, 3 ],     // static
-                [ 4, 5, 6, 7 ],  // public with methods
-                [ ],          // public without methods
+                [ 1, 8 ],       // constants
+                [ 2, 3 ],       // static
+                [ 4, 5, 6, 7 ], // public with methods
+                [ ],            // public without methods
                 [ 1, 2, 3, 4, 5, 6, 7, 8 ] // all
             ],
         ]; // test set 1 end
@@ -188,11 +188,11 @@ class ClassMgrTest extends TestCase
                 )
             ],
             [
-                [],     // constants
-                [],  // static
-                [ 4, 6 ],  // public with methods
-                [],  // public without methods
-                [ 4, 6 ] // all
+                [],       // constants
+                [],       // static
+                [ 4, 6 ], // public with methods
+                [],       // public without methods
+                [ 4, 6 ]  // all
             ],
         ]; // test set 3 end
 

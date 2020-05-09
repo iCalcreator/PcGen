@@ -64,6 +64,7 @@ interface PcGenInterface
     const FALSE_KW          = 'false';
     const MIXED_KW          = 'mixed';
     const OBJECT_KW         = 'object';    // also PHP 7.2 varType hint
+    const PARENT_KW         = 'parent';
     const SELF_KW           = 'self';      // also PHP 5.0 varType hint
     const STATIC_KW         = 'static';
     const THIS_KW           = '$this';
@@ -107,7 +108,6 @@ interface PcGenInterface
     /**
      * Misc
      */
-
     const CONST_            = 'const';
     const FACTORY           = 'factory';
     const VARPREFIX         = '$';

@@ -1,4 +1,8 @@
 
+1.1.14 upd docs
+1.1.13 autodetect constant removed, EntityMgr, BaseR1::setSource()
+1.1.12 add constant parent
+
 1.1.11 VariableMgr::renderInitValue() assoc array keys
 1.1.10 ClassMgr::addProperty()+setProperties() changed defaults
 1.1.9  ClassMgr::defineProperties() const first

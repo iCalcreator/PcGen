@@ -12,12 +12,13 @@ Chained invokes manages by [ChainInvokeMgr].
 ###### FcnInvokeMgr Methods
 
 ---
+
 Inherited [Common methods]
 
 ---
 
 ```FcnInvokeMgr::factory( class [, fcnName [, arguments ]] )```
-* ```class``` _string_ one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
+* ```class``` _string_ one of ```null```, ```parent```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
   * convenient constants found in PcGenInterface
 * ```fcnName```   _string_, function/method name
 * ```arguments``` _array_, note ```FcnInvokeMgr::setArguments()``` below
@@ -45,7 +46,7 @@ Inherited [Common methods]
 ```FcnInvokeMgr::setName( class [, fcnName ] )```
 * The function/method name
 * ```class``` _string_
-  * one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
+  * one of ```null```, ```parent```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
   * convenient constants found in PcGenInterface
 * ```fcnName```  _string_, function/method name
 * Return _static_
@@ -108,7 +109,7 @@ _ArgumentDto_ instance creation ([ArgumentDto])<br><br>
 
 _EntityMgr_ instance creation ([EntityMgr])<br><br>
 ```EntityMgr::factory( class , fcnName )```
-* ```class```, _string_, one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
+* ```class```, _string_, one of ```null```, ```parent```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
   * convenient constants found in PcGenInterface
 * ```fcnName``` _string_, the name
 

@@ -104,7 +104,7 @@ class ReturnClauseMgrTest extends TestCase
             null,
             'CONSTANT16',
             null,
-            '        return CONSTANT16;'
+            '        return "CONSTANT16";'
         ];
 
         $testData[] = [
@@ -150,7 +150,7 @@ class ReturnClauseMgrTest extends TestCase
             ReturnClauseMgr::SELF_KW,
             'CONSTANT21',
             null,
-            '        return self::CONSTANT21;'
+            '        return self::$CONSTANT21;'
         ];
 
         $testData[] = [
@@ -159,7 +159,7 @@ class ReturnClauseMgrTest extends TestCase
             ReturnClauseMgr::SELF_KW,
             'CONSTANT22',
             0,
-            '        return self::CONSTANT22[0];'
+            '        return self::$CONSTANT22[0];'
         ];
 
         $testData[] = [
@@ -231,7 +231,7 @@ class ReturnClauseMgrTest extends TestCase
             ReturnClauseMgr::class,
             'CONSTANT61',
             null,
-            '        return ' . ReturnClauseMgr::class . '::CONSTANT61;'
+            '        return ' . ReturnClauseMgr::class . '::$CONSTANT61;'
         ];
 
         $testData[] = [
@@ -240,7 +240,7 @@ class ReturnClauseMgrTest extends TestCase
             ReturnClauseMgr::class,
             'CONSTANT62',
             62,
-            '        return ' . ReturnClauseMgr::class . '::CONSTANT62[62];'
+            '        return ' . ReturnClauseMgr::class . '::$CONSTANT62[62];'
         ];
 
         $testData[] = [
@@ -249,7 +249,7 @@ class ReturnClauseMgrTest extends TestCase
             ReturnClauseMgr::class,
             'CONSTANT63',
             'pos63',
-            '        return ' . ReturnClauseMgr::class . '::CONSTANT63[$pos63];'
+            '        return ' . ReturnClauseMgr::class . '::$CONSTANT63[$pos63];'
         ];
 
         $testData[] = [
@@ -276,7 +276,7 @@ class ReturnClauseMgrTest extends TestCase
             '$class73',
             'CONSTANT73',
             null,
-            '        return $class73::CONSTANT73;'
+            '        return $class73->CONSTANT73;'
         ];
 
         $testData[] = [
@@ -285,7 +285,7 @@ class ReturnClauseMgrTest extends TestCase
             '$class74',
             'CONSTANT74',
             'seventyfour',
-            '        return $class74::CONSTANT74[$seventyfour];'
+            '        return $class74->CONSTANT74[$seventyfour];'
         ];
 
         $testData[] = [

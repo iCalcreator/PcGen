@@ -47,7 +47,7 @@ final class FcnInvokeMgr extends BaseA
     private $name = null;
 
     /**
-     * @param EntityMgr|string $class  string : one of null, self, $this, 'otherClass', '$class'
+     * @param EntityMgr|string $class  string : one of null, parent, self, $this, 'otherClass', '$class'
      * @param string           $fcnName
      * @param array            $arguments
      * @return static
@@ -90,7 +90,7 @@ final class FcnInvokeMgr extends BaseA
     }
 
     /**
-     * @param EntityMgr|string $class  string : one of null, self, $this, 'otherClass', '$class'
+     * @param EntityMgr|string $class  string : one of null, parent, self, $this, 'otherClass', '$class'
      * @param string           $fcnName
      * @return static
      * @throws InvalidArgumentException
@@ -120,7 +120,7 @@ final class FcnInvokeMgr extends BaseA
     }
 
     /**
-     * Set method class, only $this or '$class' allowed
+     * Set method class
      *
      * @param string $class
      * @return static

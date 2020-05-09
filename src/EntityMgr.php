@@ -29,11 +29,10 @@ use InvalidArgumentException;
  * Class EntityMgr
  *
  * Manages PHP entities
- *     class  : null, self, this, 'otherClass', '$class'
+ *     class  : null, parent, self, this, 'otherClass', '$class'
  *     variable : variable/property
  *     index   : opt array index
  * Ex: $var, self::$var, $this->var, fqcn::$var, opt $var[]
- * Note, uppercase variable (not $SUBJECT) are autodetected as CONSTANT
  *
  * @package Kigkonsult\PcGen\Rows
  */
@@ -43,10 +42,10 @@ final class EntityMgr extends BaseA
     /**
      * @var array
      */
-    public static $CLASSPREFIXes = [ self::SELF_KW, self::THIS_KW ];
+    public static $CLASSPREFIXes = [ self::PARENT_KW, self::SELF_KW, self::THIS_KW ];
 
     /**
-     * Values : null, self, $this, 'otherClass', '$class'
+     * Values : null, parent, self, $this, 'otherClass', '$class'
      *
      * @var string
      */
@@ -166,7 +165,7 @@ final class EntityMgr extends BaseA
                 $this->index = null;
                 break;
 
-            case ( $this->isConst ) :
+            case $this->isConst :
                 if( ! empty( $this->class )) {
                     $row .= $COLONCOLON;
                 }
@@ -178,7 +177,7 @@ final class EntityMgr extends BaseA
             case empty( $this->class ) :
                 $row .= $this->fixVariablePrefix( $this->forceVarPrefix );
                 break;
-            case ( self::SELF_KW == $this->class ) : // always static property
+            case in_array( $this->class, [ self::PARENT_KW, self::SELF_KW ]) : // always static property
                 $row .= $COLONCOLON;
                 $row .= $this->fixVariablePrefix( $this->forceVarPrefix );
                 break;
@@ -276,7 +275,7 @@ final class EntityMgr extends BaseA
     }
 
     /**
-     * Set variable, note, uppercase subjects are autodetected as CONSTANTs
+     * Set variable
      *
      * @param string $variable
      * @return static
@@ -287,9 +286,6 @@ final class EntityMgr extends BaseA
             throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $variable, true )));
         }
         Assert::assertPhpVar( $variable );
-        if( Util::isConstant( $variable ) ) {
-            $this->setIsConst( true );
-        }
         $this->variable = $variable;
         return $this;
     }

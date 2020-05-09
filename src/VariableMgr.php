@@ -31,7 +31,7 @@ use RuntimeException;
 /**
  * Class VariableMgr
  *
- * Manages variables and it's assign of value, 1. body (i.e. closure), 2. callback, 3. PHP primitive value (incl array)
+ * Manages variables and init/define of value, 1. body (i.e. closure), 2. callback, 3. PHP primitive value (incl array)
  *
  * @package Kigkonsult\PcGen
  */
@@ -203,7 +203,7 @@ class VariableMgr extends BaseC
     }
 
     /**
-     * Return array, fixed value. Assoc array with key, non-assoc without
+     * Return rendered fixed value. Assoc array with key, non-assoc without
      *
      * @param string $row
      * @return array
@@ -266,7 +266,7 @@ class VariableMgr extends BaseC
     }
 
     /**
-     * Set name, note, uppercase subjects are autodetected as CONSTANTs
+     * Set varable name
      *
      * @param string $name
      * @return static
@@ -274,9 +274,6 @@ class VariableMgr extends BaseC
      */
     public function setName( $name ) {
         $this->varDto->setName( $name );
-        if( Util::isConstant( $name ) ) {
-            $this->setIsConst( true );
-        }
         return $this;
     }
 
@@ -337,12 +334,12 @@ class VariableMgr extends BaseC
      *
      * A (callable) handler can be
      *   simple function     (set using 'setBody')
-     *   anonymous function  (set using 'setBody')
-     *   instantiated sourceObject+method, passed as an array            : [$sourceObject, methodName]
+     *   anonymous function  (set using 'setBody' and, opt, FcnFrameMgr)
+     *   instantiated sourceObject+method, passed as an array             : [$sourceObject, methodName]
      *   class variable and static (factory?) method, passed as an array  : [FQCN, methodName]
-     *   instantiated sourceObject, class has an (magic) __call method   : $sourceObject
+     *   instantiated sourceObject, class has an (magic) __call method    : $sourceObject
      *   class variable, class has an (magic) __callStatic method         : FQCN
-     *   instantiated sourceObject, class has an (magic) __invoke method : $sourceObject
+     *   instantiated sourceObject, class has an (magic) __invoke method  : $sourceObject
      *
      * @param string $class         accepts both '$obj' and 'className', ie opt $-class, no check
      * @param string $method

@@ -75,42 +75,36 @@ class EntityMgrTest extends TestCase
      * @test
      */
     public function EntityMgrTest36() {
-        foreach( [ null, EntityMgr::SELF_KW, EntityMgr::THIS_KW, '$class' ] as $ix => $prefix ) {
+        foreach( [ null, EntityMgr::PARENT_KW, EntityMgr::SELF_KW, EntityMgr::THIS_KW, '$class' ] as $ix => $prefix ) {
             switch( true ) {
                 case empty( $prefix ) :
-                    $expected = '$constant';
+                    $expected = '$variable';
                     break;
                 case ( EntityMgr::THIS_KW == $prefix ) :
-                    $expected = '$this->constant';
+                    $expected = '$this->variable';
                     break;
                 case ( '$class' == $prefix ) :
-                    $expected = '$class->constant';
+                    $expected = '$class->variable';
                     break;
                 default :
-                    $expected = $prefix . '::$constant';
+                    $expected = $prefix . '::$variable';
                     break;
             } // end switch
-            $code     = EntityMgr::factory( $prefix, 'constant' )->toString();
+            $code     = EntityMgr::factory( $prefix, 'variable' )->toString();
             $this->assertEquals(
                 $expected,
                 $code,
                 'case' . ' A-' . $ix . ' expected: ' . $expected . '  result : ' . trim( $code )
             );
 
-            $expected = empty( $prefix ) ? 'CONSTANT' : $prefix . '::' . 'CONSTANT';
-            $code     = EntityMgr::factory( $prefix, 'constant' )->setIsConst( true )->toString();
+            $expected = empty( $prefix ) ? 'VARIABLE' : $prefix . '::VARIABLE';
+            $code     = EntityMgr::factory( $prefix, 'variable' )->setIsConst( true )->toString();
             $this->assertEquals(
                 $expected,
                 $code,
                 'case' . ' B-' . $ix . ' expected: ' . $expected . '  result : ' . trim( $code )
             );
 
-            $code = EntityMgr::factory( $prefix, 'CONSTANT' )->toString();
-            $this->assertEquals(
-                $expected,
-                $code,
-                'case' . ' C-' . $ix . ' expected: ' . $expected . '  result : ' . trim( $code )
-            );
         } // end foreach
 
         if( DISPLAYem ) {

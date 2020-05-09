@@ -7,7 +7,7 @@ The ```VariableMgr``` class manages PHP variable code
 * default visibility is ```PUBLIC```  
 * default assign operator is ```=```  
 
-Note, assign of (result from) function/method invoke is set using VariableMgr::setBody() and [FcnInvokeMgr]
+Note, assign of (result from) function/method invoke may be set using VariableMgr::setBody() and [FcnInvokeMgr]
 
 ###### VariableMgr Methods
 
@@ -63,7 +63,6 @@ Inherited [Common methods]
 
 ```VariableMgr::setName( name )```
 * ```name``` _string_ variable/property name 
-* Note, uppercase name is autodetected as CONSTANT
 * Return _static_
 * Throws InvalidArgumentException
 ---
@@ -75,8 +74,9 @@ Inherited [Common methods]
 ---
 
 ```VariableMgr::setIsConst( const )```
+* Results in uppercase constant
 * ```const``` _bool_, true : constant, false : NOT, default 
-  * if true then ```static``` is set to false (above)
+  * if true then ```isStatic``` is set to false (above)
 * Return _static_
 ---
 
@@ -85,7 +85,7 @@ Inherited [Common methods]
 * ```method``` _string_, default null
 * usage :
   * simple function (set using 'setBody', below)
-  * anonymous function (set using 'setBody', below)
+  * anonymous function (set using 'setBody', below, and, opt, [FcnFrameMgr]/[FcnInvokeMgr])
   * instantiated sourceObject+method, output passed as an array, result : ```[ $sourceObject, 'methodName' ]```
   * class name (fqcn) and static (factory?) method, output passed as an array, result : ```[ FQCN, 'methodName' ]```
   * instantiated sourceObject, class has an (magic) __call method, result : ```$sourceObject```
@@ -122,6 +122,7 @@ _VarDto_ instance creation (go to [VarDto])<br><br>
 <small>Return to PcGen [README], [Summary]</small> 
 
 [Common methods]:CommonMethods.md
+[FcnFrameMgr]:FcnFrameMgr.md
 [FcnInvokeMgr]:FcnInvokeMgr.md
 [operators]:https://www.php.net/manual/en/language.operators.assignment.php
 [README]:../README.md

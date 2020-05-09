@@ -117,7 +117,6 @@ Inherited [Common methods]
 * ```class``` _string_|[EntityMgr] if string, one of null, self, $this, 'otherClass', '$class'
   * convenient constants found in PcGenInterface 
 * ```variable``` _string_ class/variable/property/constant name
-  * uppercase is autodetected as CONSTANT
   * variable $-prefixed
 * ```index```  _int_|_string_ opt array index
 * Return static
