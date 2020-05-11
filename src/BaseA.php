@@ -83,8 +83,8 @@ abstract class BaseA implements PcGenInterface
      */
     protected static $COMMA = ',';
     protected static $CRLFs = [ "\r\n", "\n\r", "\n", "\r" ];
-    protected static $SP0   = '';
-    protected static $SP1   = ' ';
+    public    static $SP0   = '';
+    public    static $SP1   = ' ';
     protected static $ERR1  = 'Empty argument %s';
     public    static $ERRx  = 'Invalid argument(s) %s';
 
@@ -210,7 +210,13 @@ abstract class BaseA implements PcGenInterface
      * @return static
      */
     public function setIndent( $indent = null ) {
-        $this->indent = ( null === $indent ) ? self::$SP0 : Util::nullByteClean( $indent );
+        if( null === $indent ) {
+            $this->indent = self::$SP0;
+        }
+        else {
+            Assert::assertIndent( $indent );
+            $this->indent = Util::nullByteClean( $indent );
+        }
         return $this;
     }
 
@@ -226,7 +232,13 @@ abstract class BaseA implements PcGenInterface
      * @return static
      */
     public function setBaseIndent( $indent = null ) {
-        $this->baseIndent = ( null === $indent ) ? self::$SP0 : Util::nullByteClean( $indent );
+        if( null === $indent ) {
+            $this->baseIndent = self::$SP0;
+        }
+        else {
+            Assert::assertIndent( $indent );
+            $this->baseIndent = Util::nullByteClean( $indent );
+        }
         return $this;
     }
 
@@ -234,7 +246,8 @@ abstract class BaseA implements PcGenInterface
      * @return string
      */
     public function showIndents() {
-        return get_called_class() . ' baseIndent ->' . $this->baseIndent . '<- indent ->' . $this->indent . '<-'; // test ###
+        static $FMT = '%s baseIndent =>%s<-  indent =>%s<-';
+        return sprintf( $FMT, get_called_class(), $this->baseIndent, $this->indent ); // test ###
     }
 
 }

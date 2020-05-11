@@ -70,9 +70,10 @@ class VariableMgr extends BaseC
      *
      * @param string $eol
      * @param string $indent
+     * @param string $baseIndent
      */
-    public function __construct( $eol = null, $indent = null ) {
-        parent::__construct( $eol, $indent );
+    public function __construct( $eol = null, $indent = null, $baseIndent = null ) {
+        parent::__construct( $eol, $indent, $baseIndent );
         $this->varDto = new varDto();
     }
 

@@ -104,11 +104,12 @@ final class ClassMgr extends BaseB
     /**
      * ClassMgr constructor
      *
-     * @param null $eol
-     * @param null $indent
+     * @param string $eol
+     * @param string $indent
+     * @param string $baseIndent
      */
-    public function __construct( $eol = null, $indent = null ) {
-        parent::__construct( $eol, $indent );
+    public function __construct( $eol = null, $indent = null, $baseIndent = null ) {
+        parent::__construct( $eol, $indent, $baseIndent );
         $this->targetType = self::$class;
         $this->docBlock   = DocBlockMgr::init( $this );
     }

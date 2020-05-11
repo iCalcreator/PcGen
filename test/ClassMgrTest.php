@@ -385,8 +385,17 @@ class ClassMgrTest extends TestCase
                     ' /* body row 4 */',
                 ]
             );
+        $code = $cm->setProperties( $properties )->toString();
+        $this->classMgrTest1Tester( $case, $code, $expected );
 
-        $this->classMgrTest1Tester( $case, $cm->setProperties( $properties )->toString(), $expected );
+        if( $cm->isExtendsSet()) {
+            $this->assertTrue(
+                ( false !== strpos( $code, '@todo' )) &&
+                ( false !== strpos( $code, 'parent exists' ))
+                ,
+                'Error in case ' . 'todo-' . $case . PHP_EOL . $code
+            );
+        }
     }
 
     /**

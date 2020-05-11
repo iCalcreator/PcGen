@@ -92,6 +92,29 @@ class BaseATest extends TestCase
             '    ',
             VariableMgr::init()->getIndent()
         );
+
+        $this->assertEquals(
+            '',
+            VariableMgr::init()->setIndent()->getIndent()
+        );
+        $this->assertEquals(
+            '',
+            VariableMgr::init()->setIndent( null )->getIndent()
+        );
+        try {
+            $vm = VariableMgr::init()->setIndent( 'error' );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+        try {
+            $vm = VariableMgr::init()->setIndent( "\t" );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
     }
 
     /**
@@ -120,7 +143,81 @@ class BaseATest extends TestCase
             '    ',
             VariableMgr::init()->getBaseIndent()
         );
+        $this->assertEquals(
+            '',
+            VariableMgr::init()->setBaseIndent()->getBaseIndent()
+        );
+        $this->assertEquals(
+            '',
+            VariableMgr::init()->setBaseIndent( null )->getBaseIndent()
+        );
+        try {
+            $vm = VariableMgr::init()->setBaseIndent( 'error' );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+        try {
+            $vm = VariableMgr::init()->setBaseIndent( "\t" );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
     }
 
+    /**
+     * Testing PHP version
+     *
+     * @test
+     */
+    public function baseATest4() {
+        VariableMgr::setTargetPhpVersion( PHP_VERSION );
+        $this->assertEquals(
+            PHP_VERSION,
+            VariableMgr::getTargetPhpVersion()
+        );
+    }
+
+    /**
+     * Testing baseA __construct
+     *
+     * @test
+     */
+    public function baseATest5() {
+        $eol = "\n\r";
+        $ind = '   ';
+        $vm1 = new VariableMgr( $eol, $ind, $ind );
+        $this->assertEquals(
+            $eol,
+            $vm1->getEol()
+        );
+        $this->assertEquals(
+            $ind,
+            $vm1->getIndent()
+        );
+        $this->assertEquals(
+            $ind,
+            $vm1->getBaseIndent()
+        );
+        $vm2 = VariableMgr::init( $vm1 );
+        $this->assertEquals(
+            $eol,
+            $vm2->getEol()
+        );
+        $this->assertEquals(
+            $ind,
+            $vm2->getIndent()
+        );
+        $this->assertEquals(
+            $ind,
+            $vm2->getBaseIndent()
+        );
+        $this->assertEquals(
+            get_class( $vm2 ) . ' baseIndent =>   <-  indent =>   <-',
+            $vm2->showIndents()
+        );
+    }
 
 }

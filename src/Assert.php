@@ -43,6 +43,17 @@ class Assert
     }
 
     /**
+     * @param string $indent
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    public static function assertIndent( $indent ) {
+        if( BaseA::$SP0 != trim( $indent)) {
+            throw new InvalidArgumentException( sprintf( BaseA::$ERRx, var_export( $indent, true )));
+        }
+    }
+
+    /**
      * @var array   PHP reserved words
      */
     private static $RESERVEDWORDS = [

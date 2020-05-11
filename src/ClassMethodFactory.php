@@ -67,7 +67,8 @@ class ClassMethodFactory implements PcGenInterface
      * @return array
      */
     public static function renderFactoryMethod( ClassMgr $classMgr ) {
-        static $SUMMARY = 'Class %s %s method';
+        static $SUMMARY         = 'Class %s %s method';
+        static $EXISTS          = ' exists';
         static $RETURNNEWSTATIC = 'return new static();';
         static $INSTANCEINIT    = '$instance = new static();';
         static $RETURNINSTANCE  = 'return $instance;';
@@ -79,6 +80,9 @@ class ClassMethodFactory implements PcGenInterface
             ->setReturnType( self::SELF_KW );
         if( empty( $classMgr->getPropertyCount())) {
             $docBlock->setTag( self::RETURN_T, self::STATIC_KW );
+            if( $classMgr->isExtendsSet()) {
+                $docBlock->setTag( self::TODO_T, self::PARENT_KW . $EXISTS );
+            }
             return array_merge( $docBlock->toArray(), $fcnMgr->setBody( $RETURNNEWSTATIC )->toArray());
         }
         $body = [];
@@ -100,6 +104,9 @@ class ClassMethodFactory implements PcGenInterface
             $body[] = $RETURNINSTANCE;
         }
         $docBlock->setTag( self::RETURN_T, self::STATIC_KW );
+        if( $classMgr->isExtendsSet()) {
+            $docBlock->setTag( self::TODO_T, self::PARENT_KW . $EXISTS );
+        }
         return array_merge( $docBlock->toArray(), $fcnMgr->setBody( $body )->toArray());
     }
 

@@ -64,7 +64,7 @@ trait ArgumentTrait
             default :
                 $code[] = $row;
                 $this->renderArgsInRows( $this->arguments, $code );
-                $code[] = $this->indent . $ARGEND;
+                $code[] = $this->baseIndent . $ARGEND;
                 return $code;
                 break;
         }
