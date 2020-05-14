@@ -173,7 +173,9 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         foreach( $this->getArgumentIndex() as $argIx ) {
             $argumentDto = $this->getArgument( $argIx );
             if( $firstLast == $argumentDto->getUpdClassProp()) {
-                $code = array_merge( $code, ClassMethodFactory::renderPropValueSetCode( $argumentDto, $this ));
+                $code = array_merge( $code,
+                    ClassMethodFactory::renderPropValueSetCode( $argumentDto, $this )
+                );
             }
         }
         return $code;

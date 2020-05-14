@@ -282,7 +282,7 @@ class VarDto implements PcGenInterface
      * @return bool
      */
     public function isDefaultTypedNull() {
-        return ( self::NULL_T == $this->default );
+        return ( self::NULL_T === $this->default );
     }
 
     /**

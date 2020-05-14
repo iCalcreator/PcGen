@@ -154,13 +154,29 @@ class ClassMgrTest extends TestCase
                         )
                     )
                         ->setIsConst(),
+                    9 => PropertyMgr::factory(
+                        VarDto::factory(
+                            self::$prop . 9,
+                            ClassMgr::BOOL_T,
+                            true,
+                            9 . $SUMMARY . ' is type bool, no >isPropertySet> method'
+                        )
+                    ),
+                    10 => PropertyMgr::factory(
+                        VarDto::factory(
+                            self::$prop . 10,
+                            ClassMgr::MIXED_KW,
+                            true,
+                            10 . $SUMMARY . ' is type mixed, default \'true\', has >isPropertySet> method'
+                        )
+                    )
             ],  // property set end
             [
                 [ 1, 8 ],       // constants
                 [ 2, 3 ],       // static
-                [ 4, 5, 6, 7 ], // public with methods
+                [ 4, 5, 6, 7, 9, 10 ], // public with methods
                 [ ],            // public without methods
-                [ 1, 2, 3, 4, 5, 6, 7, 8 ] // all
+                [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] // all
             ],
         ]; // test set 1 end
 
@@ -576,7 +592,8 @@ class ClassMgrTest extends TestCase
                 'Error in case ' . 'R1-' . $case . '-' . $expNo . PHP_EOL . $code
             );
             $this->assertTrue(
-                ( false !== strpos( $code, '    public function getProp' . $expNo . '() ' )),
+                (( false !== strpos( $code, '    public function getProp' . $expNo . '() ' )) ||
+                 ( false !== strpos( $code, '    public function isProp' . $expNo . '() ' ))), // type bool
                 'Error in case ' . 'R2-' . $case . '-' . $expNo . PHP_EOL . $code
             );
             $this->assertTrue(
@@ -674,31 +691,72 @@ class ClassMgrTest extends TestCase
     }
 
     /**
-     * Testing Iterator
+     * Prep Iterator tests
      *
      * @test
      */
-    public function classMgrTest301() {
-        $case = 301;
+    public function classMgrTest300() {
+        for( $case = 301; $case <= 302; $case++ ) {
+            $properties = [
+                PropertyMgr::factory(
+                    self::$prop . $case . '_1',
+                    ClassMgr::ARRAY_T,
+                    ClassMgr::ARRAY2_T,
+                    'the array of values'
+                )
+                    ->setArgInFactory( true ),
+            ];
+            if( 301 < $case ) {
+                $properties[] = PropertyMgr::factory(
+                    self::$prop . $case . '_3',
+                    ClassMgr::STRING_T,
+                    self::$prop . $case . '-3',
+                    'A constant'
+                )
+                    ->setIsConst();
+                $properties[] = PropertyMgr::factory(
+                    self::$prop . $case . '_4',
+                    ClassMgr::STRING_T,
+                    self::$prop . $case . '-4',
+                    'A static property'
+                )
+                    ->setStatic();
+                $properties[] =
+                    /*
+                    PropertyMgr::init()
+                        ->setVarDto( VarDto::factory( ClassMethodFactory::$POSITION, propertyMgr::INT_T, 0, 'A preset array index property' ))
+                    */
+                    PropertyMgr::factory(
+                    ClassMethodFactory::$POSITION,
+                    ClassMgr::INT_T,
+                    0,
+                        'A preset array index property'
+                )
+                    ->setMakeGetter( false )
+                    ->setMakeSetter( false );
+            } // end if test set 302
 
-        $pm = PropertyMgr::factory(
-            self::$prop . $case,
-            ClassMgr::ARRAY_T
-        )
-            ->setMakeGetter( true )
-            ->setMakeSetter( true )
-            ->setArgInFactory( true );
+            // ClassMgr::setTargetPhpVersion( '5.6.0' ); // test ###
 
-        // ClassMgr::setTargetPhpVersion( '5.6.0' ); // test ###
+            $cm = ClassMgr::init()
+                ->setNamespace( self::$namespace . $case )
+                ->setName( self::$className . $case )
+                ->setProperties( $properties )
+                ->setFactory();
 
-        $cm = ClassMgr::init()
-            ->setNamespace( self::$namespace . $case )
-            ->setName( self::$className . $case )
-            ->addProperty( $pm )
-            ->setFactory();
+            $code = $cm->toString();
 
-        $code = $cm->toString();
+            $this->classMgrTest30x( $code, $case );
+        }
+    }
 
+    /**
+     * Test Iterator
+     *
+     * @param string $code
+     * @param int    $case
+     */
+    public function classMgrTest30x( $code, $case ) {
         foreach( ClassMethodFactory::$USES as $use ) {
             $this->assertTrue(
                 ( false !== strpos( $code, 'use ' . $use . ';' ) ),

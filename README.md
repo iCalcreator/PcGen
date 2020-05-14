@@ -26,12 +26,14 @@
 * create code for variable/property value assign from
   * variable/property value
   * (scalar) fixedSourceValue
+  * PHP expression
   * constant
   * function/method invoke(s)
     
 * create code for function/method return of 
   * variable/property value
   * (scalar) fixedSourceValue
+  * PHP expression
   * constant  
   * function/method invoke(s)
    

@@ -461,14 +461,14 @@ class FcnFrameMgrTest extends TestCase
         $typeHint = ( $varDto->isTypeHint( FcnFrameMgr::getTargetPhpVersion(), $typeHint2 ))
             ? $typeHint2 . ' '
             : '';
-        $ffm      = FcnFrameMgr::init()->setName( $fcnName );
+        $fcnFrameMgr = FcnFrameMgr::init()->setName( $fcnName );
         if( 1 == array_rand( [ 1, 2 ] )) {
-            $ffm->addArgument( $varDto );
+            $fcnFrameMgr->addArgument( $varDto );
         }
         else {
-            $ffm->setArguments( [ $varDto ] );
+            $fcnFrameMgr->setArguments( [ $varDto ] );
         }
-        $code = $ffm->toString();
+        $code = $fcnFrameMgr->toString();
         $expected = sprintf( $tmpl, $fcnName, $typeHint, $expected, PHP_EOL );
         $this->assertEquals(
             $expected,

@@ -1,4 +1,6 @@
 
+1.1.19 Upd Iterator impl, ClassMgr+ClassMethodFactory
+
 1.1.18  conform constructs: BaseA, ClassMgr, VariableMgr
 1.1.17  ArgumentTrait::renderArguments() bug
 1.1.16  assert indents

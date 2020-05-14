@@ -267,7 +267,16 @@ class VariableMgr extends BaseC
     }
 
     /**
-     * Set varable name
+     * Get varable name, override parent
+     *
+     * @return string
+     */
+    public function getName() {
+        return $this->varDto->getName();
+    }
+
+    /**
+     * Set varable name, override parent
      *
      * @param string $name
      * @return static
@@ -284,7 +293,8 @@ class VariableMgr extends BaseC
      */
     public function setInitValue( $initValue = null ) {
         switch( true ) {
-            case (( null === $initValue ) || ( is_string( $initValue ) && ( self::NULL_T == $initValue ))) :
+            case (( null === $initValue ) ||
+                ( is_string( $initValue ) && ( 0 === strcasecmp(  self::NULL_T, $initValue )))) :
                 $initValue = self::NULL_T;
                 break;
             case in_array( $initValue, VarDto::$ARRAYs, true ) :
@@ -368,7 +378,7 @@ class VariableMgr extends BaseC
     }
 
     /**
-     * Override parent
+     * Set static, override parent
      *
      * @param bool $static
      * @return static

@@ -75,7 +75,7 @@ abstract class BaseC extends BaseB
             return $this;
         }
         foreach( $VISIBILITIES as $vsblt ) {
-            if( 0 == strcasecmp( $visibility, $vsblt )) {
+            if( 0 === strcasecmp( $visibility, $vsblt )) {
                 $this->visibility = $vsblt;
                 return $this;
             }

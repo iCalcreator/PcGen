@@ -56,7 +56,7 @@ trait ArgumentTrait
             case empty( $cntArgs ) :
                 break;
             case ( 1 == $cntArgs ) :
-                $row .= BaseA::$SP1 . self::renderOneArg( $this->arguments[0] ) . BaseA::$SP1;
+                $row .= BaseA::$SP1 . self::renderOneArg( reset( $this->arguments )) . BaseA::$SP1;
                 break;
             case (( 4 >= $cntArgs ) && self::hasOnlyNames( $this->arguments )) :
                 $row .= self::renderArgsInOneRow( $this->arguments );
@@ -110,7 +110,7 @@ trait ArgumentTrait
             case $argumentDto->isDefaultTypedArray() :
                 $row .= $SPEQSP . BaseA::ARRAY2_T;
                 break;
-            case ( is_string( $initValue ) && ( BaseA::NULL_T == $initValue )) :
+            case ( is_string( $initValue ) && ( 0 === strcasecmp( BaseA::NULL_T, $initValue ))) :
                 $row .= $SPEQSP . BaseA::NULL_T;
                 break;
             case is_scalar( $initValue ) :

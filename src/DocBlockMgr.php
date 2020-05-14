@@ -369,7 +369,7 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      */
     public static function isValidTagName( $tagName ) {
         foreach( self::$TAGNAMELIST as $validTagname ) {
-            if( 0 == strcasecmp( $tagName, $validTagname )) {
+            if( 0 === strcasecmp( $tagName, $validTagname )) {
                 return true;
                 break;
             }
@@ -387,7 +387,7 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
     private static function assertTagName( $tagName ) {
         static $ERR1 = 'Invalid tag %s';
         foreach( self::$TAGNAMELIST as $validTagName ) {
-            if( 0 == strcasecmp( $tagName, $validTagName )) {
+            if( 0 === strcasecmp( $tagName, $validTagName )) {
                 return $validTagName;
                 break;
             }
@@ -407,7 +407,7 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
         }
         foreach( $tagType as & $theTagType ) {
             foreach( self::$VARTYPELIST as $validTagType ) {
-                if( 0 == strcasecmp( $theTagType, $validTagType ) ) {
+                if( 0 === strcasecmp( $theTagType, $validTagType ) ) {
                     $theTagType = $validTagType;
                     break;
                 }

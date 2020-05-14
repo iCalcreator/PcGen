@@ -125,7 +125,6 @@ final class ClassMgr extends BaseB
         if( ! $this->isNameSet()) {
             throw new RuntimeException( sprintf( self::$ERR1, $NAME ));
         }
-        $this->checkFixIteratorInterface();
         $code = array_merge(
             $this->initCode(),
             [ self::$CODEBLOCKSTART ],
@@ -133,24 +132,6 @@ final class ClassMgr extends BaseB
             [ self::$CODEBLOCKEND ]
         );
         return Util::nullByteClean( $code );
-    }
-
-    /**
-     * @return void
-     */
-    private function checkFixIteratorInterface() {
-        if( ! $this->hasOneArrayProperty()) {
-            return;
-        }
-        if( $this->isNamespaceSet()) {
-            foreach( ClassMethodFactory::$USES as $use ) {
-                $this->addUse( $use );
-            }
-        }
-        foreach( ClassMethodFactory::$IMPLEMENTS as $implement ) {
-            $this->addImplement( $implement );
-        }
-        $this->addProperty( ClassMethodFactory::getPositionProperty( $this ));
     }
 
     /**
@@ -175,6 +156,9 @@ final class ClassMgr extends BaseB
                 $this->docBlock->setTag( self::PACKAGE_T, $this->namespace );
             }
         }
+        if( $this->hasOneArrayProperty()) {
+            ClassMethodFactory::setUpIteratorForClass( $this );
+        }
         if( ! empty( $this->uses )) {
             $code[] = self::$SP0;
             asort( $this->uses, SORT_FLAG_CASE | SORT_STRING );
@@ -198,7 +182,7 @@ final class ClassMgr extends BaseB
      * @return array
      */
     private function bodyCode() {
-        $hasProperties = ! empty( $this->properties );
+        $hasProperties = ! empty( $this->getPropertyCount());
         return array_merge(
             ( $hasProperties     ? $this->defineProperties() : [] ),
             ( $this->construct   ? ClassMethodFactory::renderConstructorMethod( $this ) : [] ),
@@ -247,7 +231,7 @@ final class ClassMgr extends BaseB
      */
     private function produceMethodsForProperties() {
         $code    = [];
-        $oneOnly = $this->hasOneArrayProperty();
+        $oneOnly = $this->hasOneArrayProperty( $propIx );
         foreach( $this->getPropertyIndex() as $pIx ) {
             $property = $this->properties[$pIx]
                 ->setBaseIndent( $this->getBaseIndent())
@@ -255,7 +239,7 @@ final class ClassMgr extends BaseB
             switch( true ) {
                 case ( ! $this->properties[$pIx]->isMakeGetter()) :
                     break;
-                case $oneOnly :
+                case ( $oneOnly && ( $pIx == $propIx )) :
                     ClassMethodFactory::renderIteratorGetterMethods( $property, $code );
                     break;
                 default :
@@ -594,27 +578,33 @@ final class ClassMgr extends BaseB
     }
 
     /**
+     * @param int $propIx
      * @return bool
      */
-    private function hasOneArrayProperty() {
-        $cntProps = $this->getPropertyCount();
-        switch( true ) {
-            case ( empty( $cntProps ) || ( 2 < $cntProps )) :
-                break;
-            case ( true !== ( $this->properties[0]->getVarDto()->isTypedArray() &&
-                    ! $this->properties[0]->isConst() &&
-                    ! $this->properties[0]->isStatic())) :
-                break;
-            case ( 1 == count( $this->properties )) :
-                return true;
-                break;
-            case ( ClassMethodFactory::$POSITION == $this->properties[1]->getVarDto()->getName()) :
-                return true;
-                break;
-            default :
-                break;
+    private function hasOneArrayProperty( & $propIx = null ) {
+        $cntProps = 0;
+        $arrayPropIx = null;
+        foreach( $this->getPropertyIndex() as $pIx ) {
+            switch( true ) {
+                case ( $this->properties[$pIx]->isConst() || $this->properties[$pIx]->isStatic()) :
+                    continue 2;
+                case ( ClassMethodFactory::$POSITION == $this->properties[$pIx]->getVarDto()->getName()) :
+                    continue 2;
+                case ( null !== $arrayPropIx ) :
+                    break;
+                case ! $this->properties[$pIx]->isMakeGetter() :
+                    break;
+                case $this->properties[$pIx]->getVarDto()->isTypedArray() :
+                    $arrayPropIx = $pIx;
+                    break;
+            } // end switch
+            $cntProps += 1;
+        } // end foreach
+        if( empty( $cntProps ) || ( 1 < $cntProps ) || ( null === $arrayPropIx )) {
+            return false;
         }
-        return false;
+        $propIx = $arrayPropIx;
+        return true;
     }
 
     /**
