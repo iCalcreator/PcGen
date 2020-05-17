@@ -42,141 +42,213 @@ class ClassMgrTest extends TestCase
     private static $prop       = 'prop';
 
     public function classMgrTest1DataProvider() {
-            static $SUMMARY     = ' summary ';
-            static $DESCRIPTION = ' description ';
-            $testData = [];
+        static $SUMMARY     = ' summary ';
+        static $DESCRIPTION = ' description ';
+        $testData = [];
 
-            $testData[] = [
-                1,
-                [   // property set start
-                    //     PropertyMgr
-                    //         constant
-                    1 => PropertyMgr::factory(
-                        VarDto::factory(
-                            self::$prop . 1,
-                            ClassMgr::STRING_T,
-                            '' . self::$prop . '1',
-                            1 . $SUMMARY . ClassMgr::CONST_ . 'ant',
-                            1 . $DESCRIPTION . ClassMgr::CONST_ . 'ant'
-                        )
+        $testData[] = [
+            1,
+            [   // property set start
+                //     PropertyMgr
+                //         constant
+                1  => PropertyMgr::factory(
+                    VarDto::factory(
+                        self::$prop . 1,
+                        ClassMgr::STRING_T,
+                        '' . self::$prop . '1',
+                        1 . $SUMMARY . ClassMgr::CONST_ . 'ant',
+                        1 . $DESCRIPTION . ClassMgr::CONST_ . 'ant'
                     )
-                        ->setIsConst(),
-
-                    //     PropertyMgr
-                    //         static, int, set with getter/setter BUT NO getter/setter out
-                    2 => PropertyMgr::factory(
-                        self::$prop . 2,
-                        ClassMgr::INT_T,
-                        null,
-                        2 . $SUMMARY . ClassMgr::STATIC_KW,
-                        2 . $DESCRIPTION . ClassMgr::STATIC_KW . ' NO getter/setter/argInFactory'
-                    )
-                        ->setStatic()
-                        ->setVisibility( ClassMgr::PROTECTED_ )
-                        ->setMakeSetter( true )
-                        ->setMakeGetter( true )
-                        ->setArgInFactory( true ),
+                )
+                    ->setIsConst(),
 
                 //     PropertyMgr
+                //         static, int, set with getter/setter BUT NO getter/setter out
+                2  => PropertyMgr::factory(
+                    self::$prop . 2,
+                    ClassMgr::INT_T,
+                    null,
+                    2 . $SUMMARY . ClassMgr::STATIC_KW,
+                    2 . $DESCRIPTION . ClassMgr::STATIC_KW . ' NO getter/setter/argInFactory'
+                )
+                    ->setStatic()
+                    ->setVisibility( ClassMgr::PROTECTED_ )
+                    ->setMakeSetter( true )
+                    ->setMakeGetter( true )
+                    ->setArgInFactory( true ),
+
+                //     VariableMgr
                 //         static, int, without getter/setter
-                    3 => PropertyMgr::factory(
-                        VarDto::factory(
+                3  => VariableMgr::factory(
+                    VarDto::factory(
                         self::$prop . 3,
                         ClassMgr::INT_T,
                         3,
                         3 . $SUMMARY . ClassMgr::STATIC_KW,
-                        3 . $DESCRIPTION . ClassMgr::STATIC_KW . ' NO getter/setter/argInFactory'
-                        )
+                        3 . $DESCRIPTION . ClassMgr::STATIC_KW .
+                        ' NO getter/setter/argInFactory' .
+                        ', is static and has protected visibility' .
+                        ', origins from a VariableMgr instance'
                     )
-                        ->setStatic( true )
-                        ->setVisibility( ClassMgr::PROTECTED_ ),
+                )
+                    ->setStatic( true )
+                    ->setVisibility( ClassMgr::PROTECTED_ ),
 
                 //     PropertyMgr
                 //         'public' : float : with getter/setter AND argInfactory
-                    4 => PropertyMgr::factory(
-                        self::$prop . 4,
+                4  => PropertyMgr::factory(
+                    self::$prop . 4,
+                    ClassMgr::FLOAT_T,
+                    PropertyMgr::NULL_T,
+                    4 . $SUMMARY . ClassMgr::FLOAT_T,
+                    4 . $DESCRIPTION . ClassMgr::FLOAT_T . ' WITH getter/setter/argInFactory'
+                )
+                    ->setMakeSetter( true )
+                    ->setMakeGetter( true )
+                    ->setArgInFactory( true ),
+
+                //     PropertyMgr
+                //         'public' : float : with getter/setter AND argInfactory
+                5  => PropertyMgr::factory(
+                    VarDto::factory(
+                        self::$prop . 5,
                         ClassMgr::FLOAT_T,
-                        PropertyMgr::NULL_T,
-                        4 . $SUMMARY . ClassMgr::FLOAT_T,
-                        4 . $DESCRIPTION . ClassMgr::FLOAT_T . ' WITH getter/setter/argInFactory'
+                        5.555,
+                        5 . $SUMMARY . ClassMgr::FLOAT_T,
+                        5 . $DESCRIPTION . ClassMgr::FLOAT_T . ' WITH getter/setter/argInFactory'
                     )
-                        ->setMakeSetter( true )
-                        ->setMakeGetter( true )
-                        ->setArgInFactory( true ),
-
-                //     PropertyMgr
-                //         'public' : float : with getter/setter AND argInfactory
-                    5 => PropertyMgr::factory(
-                        VarDto::factory(
-                            self::$prop . 5,
-                            ClassMgr::FLOAT_T,
-                            5.555,
-                            5 . $SUMMARY . ClassMgr::FLOAT_T,
-                            5 . $DESCRIPTION . ClassMgr::FLOAT_T . ' WITH getter/setter/argInFactory'
-                        )
-                    )
-                        ->setMakeGetter( true )
-                        ->setMakeSetter( true )
-                        ->setArgInFactory( true ),
+                )
+                    ->setMakeGetter( true )
+                    ->setMakeSetter( true )
+                    ->setArgInFactory( true ),
 
                 //     PropertyMgr
                 //         'public' : array : with getter/setter AND argInfactory
-                    6 => PropertyMgr::factory(
-                        self::$prop . 6,
-                        ClassMgr::ARRAY_T,
-                        [],
-                        6 . $SUMMARY . ClassMgr::ARRAY_T,
-                        6 . $DESCRIPTION . ClassMgr::ARRAY_T . ' WITH getter/setter/argInFactory'
-                    )
-                        ->setArgInFactory( true ),
+                6  => PropertyMgr::factory(
+                    self::$prop . 6,
+                    ClassMgr::ARRAY_T,
+                    [],
+                    6 . $SUMMARY . ClassMgr::ARRAY_T,
+                    6 . $DESCRIPTION . ClassMgr::ARRAY_T . ' WITH getter/setter/argInFactory'
+                )
+                    ->setArgInFactory( true ),
 
                 //     PropertyMgr
                 //         'public' : array : without getter/setter and argInfactory
-                    //     same array test as in fcnFrameMgrTest1, case 614
-                    7 => PropertyMgr::factory(
-                        VarDto::factory(
-                            self::$prop . 7,
-                            ClassMgr::ARRAY_T,
-                            [ true, false, 0, 1, -1, 1.1, -1.1, "value614" ],
-                            7 . $SUMMARY . ClassMgr::ARRAY_T,
-                            7 . $DESCRIPTION . ClassMgr::ARRAY_T . ' WITH getter/setter/argInFactory'
-                        )
+                //     same array test as in fcnFrameMgrTest1, case 614
+                7  => PropertyMgr::factory(
+                    VarDto::factory(
+                        self::$prop . 7,
+                        ClassMgr::ARRAY_T,
+                        [true, false, 0, 1, -1, 1.1, -1.1, "value614"],
+                        7 . $SUMMARY . ClassMgr::ARRAY_T,
+                        7 . $DESCRIPTION . ClassMgr::ARRAY_T . ' WITH getter/setter/argInFactory'
                     )
-                        ->setArgInFactory( true ),
-                    //         constant
-                    8 => PropertyMgr::factory(
-                        VarDto::factory(
-                            self::$prop . 8,
-                            ClassMgr::STRING_T,
-                            '' . self::$prop . '8',
-                            8 . $SUMMARY . ClassMgr::CONST_ . 'ant',
-                            8 . $DESCRIPTION . ClassMgr::CONST_ . 'ant'
-                        )
+                )
+                    ->setArgInFactory( true ),
+                //         constant
+                8  => PropertyMgr::factory(
+                    VarDto::factory(
+                        self::$prop . 8,
+                        ClassMgr::STRING_T,
+                        '' . self::$prop . '8',
+                        8 . $SUMMARY . ClassMgr::CONST_ . 'ant',
+                        8 . $DESCRIPTION . ClassMgr::CONST_ . 'ant'
                     )
-                        ->setIsConst(),
-                    9 => PropertyMgr::factory(
-                        VarDto::factory(
-                            self::$prop . 9,
-                            ClassMgr::BOOL_T,
-                            true,
-                            9 . $SUMMARY . ' is type bool, no >isPropertySet> method'
-                        )
+                )
+                    ->setIsConst(),
+                9  => PropertyMgr::factory(
+                    VarDto::factory(
+                        self::$prop . 9,
+                        ClassMgr::BOOL_T,
+                        true,
+                        9 . $SUMMARY . ' is type bool, no >isPropertySet> method'
+                    )
+                ),
+                10 => PropertyMgr::factory(
+                    VarDto::factory(
+                        'isCorrect',
+                        ClassMgr::BOOL_T,
+                        'true',
+                        10 . $SUMMARY . ' is type bool, default bool (string) true'
+                    )
+                )
+                    ->setArgInFactory( true ),
+                11 => PropertyMgr::factory(
+                    VarDto::factory(
+                        'isInCorrect',
+                        ClassMgr::BOOLEAN_T,
+                        'false',
+                        11 . $SUMMARY . ' is type boolean, default bool (string) false'
+                    )
+                )
+                    ->setArgInFactory( true ),
+                12 => PropertyMgr::factory(
+                    VarDto::factory(
+                        self::$prop . 12,
+                        ClassMgr::MIXED_KW,
+                        true,
+                        12 . $SUMMARY . ' is type mixed, default true, has >isPropertySet> method'
+                    )
+                ),
+                13 => // plain array
+                    [
+                        self::$prop . 13,
+                        ClassMgr::INT_T,
+                        13,
+                        13 . $SUMMARY . self::$prop . 13,
+                        13 . $DESCRIPTION . self::$prop . 13 .
+                        ' NO getter/setter/argInFactory' .
+                        ', origins from a VariableMgr instance',
+                        false,
+                        false,
+                        false,
+                    ],
+                14 => // plain array
+                    [
+                        self::$prop . 14,
+                        ClassMgr::INT_T,
+                        14,
+                        14 . $SUMMARY . self::$prop . 14,
+                        14 . $DESCRIPTION . self::$prop . 14 .
+                        ' NO getter/setter/argInFactory' .
+                        ', origins from a VariableMgr instance',
+                        false,
+                        false,
+                        false,
+                    ],
+                15 => // VarDto
+                    varDto::factory(
+                        self::$prop . 15,
+                        ClassMgr::STRING_T,
+                        self::$prop . 15,
+                        15 . $SUMMARY . self::$prop . 15,
+                        15 . $DESCRIPTION . self::$prop . 15 .
+                        ' NO getter/setter/argInFactory' .
+                        ', origins from a VarDto instance'
                     ),
-                    10 => PropertyMgr::factory(
-                        VarDto::factory(
-                            self::$prop . 10,
-                            ClassMgr::MIXED_KW,
-                            true,
-                            10 . $SUMMARY . ' is type mixed, default \'true\', has >isPropertySet> method'
-                        )
-                    )
+                16 => // VariableMgr in array, note, has public class instance property
+                    [
+                        VariableMgr::factory(
+                            self::$prop . 16,
+                            ClassMgr::STRING_T,
+                            self::$prop . 16,
+                            16 . $SUMMARY . self::$prop . 16,
+                            16 . $DESCRIPTION . self::$prop . 16 .
+                            ' NO getter/setter/argInFactory' .
+                            ', origins from a VariableMgr instance in array'
+                        ),
+                        true,
+                        true,
+                        true,
+                    ],
             ],  // property set end
             [
-                [ 1, 8 ],       // constants
-                [ 2, 3 ],       // static
-                [ 4, 5, 6, 7, 9, 10 ], // public with methods
-                [ ],            // public without methods
-                [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] // all
+                [1, 8 ],                        // constants
+                [2, 3 ],                        // static
+                [4, 5, 6, 7, 9, 12, 16 ],       // public with methods
+                [13, 14, 15 ],                  // props without methods
+                [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16 ] // all
             ],
         ]; // test set 1 end
 
@@ -206,8 +278,8 @@ class ClassMgrTest extends TestCase
             [
                 [],       // constants
                 [],       // static
-                [ 4, 6 ], // public with methods
-                [],       // public without methods
+                [ 4, 6 ], // props with methods
+                [],       // props without methods
                 [ 4, 6 ]  // all
             ],
         ]; // test set 3 end
@@ -224,11 +296,11 @@ class ClassMgrTest extends TestCase
                 6 => self::$prop . 6,
             ],
             [
-                [],     // constants
-                [],  // static
-                [ 4, 6 ],  // public with methods
-                [],  // public without methods
-                [ 4, 6 ] // all
+                [],        // constants
+                [],        // static
+                [ 4, 6 ],  // props with methods
+                [],        // props without methods
+                [ 4, 6 ]   // all
             ],
         ]; // test set 4 end
 
@@ -286,8 +358,8 @@ class ClassMgrTest extends TestCase
             [
                 [],     // constants
                 [],  // static
-                [ 4, 5, 6 ],  // public with methods
-                [ 7 ],  // public without methods
+                [ 4, 5, 6 ],  // props with methods
+                [ 7 ],  // props without methods
                 [ 4, 5, 6, 7 ] // all
             ],
         ]; // test set 6 end
@@ -306,13 +378,16 @@ class ClassMgrTest extends TestCase
                     PropertyMgr::NULL_T,
                     4 . $SUMMARY . ClassMgr::FLOAT_T,
                     4 . $DESCRIPTION . ClassMgr::FLOAT_T,
+                    true,
+                    true,
+                    true
                 ],
             ],
             [
                 [],        // constants
                 [],        // static
-                [ 4 ],     // public with methods
-                [  ],      // public without methods
+                [ 4 ],     // props with methods
+                [  ],      // props without methods
                 [ 4 ]      // all
             ],
         ]; // test set 6 end
@@ -455,6 +530,7 @@ class ClassMgrTest extends TestCase
         $cm->addUse( self::$use2 );             // no dupls
         $cm->addImplement( self::$interface2 ); // no dupls
 
+        static $arrTest1 = true; // test argSet1:13/14
         foreach( $properties as $pIx => $propArg ) {
             if( ! in_array( $pIx, $expected[2] )) { // force private property and public methods
                 $cm->addProperty( $propArg );
@@ -474,6 +550,11 @@ class ClassMgrTest extends TestCase
                     $cm->addProperty( $propArg[0], true, true, true  );
                     break;
                 case is_array( $propArg ) :
+                    if( $arrTest1 ) {
+                        $cm->addProperty( $propArg );
+                        $arrTest1 = false;
+                        break;
+                    }
                     $propArg = array_pad( $propArg, 5, null );
                     $cm->addProperty( $propArg[0], $propArg[1], $propArg[2], $propArg[3], $propArg[4], true, true, true  );
                     break;
@@ -586,11 +667,19 @@ class ClassMgrTest extends TestCase
             );
         }
 
-        foreach( $expected[2] as $expNo ) {  // private property and public methods
-            $this->assertTrue(
-                ( false !== strpos( $code, '    private $prop' . $expNo . ' =' )),
-                'Error in case ' . 'R1-' . $case . '-' . $expNo . PHP_EOL . $code
-            );
+        foreach( $expected[2] as $expNo ) {  // private/public property and public methods
+            if( 16 == $expNo ) {
+                $this->assertTrue(
+                    ( false !== strpos( $code, '    public $prop' . $expNo . ' =' )),
+                    'Error in case ' . 'R1-' . $case . '-' . $expNo . PHP_EOL . $code
+                );
+            }
+            else {
+                $this->assertTrue(
+                    ( false !== strpos( $code, '    private $prop' . $expNo . ' =' )),
+                    'Error in case ' . 'R1-' . $case . '-' . $expNo . PHP_EOL . $code
+                );
+            }
             $this->assertTrue(
                 (( false !== strpos( $code, '    public function getProp' . $expNo . '() ' )) ||
                  ( false !== strpos( $code, '    public function isProp' . $expNo . '() ' ))), // type bool
@@ -714,7 +803,7 @@ class ClassMgrTest extends TestCase
                     'A constant'
                 )
                     ->setIsConst();
-                $properties[] = PropertyMgr::factory(
+                $properties[] = VariableMgr::factory(
                     self::$prop . $case . '_4',
                     ClassMgr::STRING_T,
                     self::$prop . $case . '-4',
@@ -931,12 +1020,26 @@ class ClassMgrTest extends TestCase
      */
     public function propertyMgrTest101() {
         try {
-            $pm = propertyMgr::factory( true );
+            $pm = PropertyMgr::factory( true );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
             $this->assertTrue( true );
         }
+    }
+
+    /**
+     * @test
+     */
+    public function propertyMgrTest111() {
+        $vm = VariableMgr::factory( 'test' );
+        $pm = PropertyMgr::init()->cloneFromParent( $vm );
+        $this->assertTrue(
+            $pm instanceof PropertyMgr
+        );
+        $this->assertEquals( 'test', $pm->getName());
+        $this->assertEquals( $vm->isStatic(), $pm->isStatic());
+        $this->assertEquals( $vm->getVisibility(), $pm->getVisibility());
     }
 
 }

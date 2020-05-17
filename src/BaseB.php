@@ -87,10 +87,10 @@ abstract class BaseB extends BaseA
     public function getBody( $indent = null ) {
         $output = [];
         if( empty( $indent )) {
-            $indent = self::$SP0;
+            $indent = self::SP0;
         }
         foreach( $this->body as $row ) {
-            $output[] = ( empty( $row )) ? self::$SP0 : $this->baseIndent . $indent . $row;
+            $output[] = ( empty( $row )) ? self::SP0 : $this->baseIndent . $indent . $row;
         }
         return $output;
     }
@@ -116,7 +116,7 @@ abstract class BaseB extends BaseA
                 $bodyPart = [ $bodyPart ];
             }
             foreach( $bodyPart as $row ) {
-                $tmp[] = ( self::$SP0 == trim( $row )) ? self::$SP0 : rtrim( $row );
+                $tmp[] = ( self::SP0 == trim( $row )) ? self::SP0 : rtrim( $row );
             }
         } // end array
         $this->body = [];
@@ -129,7 +129,7 @@ abstract class BaseB extends BaseA
                 : strlen( $tmp[0] ) - strlen( ltrim( $tmp[0] ));
             foreach( $tmp as $row ) {
                 if( empty( $row )) {
-                    $this->body[] = self::$SP0;
+                    $this->body[] = self::SP0;
                     continue;
                 }
                 if( ! empty( $lSpaceLen ) && empty( ltrim( substr( $row, 0, $lSpaceLen )))) {

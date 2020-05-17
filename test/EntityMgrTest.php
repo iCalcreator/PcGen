@@ -126,4 +126,16 @@ class EntityMgrTest extends TestCase
         }
     }
 
+    /**
+     * @test
+     */
+    public function AssignClauseMgrTest82() {
+        $this->assertTrue(
+            is_string(
+                EntityMgr::factory( 'klass', 'variable', 82 )
+                    ->__toString()
+            )
+        );
+    }
+
 }

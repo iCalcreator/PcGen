@@ -195,12 +195,9 @@ abstract class BaseR1 extends BaseA
         if( ! is_string( $property )) {
             throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $property, true )));
         }
-        if( Util::isVarPrefixed( $property )) {
-            $property = substr( $property, 1 );
-        }
         $this->source = EntityMgr::init( $this )
             ->setClass( self::THIS_KW )
-            ->setVariable( $property );
+            ->setVariable( Util::unSetVarPrefix( $property ));
         if( null !== $index ) {
             $this->source->setIndex( $index );
         }
@@ -219,11 +216,8 @@ abstract class BaseR1 extends BaseA
         if( ! is_string( $variable )) {
             throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $variable, true )));
         }
-        if( ! Util::isVarPrefixed( $variable )) {
-            $variable = self::VARPREFIX . $variable;
-        }
         $this->source = EntityMgr::init( $this )
-            ->setVariable( $variable );
+            ->setVariable( Util::setVarPrefix( $variable ));
         if( null !== $index ) {
             $this->source->setIndex( $index );
         }
@@ -276,38 +270,25 @@ abstract class BaseR1 extends BaseA
     }
 
     /**
-     * @param FcnInvokeMgr $chainedInvoke
+     * @param FcnInvokeMgr $invoke
      * @return static
+     * @throws InvalidArgumentException
      */
-    public function appendChainedInvoke( FcnInvokeMgr $chainedInvoke ) {
+    public function appendInvoke( FcnInvokeMgr $invoke ) {
         if( empty( $this->fcnInvoke )) {
             $this->fcnInvoke = ChainInvokeMgr::init( $this );
         }
-        $this->fcnInvoke->appendChainedInvoke( $chainedInvoke );
+        $this->fcnInvoke->appendInvoke( $invoke->rig( $this));
         return $this;
     }
 
     /**
-     * @param FcnInvokeMgr|FcnInvokeMgr[] $fcnInvoke
+     * @param FcnInvokeMgr[] $fcnInvokes
      * @return static
+     * @throws InvalidArgumentException
      */
-    public function setFcnInvoke( $fcnInvoke ) {
-        static $ERR = 'Error invoking %s::%s';
-        switch( true ) {
-            case is_array( $fcnInvoke ) :
-                if( false ===
-                    ( $this->fcnInvoke = call_user_func_array( [ ChainInvokeMgr::class, self::FACTORY ], $fcnInvoke ))
-                ) {
-                    throw new InvalidArgumentException( sprintf( $ERR, ChainInvokeMgr::class,self::FACTORY ));
-                }
-                break;
-            case $fcnInvoke instanceof FcnInvokeMgr :
-                $this->appendChainedInvoke( $fcnInvoke );
-                break;
-            default :
-                $type = is_object( $fcnInvoke ) ? get_class( $fcnInvoke ) : gettype( $fcnInvoke );
-                throw new InvalidArgumentException( sprintf( self::$ERRx, $type ));
-        }
+    public function setFcnInvoke( array $fcnInvokes ) {
+        $this->fcnInvoke = ChainInvokeMgr::init( $this )->setInvokes( $fcnInvokes );
         return $this;
     }
 

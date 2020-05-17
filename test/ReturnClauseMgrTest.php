@@ -360,14 +360,12 @@ class ReturnClauseMgrTest extends TestCase
                 break;
             case (( ReturnClauseMgr::THIS_KW == $prefix ) &&
                 is_string( $subject ) && ! empty( $index )) :
-                if( ! Util::isVarPrefixed( $subject )) {
-                    $subject = ReturnClauseMgr::VARPREFIX . $subject;
-                }
+                $subject = Util::setVarPrefix( $subject );
                 $rcm->setThisPropertySource( $subject, $index );
                 $case .= '-4';
                 break;
             case ( empty( $prefix ) && Util::isVarPrefixed( $subject )) :
-                $subject = substr( $subject, 1 );
+                $subject = Util::unSetVarPrefix( $subject );
                 $rcm->setVariableSource( $subject, $index );
                 $case .= '-5';
                 break;
@@ -482,6 +480,13 @@ class ReturnClauseMgrTest extends TestCase
         if( DISPLAYrcm ) {
             echo __FUNCTION__ . ' ' . $case . ' ' . $code;
         }
+    }
+
+    /**
+     * @test
+     */
+    public function returnClauseMgrTest4() {
+        $this->assertEquals( '        return;' , ReturnClauseMgr::factory()->toArray()[0] );
     }
 
     /**

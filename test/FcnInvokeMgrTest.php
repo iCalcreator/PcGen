@@ -178,7 +178,7 @@ class FcnInvokeMgrTest extends TestCase
             $case . ' actual : ' . trim( $code ). ' expected : ' . $expFcnName
         );
 
-        $name = Util::isVarPrefixed( $name ) ? substr( $name, 1 ) : $name;
+        $name = Util::unSetVarPrefix( $name );
         if( empty( $argSet )) {
             $case .= '-A ';
             $expected = EntityMgr::factory( $class, $name )->setForceVarPrefix( false )->toString() . '()';
@@ -203,9 +203,7 @@ class FcnInvokeMgrTest extends TestCase
         }
 
         if( is_string( $argSet )) {
-            if( Util::isVarPrefixed( $argSet ) ) {
-                $argSet = substr( $argSet, 1 );
-            }
+            $argSet = Util::unSetVarPrefix( $argSet );
             $expected = $invokeFcn . '( $' . $argSet . ' )';
             $this->assertEquals(
                 $expected,
@@ -217,9 +215,7 @@ class FcnInvokeMgrTest extends TestCase
             }
         }
         elseif( is_string( $argSet[0] )) {
-            if( Util::isVarPrefixed( $argSet[ 0 ] ) ) {
-                $argSet[0] = substr( $argSet[0], 1 );
-            }
+            $argSet[0] = Util::unSetVarPrefix( $argSet[0] );
             $expected = $invokeFcn . '( $' . $argSet[0];
             $this->assertTrue(
                 ( false !== strpos( $code, $expected )),
@@ -231,9 +227,7 @@ class FcnInvokeMgrTest extends TestCase
         }
         else {
             foreach( $argSet as $aIx => $arg ) {
-                if( Util::isVarPrefixed( $arg[ 0 ] ) ) {
-                    $arg[0] = substr( $arg[0], 1 );
-                }
+                $arg[0] = Util::unSetVarPrefix( $arg[0] );
                 $expected = ' $' . $arg[0];
                 $this->assertTrue(
                     ( false !== strpos( $code, $expected )),
@@ -278,7 +272,7 @@ class FcnInvokeMgrTest extends TestCase
     /**
      * @test
      */
-    public function FcnInvokeMgrTest72() {
+    public function FcnInvokeMgrTest43() {
         try {
             FcnInvokeMgr::init()->toArray();
             $this->assertTrue( false );
@@ -297,6 +291,117 @@ class FcnInvokeMgrTest extends TestCase
 
         try {
             FcnInvokeMgr::init()->setIsStatic( true );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+    }
+
+    /**
+     * Testing AssignClauseMgr and ChainInvokeMgr (consecutive invokes, FcnInvokeMgr) as source
+     *
+     * @test
+     */
+    public function ChainInvokeMgrTest56() {
+        $invokes = [
+            FcnInvokeMgr::factory( 'SourceClass', FcnInvokeMgr::FACTORY, [ 'arg11', 'arg12' ] ),
+            FcnInvokeMgr::factory( 'SourceClass', 'method2', [ 'arg21', 'arg22' ] ),
+            FcnInvokeMgr::factory( 'SourceClass', 'method3', [ 'arg31', 'arg32' ] ),
+            FcnInvokeMgr::factory( 'SourceClass', 'method4', [ 'arg41', 'arg42' ] ),
+            FcnInvokeMgr::factory( 'SourceClass', __FUNCTION__ )
+        ];
+
+        $rcm = ReturnClauseMgr::init()
+            ->setBaseIndent()
+            ->setFcnInvoke( $invokes );
+        $code = ltrim( $rcm->toString());
+        $this->assertEquals(
+            'return SourceClass::factory( $arg11, $arg12 )' . PHP_EOL .
+            '    ->method2( $arg21, $arg22 )' . PHP_EOL .
+            '    ->method3( $arg31, $arg32 )' . PHP_EOL .
+            '    ->method4( $arg41, $arg42 )' . PHP_EOL .
+            '    ->' . __FUNCTION__ . '();' . PHP_EOL,
+            $code
+        );
+        if( DISPLAYfim ) {
+            echo $code . PHP_EOL;
+        }
+
+        $acm = AssignClauseMgr::init()
+            ->setBaseIndent()
+            ->setTarget( null, 'target' );
+        foreach( $invokes as $invoke ) {
+            $acm->appendInvoke( $invoke );
+        }
+        $code = ltrim( $acm->toString());
+        $this->assertEquals(
+            '$target = SourceClass::factory( $arg11, $arg12 )' . PHP_EOL .
+            '    ->method2( $arg21, $arg22 )' . PHP_EOL .
+            '    ->method3( $arg31, $arg32 )' . PHP_EOL .
+            '    ->method4( $arg41, $arg42 )' . PHP_EOL .
+            '    ->' . __FUNCTION__ . '();' . PHP_EOL,
+            $code
+        );
+        if( DISPLAYfim ) {
+            echo $code . PHP_EOL;
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function ChainInvokeMgrTest57() {
+        try {
+            $rcm = ReturnClauseMgr::init()
+                ->setFcnInvoke(
+                    [
+                        FcnInvokeMgr::factory( null, FcnInvokeMgr::FACTORY),
+                        FcnInvokeMgr::factory( null, 'method2'),
+                    ]
+                );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+
+        try {
+            $rcm = ReturnClauseMgr::init()
+                ->setFcnInvoke(
+                    [
+                        FcnInvokeMgr::factory( 'SourceClass', FcnInvokeMgr::FACTORY),
+                        FcnInvokeMgr::factory( null, 'method2'),
+                    ]
+                );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+
+        try {
+            $rcm = ReturnClauseMgr::init()
+                ->setFcnInvoke(
+                    [
+                        FcnInvokeMgr::factory( null, FcnInvokeMgr::FACTORY),
+                        FcnInvokeMgr::factory( 'SourceClass', 'method2'),
+                    ]
+                );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+
+        try {
+            $rcm = ReturnClauseMgr::init()
+                ->setFcnInvoke(
+                    [
+                        FcnInvokeMgr::factory( 'SourceClass', FcnInvokeMgr::FACTORY),
+                        FcnInvokeMgr::factory( 'ns\123\src\Klass', 'method2'),
+                    ]
+                );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {

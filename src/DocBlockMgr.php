@@ -163,7 +163,7 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
     private function initCode( & $addEmptyRow ) {
         static $START = '%s/**';
         $addEmptyRow  = false;
-        return [ self::$SP0, sprintf( $START, $this->baseIndent ) ];
+        return [ self::SP0, sprintf( $START, $this->baseIndent ) ];
     }
 
     /**
@@ -352,7 +352,7 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
             if( is_array( $tagType )) {
                 $tagType = implode( $PIPE, $tagType );
             }
-            $tagText = self::VARPREFIX . Assert::assertPhpVar( $tagText );
+            $tagText = Util::setVarPrefix( Assert::assertPhpVar( $tagText ));
         }
         if( ! isset( $this->tags[$tagName] )) {
             $this->tags[$tagName] = [];
@@ -400,6 +400,7 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      *
      * @param string $tagType
      * @return string
+     * @todo move to assert::varType? const/fqcn, also in VarDto
      */
     private static function assertTagType( $tagType ) {
         if( ! is_array( $tagType )) {
@@ -407,11 +408,18 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
         }
         foreach( $tagType as & $theTagType ) {
             foreach( self::$VARTYPELIST as $validTagType ) {
-                if( 0 === strcasecmp( $theTagType, $validTagType ) ) {
-                    $theTagType = $validTagType;
-                    break;
-                }
-            }
+                switch( true ) {
+                    case ( 0 == strcasecmp( self::BOOLEAN_T , $theTagType )) :
+                        $theTagType = self::BOOL_T;
+                        break 2;
+                    case ( 0 == strcasecmp( self::BOOLEANARRAY_T , $theTagType )) :
+                        $theTagType = self::BOOLARRAY_T;
+                        break 2;
+                    case ( 0 === strcasecmp( $theTagType, $validTagType )) :
+                        $theTagType = $validTagType;
+                        break 2;
+                } // end switch
+            } // end foreach
         } // end foreach
         return ( 1 == count( $tagType )) ? reset( $tagType ) : $tagType;
     }

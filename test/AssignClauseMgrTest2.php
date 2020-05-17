@@ -67,7 +67,7 @@ class AssignClauseMgrTest2 extends TestCase
     /**
      * Testing AssignClauseMgr and FcnInvokeMgr as source
      *
-     * Samer intro as in ReturnClauseMgrTest2::ReturnClauseMgrTest21()
+     * Same intro as in ReturnClauseMgrTest2::ReturnClauseMgrTest21()
      *
      * @test
      * @dataProvider AssignClauseMgrTest21DataProvider
@@ -92,13 +92,13 @@ class AssignClauseMgrTest2 extends TestCase
             case (( 1 == $initNo ) ||
                 empty( $method[0] ) ||
                 (( FcnInvokeMgr::THIS_KW != $method[0] ) && ! Util::isVarPrefixed( $method[0] ))) :
-                $acm->setFcnInvoke( FcnInvokeMgr::factory( $method[0], $method[1], $argset ));
+                $acm->appendInvoke( FcnInvokeMgr::factory( $method[0], $method[1], $argset ));
                 $initNo = 1;
                 break;
             case ( 2 == $initNo ) :
-                $acm->setFcnInvoke( FcnInvokeMgr::factory( $method[0], $method[1], $argset ));
-                $acm->appendChainedInvoke( FcnInvokeMgr::factory( '$testClass1', 'testMethod1', $argset ));
-                $acm->appendChainedInvoke( FcnInvokeMgr::factory( '$testClass2', 'testMethod2' ));
+                $acm->appendInvoke( FcnInvokeMgr::factory( $method[0], $method[1], $argset ));
+                $acm->appendInvoke( FcnInvokeMgr::factory( '$testClass1', 'testMethod1', $argset ));
+                $acm->appendInvoke( FcnInvokeMgr::factory( '$testClass2', 'testMethod2' ));
                 break;
             default :
                 $acm->setFcnInvoke(

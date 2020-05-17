@@ -108,17 +108,23 @@ Inherited [Common methods]
 ---
 
 ```AssignClauseMgr::getSource()```
-* Return _EntityMgr_
+* Return [EntityMgr]
 
 ```AssignClauseMgr::isSourceSet()```
 * Return _bool_ true if not null
 
 ```AssignClauseMgr::setSource( class [, variable [, index ]] )```
-* ```class``` _string_|[EntityMgr] if string, one of null, self, $this, 'otherClass', '$class'
+* ```class``` _string_ if string, one of null, self, $this, 'otherClass', '$class'
   * convenient constants found in PcGenInterface 
 * ```variable``` _string_ class/variable/property/constant name
   * variable $-prefixed
 * ```index```  _int_|_string_ opt array index
+* Return static
+* Throws InvalidArgumentException
+
+```AssignClauseMgr::setSource( source )```
+* ```source``` [EntityMgr]
+  *  note ```EntityMgr``` below
 * Return static
 * Throws InvalidArgumentException
 
@@ -152,15 +158,37 @@ Inherited [Common methods]
 ---
 
 ```AssignClauseMgr::getFcnInvoke()```
-* Return [ChainInvokeMgr] (manages single or chained [FcnInvokeMgr]s)
+* Return [ChainInvokeMgr]  (manages single or chained [FcnInvokeMgr]s)
 
 ```AssignClauseMgr::isFcnInvokeSet()```
 * Return _bool_ true if not null
 
-```AssignClauseMgr::setFcnInvoke( fcnInvoke )```
-* ```fcnInvoke``` [FcnInvokeMgr] | [FcnInvokeMgr]\[]  
+```AssignClauseMgr::appendInvoke( fcnInvoke )```
+* ```fcnInvoke``` [FcnInvokeMgr]
 * Return static
 * Throws InvalidArgumentException
+
+```AssignClauseMgr::setFcnInvoke( fcnInvoke )```
+* ```fcnInvoke``` [FcnInvokeMgr]\[]  
+* Return static
+* Throws InvalidArgumentException
+
+Note on chained invokes
+* The first must have a "class" : parent, self, $this, 'otherClass', '$class' when next is set
+* All but first must have $this, 'otherClass', '$class'
+
+Ex on _AssignClauseMgr::setFcnInvoke_ input
+```
+[
+    FcnInvokeMgr::factory( 'aClass', 'factory', [ 'arg1', 'arg2' ] ),
+    FcnInvokeMgr::factory( 'aClass', 'someMethod', [ 'arg3', 'arg4' ] )
+]
+``` 
+results in 
+```
+aClass::factory( $arg1, arg2 )
+    ->someMethod( $arg3, arg4 );
+```
 ---
 
 ```AssignClauseMgr::setOperator( operator )```
@@ -170,6 +198,14 @@ Inherited [Common methods]
 * Throws InvalidException
 ---
 
+#### Misc
+
+_EntityMgr_ instance creation ([EntityMgr])<br><br>
+```EntityMgr::factory( class , fcnName )```
+* ```class```, _string_, one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
+  * convenient constants found in PcGenInterface
+* ```fcnName``` _string_, the name
+---
 <small>Return to [README] - [Summary]</small>
 
 [ChainInvokeMgr]:ChainInvokeMgr.md

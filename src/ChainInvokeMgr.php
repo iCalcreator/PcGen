@@ -32,19 +32,19 @@ final class ChainInvokeMgr extends BaseA
     /**
      * @var FcnInvokeMgr[]
      */
-    private $chainInvokes = [];
+    private $invokes = [];
 
     /**
      * @var null
      */
-    private $chainClass = null;
+    private $invokeClass = null;
 
     /**
      * @param FcnInvokeMgr ...$args
      * @return static
      */
     public static function factory( ...$args ) {
-        return self::init()->setChainInvokes( $args );
+        return self::init()->setInvokes( $args );
     }
 
     /**
@@ -53,18 +53,28 @@ final class ChainInvokeMgr extends BaseA
      */
     public function toArray() {
         static $ERR = 'No function directives';
-        if( ! $this->isChainInvokesSet()) {
+        if( ! $this->isInvokesSet()) {
             throw new RuntimeException( $ERR );
         }
-        $count = count( $this->chainInvokes );
-        $code  = [ rtrim( $this->chainInvokes[0]->toString()) ];
-        if( 1 == $count ) {
+        $cnt1 = count( $this->invokes );
+        $code = [ rtrim( $this->invokes[0]->toString()) ];
+        if( 1 == $cnt1 ) {
             return $code;
         }
-        $len    = strlen( $this->chainClass );
-        $ind    = $this->getBaseIndent() . $this->getIndent();
-        for( $ifx = 1; $ifx < $count; $ifx++ ) {
-            $code[] = $ind . substr( rtrim( $this->chainInvokes[$ifx]->toString()), $len );
+        $repl = Util::setVarPrefix( $this->invokeClass );
+        $ind  = $this->getBaseIndent() . $this->getIndent();
+        for( $ifx = 1; $ifx < $cnt1; $ifx++ ) { // all next displ without class, now has all $-prefix
+            $invoke = $this->invokes[$ifx]->toArray();
+            $code[] = $this->getIndent() . str_replace( $repl, self::SP0, trim( $invoke[0] ));
+            $cnt2   = count( $invoke );
+            if( 1 == $cnt2 ) {
+                continue;
+            }
+            $cnt2  -= 1;
+            for( $iVx = 1; $iVx < $cnt2; $iVx++ ) {
+                $code[] = $ind . trim( $invoke[$iVx] );
+            }
+            $code[] = $this->getBaseIndent() . trim( $invoke[$iVx] ); // last invoke row
         }
         return $code;
     }
@@ -72,57 +82,91 @@ final class ChainInvokeMgr extends BaseA
     /**
      * @return FcnInvokeMgr[]
      */
-    public function getChainInvokes() {
-        return $this->chainInvokes;
+    public function getInvokes() {
+        return $this->invokes;
     }
 
     /**
      * @return bool
      */
-    public function isChainInvokesSet() {
-        return ( ! empty( $this->chainInvokes ));
+    public function isInvokesSet() {
+        return ( ! empty( $this->invokes ));
     }
 
     /**
-     * Append FcnInvokeMgr to chained invokes, only $this or $class allowed for first if next is set
+     * Append FcnInvokeMgr with chained invoke, support one-liners
      *
-     * @param FcnInvokeMgr $chainedInvoke
+     * First must have "class" : parent, self, $this, 'otherClass', '$class' when next is set
+     * Next must have $this, 'otherClass', '$class'
+     * For all but first, first  "class"  is set as 'sourceClass'
+     *
+     * @param FcnInvokeMgr $invoke
      * @return static
      * @throws InvalidArgumentException
      */
-    public function appendChainedInvoke( FcnInvokeMgr $chainedInvoke ) {
-        $firstInvoke = empty( $this->chainInvokes );
-        $chainClass  = $chainedInvoke->getName()->getClass();
+    public function appendInvoke( FcnInvokeMgr $invoke ) {
+        static $ERR1 = 'Invalid first \'%s\' for next \'%s\'';
+        static $ERR2 = 'First \'%s\', invalid next \'%s\'';
         switch( true ) {
-            case $firstInvoke :
-                $this->chainClass = $chainedInvoke->getName()->getClass();
+            case empty( $this->invokes ) : // first invoke, accepts all
+                $this->invokeClass = $invoke->getName()->getClass();
                 break;
-            case (( FcnInvokeMgr::THIS_KW != $this->chainClass ) && ! Util::isVarPrefixed( $this->chainClass )) :
-                // 2nd invoke require this or $class already set
-                throw new InvalidArgumentException( sprintf( self::$ERRx, $chainClass ));
+            case empty( $this->invokeClass ) :
+                throw new InvalidArgumentException(
+                    sprintf( $ERR1,
+                        trim( $this->invokes[0]->toString()),
+                        trim( $invoke->toString())
+                    )
+                );
                 break;
-            case (( FcnInvokeMgr::THIS_KW != $chainClass ) && ! Util::isVarPrefixed( $chainClass )) :
-                // next invoke require this or $class set
-                throw new InvalidArgumentException( sprintf( self::$ERRx, $chainClass ));
+            case ( ! self::evaluateClass( $invoke->getName()->getClass())) :
+                throw new InvalidArgumentException(
+                    sprintf( $ERR2,
+                        trim( $this->invokes[0]->toString()),
+                        trim( $invoke->toString())
+                    )
+                );
                 break;
-            default :
-                $chainedInvoke->getName()->setClass( $this->chainClass );
+            default : // next invoke, force same class as first
+                $invoke->getName()->setClass( Util::setVarPrefix( $this->invokeClass ));
                 break;
         }
-        $this->chainInvokes[] = $chainedInvoke;
+        $this->invokes[] = $invoke->rig( $this );
         return $this;
     }
 
     /**
-     * @param FcnInvokeMgr[] $chainInvokes
+     * Most (all?) errors here catched by FcnInvokeMgr/EntityMgr
+     *
+     * @param string $invokeClass
+     * @return bool
+     */
+    private static function evaluateClass( $invokeClass ) {
+        if( empty( $invokeClass )) {
+            return false;
+        }
+        if( self::THIS_KW == $invokeClass ) {
+            return true;
+        }
+        $invokeClass = Util::unSetVarPrefix( $invokeClass );
+        try {
+            Assert::assertFqcn( $invokeClass );
+            return true;
+        }
+        catch( InvalidArgumentException $e ) {}
+        return false;
+    }
+
+    /**
+     * @param FcnInvokeMgr[] $invokes
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setChainInvokes( array $chainInvokes ) {
-        $this->chainInvokes = [];
-        $this->chainClass   = null;
-        foreach( array_keys( $chainInvokes ) as $fIx ) {
-            $this->appendChainedInvoke( $chainInvokes[ $fIx ] );
+    public function setInvokes( array $invokes ) {
+        $this->invokes     = [];
+        $this->invokeClass = null;
+        foreach( array_keys( $invokes ) as $fIx ) {
+            $this->appendInvoke( $invokes[ $fIx ] );
         }
         return $this;
     }

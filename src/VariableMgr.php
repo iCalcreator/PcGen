@@ -105,19 +105,19 @@ class VariableMgr extends BaseC
      * @return string
      */
     public function __toString() {
-        $string  = empty( $this->varDto ) ? self::$SP0 : $this->varDto;
+        $string  = empty( $this->varDto ) ? self::SP0 : $this->varDto;
         $string .= ', visibility : \'' . $this->getVisibility() . '\'';
         $string .= ', isStatic : ' . var_export( $this->isStatic(), true );
         $string .= ', isConst : ' . var_export( $this->isConst(), true );
         switch( true ) {
             case $this->isBodySet() :  // closure or expression
-                $string .= PHP_EOL . 'closure : ' . var_export( $this->renderClosureBody( self::$SP0 ), true );
+                $string .= PHP_EOL . 'closure : ' . var_export( $this->renderClosureBody( self::SP0 ), true );
                 break;
             case $this->isCallBackSet() : // callable
-                $string .= ', callback' . implode( self::$SP0, $this->renderCallBlack( self::$SP0 ));
+                $string .= ', callback' . implode( self::SP0, $this->renderCallBlack( self::SP0 ));
                 break;
             default :
-                $string .= ', initValue : ' . implode( self::$SP0, $this->renderInitValue( self::$SP0 ));
+                $string .= ', initValue : ' . implode( self::SP0, $this->renderInitValue( self::SP0 ));
                 break;
         } // end switch
         return $string;
@@ -139,16 +139,16 @@ class VariableMgr extends BaseC
         $row = $this->baseIndent;
         if( $this->isVisibilitySet() &&
             ( ! $this->isConst() || (( 7 <= PHP_MAJOR_VERSION ) && ( 1 <= PHP_MINOR_VERSION )))) {
-            $row .= $this->visibility . self::$SP1;
+            $row .= $this->visibility . self::SP1;
         }
         if( $this->isConst()) {
             $row .= sprintf( $CONSTTMPL, self::CONST_, strtoupper( $this->varDto->getName()));
         }
         else {
             if( $this->isStatic()) {
-                $row .= self::$STATIC . self::$SP1;
+                $row .= self::$STATIC . self::SP1;
             }
-            $row .= self::VARPREFIX . $this->varDto->getName();
+            $row .= Util::setVarPrefix( $this->varDto->getName());
         }
         $row .= $this->getOperator( false );
         switch( true ) {
@@ -187,20 +187,22 @@ class VariableMgr extends BaseC
      */
     private function renderCallBlack( $row ) {
         if( is_string( $this->callback )) {
-            $cb = Util::isVarPrefixed( $this->callback )
-                ? $this->callback
-                : sprintf( self::$QUOTE, $this->callback );
-            return [ $row . $cb . self::$CLOSECLAUSE ];
+            return [ $row . self::renderCallBlackClass( $this->callback ) . self::$CLOSECLAUSE ];
         }
         // array
-        $code[] = $row . self::$ARRSTART;
-        $cb     = Util::isVarPrefixed( $this->callback[ 0 ] )
-            ? $this->callback[0]
-            : sprintf( self::$QUOTE, $this->callback[0] );
-        $code[] = $this->baseIndent . $this->indent . $cb . self::$COMMA;
+        $code[]  = $row . self::$ARRSTART;
+        $code[] = $this->baseIndent . $this->indent . self::renderCallBlackClass( $this->callback[0] ) . self::$COMMA;
         $code[] = $this->baseIndent . $this->indent . sprintf( self::$QUOTE, $this->callback[1] );
         $code[] = $this->baseIndent . self::$ARREND . self::$CLOSECLAUSE;
         return $code;
+    }
+
+    /**
+     * @param string $class
+     * @return string
+     */
+    private static function renderCallBlackClass( $class ) {
+        return Util::isVarPrefixed( $class ) ? $class : sprintf( self::$QUOTE, $class );
     }
 
     /**

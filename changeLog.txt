@@ -1,10 +1,17 @@
 
+1.1.25 Util upd
+1.1.24 ClassMgr::add/setProperties() bugs
+1.1.23 ChainInvokeMgr::appendInvoke() upd, err mgnt
+1.1.22 ReturnClauseMgr::toArray() upd
+1.1.21 PcGenInterface, VarDto::setVarType(), Util::renderScalarValue() (bool type) upd/bugs
+1.1.20 ClassMethodFactory::renderGetterMethod() fcnName upd
+
 1.1.19 Upd Iterator impl, ClassMgr+ClassMethodFactory
 
 1.1.18  conform constructs: BaseA, ClassMgr, VariableMgr
 1.1.17  ArgumentTrait::renderArguments() bug
 1.1.16  assert indents
-1.1.15  ClassMethodFactory::renderFactoryMethod(), tag 'todo' if parent class exists
+1.1.15  ClassMethodFactory::renderFactoryMethod(), upd tag 'todo'
 
 1.1.14 upd docs
 1.1.13 autodetect constant removed, EntityMgr, BaseR1::setSource()

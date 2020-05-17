@@ -86,6 +86,21 @@ Inherited [Common methods]
 * Return static
 * Throws InvalidArgumentException
 
+```ReturnClauseMgr::setThisPropertySource( property [, index ] )```
+* convenient shortcut for ```ReturnClauseMgr::setSource()```
+* Give source result ```$this->property```
+* ```property``` _string_
+* ```index```  _int_|_string_ opt array index
+* Return static
+* Throws InvalidArgumentException
+
+```ReturnClauseMgr::setVariableSource( variable [, index ] )```
+* convenient shortcut for ```ReturnClauseMgr::setSource()```
+* Give source result ```$variable```
+* ```variable``` _string_
+* ```index```  _int_|_string_ opt array index
+* Return static
+* Throws InvalidArgumentException
 
 ```ReturnClauseMgr::setSourceIsConst( isConst )```
  * Results in uppercase constant
@@ -109,10 +124,32 @@ Inherited [Common methods]
 ```ReturnClauseMgr::isFcnInvokeSet()```
 * Return _bool_ true if not null
 
-```ReturnClauseMgr::setFcnInvoke( fcnInvoke )```
-* ```fcnInvoke``` [FcnInvokeMgr] | [FcnInvokeMgr]\[]  
+```ReturnClauseMgr::appendInvoke( fcnInvoke )```
+* ```fcnInvoke``` [FcnInvokeMgr]
 * Return static
 * Throws InvalidArgumentException
+
+```ReturnClauseMgr::setFcnInvoke( fcnInvoke )```
+* ```fcnInvoke``` [FcnInvokeMgr]\[]
+* Return static
+* Throws InvalidArgumentException
+
+Note on chained invokes
+* The first must have a "class" : parent, self, $this, 'otherClass', '$class' when next is set
+* All but first must have $this, 'otherClass', '$class'
+
+Ex on _ReturnClauseMgr::setFcnInvoke_ input
+```
+[
+    FcnInvokeMgr::factory( 'aClass', 'factory', [ 'arg1', 'arg2' ] ),
+    FcnInvokeMgr::factory( 'aClass', 'someMethod', [ 'arg3', 'arg4' ] )
+]
+``` 
+results in 
+```
+aClass::factory( $arg1, arg2 )
+    ->someMethod( $arg3, arg4 );
+```
 ---
 
 

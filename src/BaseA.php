@@ -83,8 +83,6 @@ abstract class BaseA implements PcGenInterface
      */
     protected static $COMMA = ',';
     protected static $CRLFs = [ "\r\n", "\n\r", "\n", "\r" ];
-    public    static $SP0   = '';
-    public    static $SP1   = ' ';
     protected static $ERR1  = 'Empty argument %s';
     public    static $ERRx  = 'Invalid argument(s) %s';
 
@@ -192,7 +190,7 @@ abstract class BaseA implements PcGenInterface
             for( $pos = 0; $pos < strlen( $eol ); $pos++ ) {
                 $ords[] = ord( substr( $eol, $pos, 1 ));
             }
-            throw new InvalidArgumentException( sprintf( self::$ERRx, implode( self::$SP1, $ords )));
+            throw new InvalidArgumentException( sprintf( self::$ERRx, implode( self::SP1, $ords )));
         }
         $this->eol = $eol;
         return $this;
@@ -211,7 +209,7 @@ abstract class BaseA implements PcGenInterface
      */
     public function setIndent( $indent = null ) {
         if( null === $indent ) {
-            $this->indent = self::$SP0;
+            $this->indent = self::SP0;
         }
         else {
             Assert::assertIndent( $indent );
@@ -233,12 +231,23 @@ abstract class BaseA implements PcGenInterface
      */
     public function setBaseIndent( $indent = null ) {
         if( null === $indent ) {
-            $this->baseIndent = self::$SP0;
+            $this->baseIndent = self::SP0;
         }
         else {
             Assert::assertIndent( $indent );
             $this->baseIndent = Util::nullByteClean( $indent );
         }
+        return $this;
+    }
+
+    /**
+     * @param BaseA $base
+     * @return static
+     */
+    public function rig( BaseA $base ) {
+        $this->setEol( $base->getEol());
+        $this->setIndent( $base->getIndent());
+        $this->setBaseIndent( $base->getBaseIndent());
         return $this;
     }
 

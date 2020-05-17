@@ -101,7 +101,7 @@ final class FcnInvokeMgr extends BaseA
                 $this->name = $class->setForceVarPrefix( false );
                 break;
             case ( ! empty( $fcnName )) :
-                $fcnName    = Assert::assertPhpVar( $fcnName ); // skip $-class
+                $fcnName    = Assert::assertPhpVar( $fcnName ); // skip $-class-prefix
                 $this->name = EntityMgr::init( $this )
                     ->setClass( $class )
                     ->setVariable( $fcnName )
@@ -111,7 +111,7 @@ final class FcnInvokeMgr extends BaseA
                 throw new InvalidArgumentException(
                     sprintf(
                         self::$ERRx,
-                        var_export( $fcnName, true ) . self::$SP1 .  var_export( $fcnName, true )
+                        var_export( $fcnName, true ) . self::SP1 .  var_export( $fcnName, true )
                     )
                 );
                 break;

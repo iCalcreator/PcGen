@@ -108,8 +108,12 @@ interface PcGenInterface
     /**
      * Misc
      */
+    const BOOLEAN_T         = 'boolean';
+    const BOOLEANARRAY_T    = 'boolean[]';
     const CONST_            = 'const';
     const FACTORY           = 'factory';
+    const SP0               = '';
+    const SP1               = ' ';
     const VARPREFIX         = '$';
 
 }

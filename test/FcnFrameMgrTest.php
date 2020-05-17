@@ -1276,15 +1276,20 @@ class FcnFrameMgrTest extends TestCase
     }
 
     /**
-     * Testing empty by-reference
+     * Testing by-reference, boolean, boolean[] and __toString()
      *
      * @test
      */
     public function argumentDtoTest11() {
         $this->assertTrue(
-            ArgumentDto::factory( 'test' )
-                       ->setByReference( true )
-                       ->isByReference()
+            ArgumentDto::factory( 'test', ArgumentDto::BOOLEAN_T )
+                ->setByReference( true )
+                ->isByReference()
+        );
+        $this->assertTrue(
+            is_string(
+                ArgumentDto::factory( 'test', ArgumentDto::BOOLEANARRAY_T )->__toString()
+            )
         );
     }
 

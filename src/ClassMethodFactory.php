@@ -121,7 +121,6 @@ class ClassMethodFactory implements PcGenInterface
      * @return void
      */
     private static function renderPropertyAssignSetCode( PropertyMgr $property, array & $code ) {
-        static $SP0 = '';
         static $INSTANCE = '$instance';
         static $SET = 'set';
         static $END = ';';
@@ -130,7 +129,7 @@ class ClassMethodFactory implements PcGenInterface
             ->setClass( $INSTANCE )
             ->setForceVarPrefix( false );
         if( $property->isMakeSetter() ) { // use property set-method
-            $row  = FcnInvokeMgr::init( $property->getEol(), $SP0, $SP0 )
+            $row  = FcnInvokeMgr::init( $property->getEol(), self::SP0, self::SP0 )
                 ->setName( $target->setVariable( $SET . ucfirst( $propName )))
                 ->addArgument( $propName )
                 ->toString();
@@ -139,7 +138,7 @@ class ClassMethodFactory implements PcGenInterface
         }
         // update class property direct, has no set-method
         $code = array_merge( $code,
-            AssignClauseMgr::init( $property->getEol(), $SP0, $SP0 )
+            AssignClauseMgr::init( $property->getEol(), self::SP0, self::SP0 )
                 ->setTarget( $target->setVariable( $propName ))
                 ->setVariableSource( $propName )
                 ->toArray()
@@ -163,11 +162,20 @@ class ClassMethodFactory implements PcGenInterface
         static $SUMMARY = 'Return %s %s';
         $propName = $property->getName();
         $varType  = $property->getVarDto()->getParamTagVarType();
-        $prefix   = ( self::BOOL_T == $varType ) ? $IS : $GET;
+        switch( true ) {
+            case ( 0 == strcasecmp( $IS, substr( $propName, 0, 2 ))) :
+                $fcnName = $propName;
+                break;
+            case ( self::BOOL_T == $varType ) :
+                $fcnName = $IS . ucfirst( $propName );
+                break;
+            default :
+                $fcnName = $GET . ucfirst( $propName );
+        }
         $fcnFrameMgr = FcnFrameMgr::init( $property )
-            ->setName( $prefix . ucfirst( $propName ))
+            ->setName( $fcnName )
             ->setReturnProperty( $propName );
-        if( ! empty( $varType ) && ( self::MIXED_KW !== $varType )) {
+        if( ! empty( $varType ) && ! is_array( $varType ) && ( self::MIXED_KW != $varType )) {
             $fcnFrameMgr->setReturnType( $varType );
         }
         $code= array_merge( $code,
@@ -332,12 +340,11 @@ class ClassMethodFactory implements PcGenInterface
      */
     public static function renderSetterMethod( PropertyMgr $property, array & $code ) {
         $SET      = 'set';
-        $SP1      = ' ';
         $varDto   = $property->getVarDto();
         $propName = $varDto->getName();
         $code     = array_merge( $code,
             DocBlockMgr::init( $property )
-                ->setSummary( ucfirst( $SET ) . $SP1 . $propName )
+                ->setSummary( ucfirst( $SET ) . self::SP1 . $propName )
                 ->setTag( self::PARAM_T, $varDto->getParamTagVarType(), $propName )
                 ->setTag( self::RETURN_T, self::STATIC_KW )
                 ->toArray(),
@@ -369,7 +376,7 @@ class ClassMethodFactory implements PcGenInterface
                 $argument->getName(),
                 ( $argument->isNextVarPropIndex() ? self::ARRAY2_T : null )
             )
-            ->setSource( null, self::VARPREFIX . $argument->getName())
+            ->setSource( null, Util::setVarPrefix( $argument->getName()))
             ->toArray();
         if(( ArgumentDto::BEFORE != $argument->getUpdClassProp()) ||
             ! $argument->isDefaultSet() ||
@@ -692,7 +699,6 @@ class ClassMethodFactory implements PcGenInterface
         static $SUMMARY     = 'Seeks to a given position in the iterator';
         static $DESCRIPTION = 'Required method implementing the SeekableIterator interface';
         static $FCNNAME     = 'seek';
-        static $SP0         = '';
         static $ERRVARNAME  = 'ERRTXT';
         static $ERRVARTMPL  = 'Position %d not found!';
         static $CODETMPL    =
@@ -713,7 +719,7 @@ class ClassMethodFactory implements PcGenInterface
                 ->setName( $FCNNAME )
                 ->addArgument( $argument )
                 ->setBody(
-                    VariableMgr::init( null, $SP0, $SP0 )
+                    VariableMgr::init( null, self::SP0, self::SP0 )
                         ->setName( $ERRVARNAME )
                         ->setVisibility()
                         ->setStatic( true )

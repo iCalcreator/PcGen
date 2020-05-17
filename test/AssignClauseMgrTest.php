@@ -346,17 +346,13 @@ class AssignClauseMgrTest extends TestCase
 */
         switch( true ) {
             case ( AssignClauseMgr::THIS_KW == $targetArgSet[0] ) :
-                if( ! Util::isVarPrefixed( $targetArgSet[1] )) {
-                    $targetArgSet[1] = ReturnClauseMgr::VARPREFIX . $targetArgSet[1];
-                }
+                $targetArgSet[1] = Util::setVarPrefix( $targetArgSet[1] );
                 $acm = AssignClauseMgr::init()
                     ->setThisPropertyTarget( $targetArgSet[1], $targetArgSet[2] )
                     ->setSource( $sourceArgSet[0], $sourceArgSet[1], $sourceArgSet[2] );
                 break;
             case ( empty( $targetArgSet[0] )) :
-                if(  Util::isVarPrefixed( $targetArgSet[1] )) {
-                    $targetArgSet[1] = substr( $targetArgSet[1], 1 );
-                }
+                $targetArgSet[1] = Util::unSetVarPrefix( $targetArgSet[1] );
                 $acm = AssignClauseMgr::init()
                     ->setVariableTarget( $targetArgSet[1], $targetArgSet[2] )
                     ->setSource( $sourceArgSet[0], $sourceArgSet[1], $sourceArgSet[2] );
@@ -364,9 +360,7 @@ class AssignClauseMgrTest extends TestCase
 
             case (( AssignClauseMgr::THIS_KW == $sourceArgSet[0] ) &&
                 is_string( $sourceArgSet[1] ) && ! empty( $sourceArgSet[2] )) :
-                if( ! Util::isVarPrefixed( $sourceArgSet[1] )) {
-                    $sourceArgSet[1] = AssignClauseMgr::VARPREFIX . $sourceArgSet[1];
-                }
+                $sourceArgSet[1] = Util::setVarPrefix( $sourceArgSet[1] );
                 $acm = AssignClauseMgr::init()
                     ->setTarget( $targetArgSet[0], $targetArgSet[1], $targetArgSet[2] )
                     ->setThisPropertySource( $sourceArgSet[1], $sourceArgSet[2] );
@@ -374,7 +368,7 @@ class AssignClauseMgrTest extends TestCase
             case ( empty( $sourceArgSet[0] ) &&
                 is_string( $sourceArgSet[1] ) && Util::isVarPrefixed( $sourceArgSet[1] )
                 && empty( $sourceArgSet[2] )) :
-                $sourceArgSet[1] = substr( $sourceArgSet[1], 1 );
+                $sourceArgSet[1] = Util::unSetVarPrefix( $sourceArgSet[1] );
                 $acm = AssignClauseMgr::init()
                     ->setTarget( $targetArgSet[0], $targetArgSet[1], $targetArgSet[2] )
                     ->setVariableSource( $sourceArgSet[1], $sourceArgSet[2] );

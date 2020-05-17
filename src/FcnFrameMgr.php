@@ -110,21 +110,21 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         static $COLONSP1 = ': ';
         $row      = $this->baseIndent;
         if( $this->isVisibilitySet()) {
-            $row .= $this->visibility . self::$SP1;
+            $row .= $this->visibility . self::SP1;
         }
         if( $this->isStatic()) {
-            $row .= self::$STATIC . self::$SP1;
+            $row .= self::$STATIC . self::SP1;
         }
         $row     .= $FUNCTION;
         if( $this->isNameSet()) {  // no closure
-            $row .= self::$SP1 . $this->getName();
+            $row .= self::SP1 . $this->getName();
         }
         $code   = $this->renderArguments( $row );
         $code   = $this->renderClosureUseVariables( $code );
         $lastIx = count( $code ) - 1;
-        $code[$lastIx] .= self::$SP1;
+        $code[$lastIx] .= self::SP1;
         if(( 7 <= substr( self::getTargetPhpVersion(), 0, 1)) && $this->isReturnTypeSet()) {
-            $code[$lastIx] .= $COLONSP1 . $this->getReturnType() . self::$SP1;
+            $code[$lastIx] .= $COLONSP1 . $this->getReturnType() . self::SP1;
         }
         $code[$lastIx] .= self::$CODEBLOCKSTART;
         return $code;
@@ -145,16 +145,16 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         $cntUse  = count( $this->varUses );
         if( 4 < $this->getArgumentCount()) {
             $lastIx += 1;
-            $code[$lastIx] = self::$SP0;
+            $code[$lastIx] = self::SP0;
         }
-        $code[$lastIx] .= self::$SP1 . $USESTART . $ARGSTART;
+        $code[$lastIx] .= self::SP1 . $USESTART . $ARGSTART;
         if( 4 >= $cntUse ) {
             $code[$lastIx] .= self::renderArgsInOneRow( $this->varUses );
         }
         else {
             $this->renderArgsInRows( $this->varUses, $code );
             $lastIx += 1;
-            $code[$lastIx] = self::$SP0;
+            $code[$lastIx] = self::SP0;
         }
         $code[$lastIx] .= $ARGEND;
         return $code;
@@ -354,8 +354,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @throws InvalidArgumentException
      */
     public function setReturnVariable( $source, $index = null ) {
-        if( is_string( $source ) && ! Util::isVarPrefixed( $source ) ) {
-            $source = self::VARPREFIX . $source;
+        if( is_string( $source )) {
+            $source = Util::setVarPrefix( $source );
         }
         $this->setReturnValue( null, $source, $index );
         return $this;

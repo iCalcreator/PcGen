@@ -102,14 +102,14 @@ final class EntityMgr extends BaseA
     }
 
     /**
-     * @return string
+     * @return string  testing
      */
     public function __toString() {
-        return (( null === $this->class ) ? self::$SP1 : $this->class ) . ' - ' .
-            (( null === $this->variable ) ? self::$SP1 : $this->variable ) . ' - ' .
-            (( null === $this->index ) ? self::$SP1 : '[' . $this->index . ']' ) .
-            ', isStatic : ' . var_export( $this->isStatic(), true ) .
-            ', isConst : ' . var_export( $this->isConst(), true ) .
+        return (( null === $this->class ) ? self::SP1 : $this->class ) . ' - ' .
+            (( null === $this->variable ) ? self::SP1 : $this->variable ) . ' - ' .
+            (( null === $this->index ) ? self::SP1 : '[' . $this->index . ']' ) .
+            ', isStatic : ' . var_export( $this->isStatic, true ) .
+            ', isConst : ' . var_export( $this->isConst, true ) .
             ', $-force : ' . var_export( $this->forceVarPrefix, true );
     }
 
@@ -127,7 +127,7 @@ final class EntityMgr extends BaseA
      */
     public function toString() {
         if(( null === $this->class ) && ( null === $this->variable )) { // empty ??
-            return self::$SP0;
+            return self::SP0;
         }
         $row = $this->getPrefixCode();
         $row = $this->getSubjectCode( $row );
@@ -139,7 +139,7 @@ final class EntityMgr extends BaseA
      * @return string
      */
     private function getPrefixCode() {
-        $row          = self::$SP0;
+        $row = self::SP0;
         switch( true ) {
             case empty( $this->class ) :
                 break;
@@ -169,9 +169,7 @@ final class EntityMgr extends BaseA
                 if( ! empty( $this->class )) {
                     $row .= $COLONCOLON;
                 }
-                $row .= Util::isVarPrefixed( $this->variable )
-                    ? strtoupper( substr( $this->variable, 1 ))
-                    : strtoupper( $this->variable );
+                $row .= strtoupper( Util::unSetVarPrefix( $this->variable ));
                 break;
 
             case empty( $this->class ) :
@@ -207,13 +205,9 @@ final class EntityMgr extends BaseA
      */
     private function fixVariablePrefix( $expectVarPrefixed ) {
         if( $expectVarPrefixed ) {
-            return Util::isVarPrefixed( $this->variable )
-                ? $this->variable
-                : self::VARPREFIX . $this->variable;
+            return Util::setVarPrefix( $this->variable );
         }
-        return Util::isVarPrefixed( $this->variable )
-            ? substr( $this->variable, 1 )
-            : $this->variable;
+        return Util::unSetVarPrefix( $this->variable );
     }
 
     /**
@@ -317,9 +311,7 @@ final class EntityMgr extends BaseA
                 break;
             default :
                 $index = Assert::assertPhpVar( $index );
-                if( ! Util::isVarPrefixed( $index ) ) {
-                    $index = self::VARPREFIX . $index;
-                }
+                $index = Util::setVarPrefix( $index );
                 break;
         } // end switch
         $this->index = $index;

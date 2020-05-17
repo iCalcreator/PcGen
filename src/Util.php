@@ -133,18 +133,6 @@ class Util implements PcGenInterface
      * @param mixed $value
      * @return bool
      */
-    public static function isConstant( $value ) {
-        if( ! is_string( $value ) || Util::isVarPrefixed( $value ) ||
-            Util::isInt( substr( (string)$value, 0, 1 ))) {
-            return false;
-        }
-        return ( strtoupper( $value ) == $value );
-    }
-
-    /**
-     * @param mixed $value
-     * @return bool
-     */
     public static function isFloat( $value ) {
         static $FLOATS = [ 'double', 'float' ];
         static $PATTERN = "/^\\d+\\.\\d+$/";
@@ -165,8 +153,30 @@ class Util implements PcGenInterface
         return ( ! is_int( $value ) ? ctype_digit( $value ) : true );
     }
 
+    /**
+     * @param mixed $value
+     * @return bool
+     */
     public static function isVarPrefixed( $value ) {
         return ( is_string( $value ) && ( self::VARPREFIX == substr( $value, 0, 1 )));
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function setVarPrefix( $value ) {
+        $value = trim( $value );
+        return self::isVarPrefixed( $value ) ? $value : self::VARPREFIX . $value;
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function unSetVarPrefix( $value ) {
+        $value = trim( $value );
+        return self::isVarPrefixed( $value ) ? substr( $value, 1 )  : $value;
     }
 
     /**
@@ -177,7 +187,6 @@ class Util implements PcGenInterface
      */
     public static function nullByteClean( $value ) {
         static $CHR0 = null;
-        static $SP0 = '';
         if( null === $CHR0 ) {
             $CHR0 = chr( 0 );
         }
@@ -187,7 +196,7 @@ class Util implements PcGenInterface
             }
             return $value;
         }
-        return empty( $value ) ? $SP0 : str_replace( $CHR0, $SP0, $value );
+        return empty( $value ) ? self::SP0 : str_replace( $CHR0, self::SP0, $value );
     }
 
     /**
@@ -200,16 +209,21 @@ class Util implements PcGenInterface
         if( ! is_scalar( $value )) {
             throw new RuntimeException( sprintf( BaseA::$ERRx, var_export( $value, true )));
         }
-        static $TRUE   = 'true';
-        static $FALSE  = 'false';
-        static $DOT    = '.';
-        static $ZERO0  = '0.0';
-        static $SP0    = '';
-        static $ZERO   = '0';
-        static $Q2     = '"';
-        static $QUOTE1 = '\'%s\'';
-        static $QUOTE2 = '"%s"';
+        static $BOOLTYPES    = [ self::BOOL_T, self::BOOLEAN_T ];
+        static $BOOLVALUEARR = [ 'true', 'false' ];
+        static $TRUE    = 'true';
+        static $FALSE   = 'false';
+        static $DOT     = '.';
+        static $ZERO0   = '0.0';
+        static $ZERO    = '0';
+        static $Q2      = '"';
+        static $QUOTE1  = '\'%s\'';
+        static $QUOTE2  = '"%s"';
         switch( true ) {
+            case ( self::anyCaseStrInArray( $expType, $BOOLTYPES ) &&
+                is_string( $value ) && self::anyCaseStrInArray( $value, $BOOLVALUEARR )) :
+                return strtolower( $value );
+                break;
             case is_bool( $value ) :
                 return $value ? $TRUE : $FALSE;
                 break;
@@ -225,11 +239,14 @@ class Util implements PcGenInterface
                         // make float to string AND preserve fraction
                         $value     *= 1000000;
                         $precision = strlen( $value ) - strpos( $value, $DOT ) - 1 + 7;
-                        $value = rtrim( number_format( ( $value / 1000000 ), $precision, $DOT, $SP0 ), $ZERO );
+                        $value = rtrim(
+                            number_format( ( $value / 1000000 ), $precision, $DOT, self::SP0 )
+                            , $ZERO
+                        );
                         break;
                     default :
                         $precision = strlen( $value ) - strpos( $value, $DOT ) - 1;
-                        $value = number_format( $value, $precision, $DOT, $SP0 );
+                        $value = number_format( $value, $precision, $DOT, self::SP0 );
                 }
                 return ( self::STRING_T != $expType ) ? $value : sprintf( $QUOTE1, $value );
                 break;
@@ -237,7 +254,21 @@ class Util implements PcGenInterface
                 $tmpl = ( false !== strpos( $value, $Q2 )) ? $QUOTE1 : $QUOTE2;
                 return sprintf( $tmpl, $value );
                 break;
+        } // end switch
+    }
+
+    /**
+     * @param string $value
+     * @param array  $hayStack
+     * @return bool
+     */
+    private static function anyCaseStrInArray( $value, array $hayStack ) {
+        foreach( $hayStack as $item ) {
+            if( 0 == strcasecmp( $value, $item )) {
+                return true;
+            }
         }
+        return false;
     }
 
 }

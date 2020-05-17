@@ -157,12 +157,9 @@ final class AssignClauseMgr extends BaseR1
         if( ! is_string( $property )) {
             throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $property, true )));
         }
-        if( Util::isVarPrefixed( $property )) {
-            $property = substr( $property, 1 );
-        }
         $this->target = EntityMgr::init( $this )
             ->setClass( self::THIS_KW )
-            ->setVariable( $property );
+            ->setVariable( Util::unSetVarPrefix( $property ));
         if( null !== $index ) {
             $this->target->setIndex( $index );
         }
@@ -181,11 +178,8 @@ final class AssignClauseMgr extends BaseR1
         if( ! is_string( $variable )) {
             throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $variable, true )));
         }
-        if( ! Util::isVarPrefixed( $variable )) {
-            $variable = self::VARPREFIX . $variable;
-        }
         $this->target = EntityMgr::init( $this )
-            ->setVariable( $variable );
+            ->setVariable( Util::setVarPrefix( $variable ));
         if( null !== $index ) {
             $this->target->setIndex( $index );
         }

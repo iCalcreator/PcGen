@@ -178,10 +178,13 @@ DocBlock is always set up up with
 #### Misc
 
 For class property with the ```getter``` attribute set (true default), results in (property-)methods
-* _get\<Property>_, Return property value 
-* _is\<Property>Set_, Return bool true if set
-* _count\<Property>_, Return (int) number of array elements
-  * array type property only
+* property type bool
+  * _is\<Property>_, Return bool
+* property type non-bool
+  * _get\<Property>_, Return property value
+  * _is\<Property>Set_, Return bool true if set
+* property type array has also
+  * _count\<Property>_, Return (int) number of array elements
 
 For class with a single array property, in substitute of ```getter```-methods, 
 _SeekableIterator_, _Countable_ and _IteratorAggregate_ interfaces are supported 

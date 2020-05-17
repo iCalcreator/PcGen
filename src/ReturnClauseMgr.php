@@ -61,14 +61,13 @@ final class ReturnClauseMgr extends BaseR1
      * @throws RuntimeException
      */
     public function toArray() {
-        static $RETURN = 'return';
-        $row1 = $this->getbaseIndent() . $this->getIndent() . $RETURN;
+        $row1 = $this->getbaseIndent() . $this->getIndent() . self::RETURN_T;
         $code = $this->getRenderedSource();
-        if( empty( $code )) { // Source initiated null, null, null
+        if(( 1 == count( $code )) && empty( $code[0] )) { // Source initiated null, null, null
             $code = [ $row1 ];
         }
         else {
-            $code[0] = $row1 . self::$SP1 . $code[0];
+            $code[0] = $row1 . self::SP1 . $code[0];
         }
         $lastIx        = count( $code ) - 1;
         $code[$lastIx] = rtrim( $code[$lastIx] ) . self::$END;

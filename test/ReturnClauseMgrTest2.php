@@ -23,6 +23,7 @@
  */
 namespace Kigkonsult\PcGen;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 if( ! in_array( __DIR__ . '/FimDataProviderTrait.php', get_included_files())) {
@@ -70,8 +71,7 @@ class ReturnClauseMgrTest2 extends TestCase
      * @param string $expFcnName
      */
     public function ReturnClauseMgrTest21( $case, array $method, $argset, $expFcnName ) {
-        $rcm = ReturnClauseMgr::init( PHP_EOL, '    ' )
-            ->setBaseIndent( '    ' );
+        $rcm = ReturnClauseMgr::init( PHP_EOL, '    ', '    ' );
         $initNo = array_rand( array_flip( [ 1, 2, 3 ] ));
         if( empty( $argset )) {
             $argset = null;
@@ -83,13 +83,13 @@ class ReturnClauseMgrTest2 extends TestCase
             case (( 1 == $initNo ) ||
                 empty( $method[0] ) ||
                 (( FcnInvokeMgr::THIS_KW != $method[0] ) && ! Util::isVarPrefixed( $method[0] ))) :
-                $rcm->setFcnInvoke( FcnInvokeMgr::factory( $method[0], $method[1], $argset ));
+                $rcm->appendInvoke( FcnInvokeMgr::factory( $method[0], $method[1], $argset ));
                 $initNo = 1;
                 break;
             case ( 2 == $initNo ) :
-                $rcm->setFcnInvoke( FcnInvokeMgr::factory( $method[0], $method[1], $argset ));
-                $rcm->appendChainedInvoke( FcnInvokeMgr::factory( '$testClass1', 'testMethod1', $argset ));
-                $rcm->appendChainedInvoke( FcnInvokeMgr::factory( '$testClass2', 'testMethod2' ));
+                $rcm->appendInvoke( FcnInvokeMgr::factory( $method[0], $method[1], $argset ));
+                $rcm->appendInvoke( FcnInvokeMgr::factory( '$testClass1', 'testMethod1', $argset ));
+                $rcm->appendInvoke( FcnInvokeMgr::factory( '$testClass2', 'testMethod2' ));
                 break;
             default :
                 $chainedInvokes = [
@@ -110,9 +110,7 @@ class ReturnClauseMgrTest2 extends TestCase
             case empty( $argset ) :
                 break;
             case is_string( $argset ) :
-                if( ! Util::isVarPrefixed( $argset )) {
-                    $argset = ReturnClauseMgr::VARPREFIX . $argset;
-                }
+                $argset = Util::setVarPrefix( $argset );
                 $expected = 'return ' . $expFcnName . '( ' . $argset . ' )';
                 $this->assertTrue(
                     ( false !== strpos( $code, $expected )),
@@ -124,9 +122,7 @@ class ReturnClauseMgrTest2 extends TestCase
                     if( is_array( $arg )) {
                         $arg = reset( $arg ); // first is argName
                     }
-                    if( ! Util::isVarPrefixed( $arg )) {
-                        $arg = ReturnClauseMgr::VARPREFIX . $arg;
-                    }
+                    $arg = Util::setVarPrefix( $arg );
                 }
                 $expected = 'return ' . $expFcnName . '( ' . implode( ', ', $argset ) . ' )';
                 $this->assertTrue(
@@ -144,8 +140,48 @@ class ReturnClauseMgrTest2 extends TestCase
         }
 
         if( DISPLAYrcm2) {
-            echo __FUNCTION__ . ' ' . $case . '-' . $initNo . ' : ' . trim( $code ) . PHP_EOL;
+            echo __FUNCTION__ . ' ' . $case . '-' . $initNo . ' : ' . PHP_EOL . trim( $code ) . PHP_EOL;
         }
+    }
+
+    /**
+     * Testing ChainInvokeMgr::AppendChainInvoke
+     *
+     * @test
+     */
+    public function chainInvokeMgrTest29() {
+        try {
+            ReturnClauseMgr::init()
+                ->appendInvoke(
+                    FcnInvokeMgr::factory( null, 'testMethod1', [ 'testArg' ] )
+                )
+                ->appendInvoke( FcnInvokeMgr::factory( '$testClass2', 'testMethod2' ));
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+
+        try {
+            ReturnClauseMgr::init()
+                ->appendInvoke(
+                    FcnInvokeMgr::factory( '$testClass1', 'testMethod1', [ 'testArg' ] )
+                )
+                ->appendInvoke( FcnInvokeMgr::factory( null, 'testMethod2' ));
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+
+        try {
+            ChainInvokeMgr::init()->toArray();
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+
     }
 
 

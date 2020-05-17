@@ -502,5 +502,18 @@ class VariableMgrTest extends TestCase
         $this->assertFalse( $propertyMgr->isMakeSetter());
 
     }
+    /**
+     * @test
+     */
+    public function util301() {
+        try {
+            Util::renderScalarValue( [ 1, 2, 3 ] );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+    }
+
 
 }

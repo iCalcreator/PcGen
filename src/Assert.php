@@ -48,7 +48,7 @@ class Assert
      * @throws InvalidArgumentException
      */
     public static function assertIndent( $indent ) {
-        if( BaseA::$SP0 != trim( $indent)) {
+        if( BaseA::SP0 != trim( $indent)) {
             throw new InvalidArgumentException( sprintf( BaseA::$ERRx, var_export( $indent, true )));
         }
     }
@@ -100,9 +100,7 @@ class Assert
     public static function assertPhpVar( $value ) {
         static $PATTERN = '/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/';
         static $ERR     = 'Invalid PHP value : %s';
-        $value2 = Util::isVarPrefixed( $value )
-            ? trim( substr( (string) $value, 1 ))
-            : trim( (string) $value );
+        $value2 = Util::unSetVarPrefix( $value );
         if( empty( $value2 ) || ( 1 != preg_match( $PATTERN, $value2 )) ) {
             throw new InvalidArgumentException( sprintf( $ERR, var_export( $value, true )));
         }

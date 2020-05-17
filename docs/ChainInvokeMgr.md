@@ -5,6 +5,7 @@
 The ```ChainInvokeMgr``` class manages chained function/method invokes
 * each invoke mastered by [FcnInvokeMgr] 
 * used by [AssignClauseMgr] and [ReturnClauseMgr] 
+* ex result ```aClass::factory( $arg1, arg2 )->someMethod( $arg3, arg4 );```
 
 
 ###### ChainInvokeMgr Methods
@@ -30,19 +31,19 @@ Inherited [Common methods]
 * Throws RuntimeException
 ---
 
-```ChainInvokeMgr::getChainInvokes()```
+```ChainInvokeMgr::getInvokes()```
 * Return [FcnInvokeMgr]\[]
 
-```ChainInvokeMgr::isChainInvokesSet()```
+```ChainInvokeMgr::isInvokesSet()```
 * Return _bool_ true if set
 
-```ChainInvokeMgr::appendChainedInvoke( fcnInvoke )```
+```ChainInvokeMgr::appendInvoke( fcnInvoke )```
 * fcnInvoke [FcnInvokeMgr]
 * Return static
 * Throws InvalidArgumentException
 
-```ChainInvokeMgr::setChainInvokes( chainInvokes )```
-* ```chainInvokes``` [FcnInvokeMgr]\[]
+```ChainInvokeMgr::setInvokes( invokes )```
+* ```invokes``` [FcnInvokeMgr]\[]
 * Return static
 * Throws InvalidArgumentException
 ---

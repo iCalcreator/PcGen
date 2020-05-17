@@ -140,12 +140,8 @@ class VarDto implements PcGenInterface
      * @throws InvalidArgumentException
      */
     public function setName( $name ) {
-        static $SP0 = '';
-        if( $SP0 != trim( $name )) {
-            if( Util::isVarPrefixed( $name ) ) {
-                $name = substr( $name, 1 );
-            }
-            $this->name = Assert::assertPhpVar( $name );
+        if( self::SP0 != trim( $name )) {
+            $this->name = Assert::assertPhpVar( Util::unSetVarPrefix( $name ));
         }
         return $this;
     }
@@ -228,10 +224,23 @@ class VarDto implements PcGenInterface
     /**
      * @param string $varType
      * @return static
-     * @todo validate varType?
+     * @todo move to assert::varType? const/fqcn, also in DocBlockMgr
      */
     public function setVarType( $varType = null ) {
-        $this->varType = $varType;
+        switch( true ) {
+            case is_array( $varType ) :
+                $this->varType = $varType;
+                break;
+            case ( 0 == strcasecmp( self::BOOLEAN_T , $varType )) :
+                $this->varType = self::BOOL_T;
+                break;
+            case ( 0 == strcasecmp( self::BOOLEANARRAY_T , $varType )) :
+                $this->varType = self::BOOLARRAY_T;
+                break;
+            default :
+                $this->varType = $varType;
+                break;
+        }
         return $this;
     }
 

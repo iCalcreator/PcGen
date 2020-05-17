@@ -56,7 +56,7 @@ trait ArgumentTrait
             case empty( $cntArgs ) :
                 break;
             case ( 1 == $cntArgs ) :
-                $row .= BaseA::$SP1 . self::renderOneArg( reset( $this->arguments )) . BaseA::$SP1;
+                $row .= BaseA::SP1 . self::renderOneArg( reset( $this->arguments )) . BaseA::SP1;
                 break;
             case (( 4 >= $cntArgs ) && self::hasOnlyNames( $this->arguments )) :
                 $row .= self::renderArgsInOneRow( $this->arguments );
@@ -82,7 +82,7 @@ trait ArgumentTrait
         static $SPEQSP    = ' = ';
         static $ARRSTART  = '[ ';
         static $ARREND    = ']';
-        $row = BaseA::$SP0;
+        $row = BaseA::SP0;
         if( $argumentDto->isNextVarPropIndex()) {
             // add array element
             $argumentDto = clone $argumentDto;
@@ -93,12 +93,12 @@ trait ArgumentTrait
             $argumentDto->setDefault( null );
         } // end if
         if( $argumentDto->isTypeHint( self::getTargetPhpVersion(), $typeHint )) { // varType
-            $row .= $typeHint . BaseA::$SP1;
+            $row .= $typeHint . BaseA::SP1;
         }
         if( $argumentDto->isByReference()) { // by reference
             $row .= $REFERENCE;
         }
-        $row .= BaseA::VARPREFIX . $argumentDto->getName(); // the $-prefixed argument variable
+        $row .= Util::setVarPrefix( $argumentDto->getName()); // the $-prefixed argument variable
         if( ! $argumentDto->isDefaultSet()) { // value is not set
             return $row;
         }
@@ -124,9 +124,9 @@ trait ArgumentTrait
                 }
                 $expType = $argumentDto->hasTypeHintArraySpec( null, $typeHint ) ? $typeHint : null;
                 foreach( $initValue as & $item ) {
-                    $item = Util::renderScalarValue( $item, $expType ) . BaseA::$COMMA . BaseA::$SP1;
+                    $item = Util::renderScalarValue( $item, $expType ) . BaseA::$COMMA . BaseA::SP1;
                 }
-                $row .= $ARRSTART . implode( BaseA::$SP0, $initValue ) . $ARREND;
+                $row .= $ARRSTART . implode( BaseA::SP0, $initValue ) . $ARREND;
                 break;
             default :
                 break;
@@ -158,10 +158,10 @@ trait ArgumentTrait
      */
     private static function renderArgsInOneRow( array $arguments ) {
         $lastIx = count( $arguments ) - 1;
-        $row    = BaseA::$SP0;
+        $row    = BaseA::SP0;
         foreach( array_keys( $arguments) as $argIx ) {
-            $row .= BaseA::$SP1 . self::renderOneArg( $arguments[$argIx] );
-            $row .= ( $lastIx != $argIx ) ? BaseA::$COMMA : BaseA::$SP1;
+            $row .= BaseA::SP1 . self::renderOneArg( $arguments[$argIx] );
+            $row .= ( $lastIx != $argIx ) ? BaseA::$COMMA : BaseA::SP1;
         }
         return $row;
     }

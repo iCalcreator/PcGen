@@ -146,7 +146,7 @@ final class ClassMgr extends BaseB
         $TMPL6 = ' implements ';
         $this->docBlock->setBaseIndent();
         if( ! $this->docBlock->isSummarySet()) {
-            $this->docBlock->setSummary(ucfirst( $this->getTargetType()) . self::$SP1 . $this->getName());
+            $this->docBlock->setSummary( ucfirst( $this->getTargetType()) . self::SP1 . $this->getName());
         }
         $this->setBaseIndent( self::$DEFAULTINDENT );
         $code = [];
@@ -160,20 +160,20 @@ final class ClassMgr extends BaseB
             ClassMethodFactory::setUpIteratorForClass( $this );
         }
         if( ! empty( $this->uses )) {
-            $code[] = self::$SP0;
+            $code[] = self::SP0;
             asort( $this->uses, SORT_FLAG_CASE | SORT_STRING );
             foreach( $this->uses as $alias => $fqcn ) {
                 $code[] = ctype_digit((string) $alias ) ? sprintf( $TMPL2, $fqcn ) : sprintf( $TMPL3, $fqcn, $alias );
             }
         }
         $code   = array_merge( $code, $this->docBlock->toArray());
-        $row    = $this->isAbstract() ? $TMPL4 : self::$SP0;
-        $code[] = $row . $this->getTargetType() . self::$SP1 . $this->getName();
+        $row    = $this->isAbstract() ? $TMPL4 : self::SP0;
+        $code[] = $row . $this->getTargetType() . self::SP1 . $this->getName();
         if( ! empty( $this->extend )) {
             $code[] = $this->indent . $TMPL5 . $this->extend;
         }
         if( ! empty( $this->implements )) {
-            $code[] = $this->indent . $TMPL6 . implode( self::$COMMA . self::$SP1, $this->implements );
+            $code[] = $this->indent . $TMPL6 . implode( self::$COMMA . self::SP1, $this->implements );
         }
         return $code;
     }
@@ -187,7 +187,7 @@ final class ClassMgr extends BaseB
             ( $hasProperties     ? $this->defineProperties() : [] ),
             ( $this->construct   ? ClassMethodFactory::renderConstructorMethod( $this ) : [] ),
             ( $this->factory     ? ClassMethodFactory::renderFactoryMethod( $this ) : [] ),
-            ( $this->isBodySet() ? array_merge( [ self::$SP0 ], $this->getBody()) : [] ),
+            ( $this->isBodySet() ? array_merge( [ self::SP0 ], $this->getBody()) : [] ),
             ( $hasProperties     ? $this->produceMethodsForProperties() : [] )
         );
     }
@@ -212,7 +212,7 @@ final class ClassMgr extends BaseB
                     ->setDescription( $propertyMgr->getVarDto()->getDescription() );
                 $varType     = $propertyMgr->getVarDto()->getParamTagVarType();
                 if( $propertyMgr->isConst() ) {
-                    $docBlockMgr->setDescription( self::CONST_ . self::$SP1 . $varType );
+                    $docBlockMgr->setDescription( self::CONST_ . self::SP1 . $varType );
                 }
                 else {
                     $docBlockMgr->setTag( self::VAR_T, $varType );
@@ -367,13 +367,6 @@ final class ClassMgr extends BaseB
     }
 
     /**
-     * @return bool
-     */
-    public function isDocBlockSet() {
-        return ( null !== $this->docBlock );
-    }
-
-    /**
      * @param DocBlockMgr $docBlock
      * @return ClassMgr
      */
@@ -521,9 +514,7 @@ final class ClassMgr extends BaseB
         switch( true ) {
             case ( $name instanceof PropertyMgr ) :
                 $property = $name;
-                $property->setEol( $this->getEol());
-                $property->setBaseIndent( $this->getBaseIndent());
-                $property->setIndent( $this->getIndent());
+                $property->rig( $this );
                 break;
             case ( $name instanceof VariableMgr ) :
                 $property = PropertyMgr::init( $this )
@@ -649,7 +640,7 @@ final class ClassMgr extends BaseB
                 case (( $property instanceof VarDto ) || is_string( $property )) :
                     $this->addProperty(
                         PropertyMgr::factory( $property )
-                            ->setMakeSetter( false )
+                            ->setMakeGetter( false )
                             ->setMakeSetter( false )
                             ->setArgInFactory( false )
                     );
@@ -675,6 +666,9 @@ final class ClassMgr extends BaseB
                     );
                     break;
                 default :
+
+                    echo __FUNCTION__ . ' input ' . var_export( $property, true ) . PHP_EOL; // test ###
+
                     $this->addProperty(
                         PropertyMgr::factory(
                             Util::getIfSet( $property, 0 ),                 // variable,
@@ -684,7 +678,7 @@ final class ClassMgr extends BaseB
                             Util::getIfSet( $property, 4, self::ARRAY_T )   // description
                         )
                             ->setMakeGetter( Util::getIfSet( $property, 5, self::BOOL_T, false ))
-                            ->setMakeGetter( Util::getIfSet( $property, 6, self::BOOL_T, false ))
+                            ->setMakeSetter( Util::getIfSet( $property, 6, self::BOOL_T, false ))
                             ->setArgInFactory( Util::getIfSet( $property, 7, self::BOOL_T, false ))
                     );
                     break;
