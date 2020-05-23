@@ -410,8 +410,7 @@ class ClassMethodFactory implements PcGenInterface
     ];
     public  static $IMPLEMENTS    = [
         'SeekableIterator',
-        'Countable',
-        'IteratorAggregate'
+        'Countable'
     ];
 
     /**
@@ -542,7 +541,7 @@ class ClassMethodFactory implements PcGenInterface
     private static function renderIterGetIteratorMethod( PropertyMgr $property ) {
         static $SUMMARY     = 'Retrieve an external iterator';
         static $DESCRIPTION =  [
-            'Required method implementing the IteratorAggregate interface,',
+            'Method implementing the IteratorAggregate interface,',
             'returning Traversable, i.e. makes the class traversable using foreach.',
             'Usage : \'foreach( $class as $value ) { .... }\''
         ];
