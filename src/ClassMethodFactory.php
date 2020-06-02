@@ -246,7 +246,6 @@ class ClassMethodFactory implements PcGenInterface
      * @return void
      */
     public static function renderPropertyCountMethod( PropertyMgr $property, array & $code ) {
-        static $COUNT    = 'Count';
         if( ! $property->getVarDto()->isTypedArray()) {
             return;
         }
@@ -403,7 +402,6 @@ class ClassMethodFactory implements PcGenInterface
     public  static $USES          = [
         'ArrayIterator',
         'Countable',
-        'IteratorAggregate',
         'OutOfBoundsException',
         'SeekableIterator',
         'Traversable'
