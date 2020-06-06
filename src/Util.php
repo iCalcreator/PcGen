@@ -43,6 +43,7 @@ class Util implements PcGenInterface
      */
     public static function evaluateTypeHint( $varType, $phpVersion = null, & $typeHint = null ) {
         static $DOT = '.';
+        static $MIXEDTypeHints = [ self::MIXED_KW ];
         static $PHP5TypeHints  = [ self::ARRAY_T, self::CALLABLE_T, self::SELF_KW ];
         static $PHP70TypeHints = [ self::BOOL_T, self::FLOAT_T, self::INT_T, self::STRING_T ];
         static $PHP71TypeHints = [ self::ITERABLE_T ];
@@ -55,6 +56,9 @@ class Util implements PcGenInterface
         $phpMinor = (int) $std[ 1 ];
         $return = true;
         switch( true ) {
+            case in_array( $varType, $MIXEDTypeHints ) :
+                $return = false;
+                break;
             case in_array( $varType, $PHP5TypeHints ) :
                 $typeHint = $varType;
                 break;
