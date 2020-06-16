@@ -105,12 +105,18 @@ final class EntityMgr extends BaseA
      * @return string  testing
      */
     public function __toString() {
-        return (( null === $this->class ) ? self::SP1 : $this->class ) . ' - ' .
-            (( null === $this->variable ) ? self::SP1 : $this->variable ) . ' - ' .
-            (( null === $this->index ) ? self::SP1 : '[' . $this->index . ']' ) .
-            ', isStatic : ' . var_export( $this->isStatic, true ) .
-            ', isConst : ' . var_export( $this->isConst, true ) .
-            ', $-force : ' . var_export( $this->forceVarPrefix, true );
+        static $D  = ' - ';
+        static $P1 = '[';
+        static $P2 = ']';
+        static $isStatic = ', isStatic : ';
+        static $ixConst  = ', isConst : ';
+        static $varForce = ', $-force : ';
+        return (( null === $this->class ) ? self::SP1 : $this->class ) . $D .
+            (( null === $this->variable ) ? self::SP1 : $this->variable ) . $D .
+            (( null === $this->index ) ? self::SP1 : $P1 . $this->index . $P2 ) .
+            $isStatic . var_export( $this->isStatic, true ) .
+            $ixConst . var_export( $this->isConst, true ) .
+            $varForce . var_export( $this->forceVarPrefix, true );
     }
 
     /**

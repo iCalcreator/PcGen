@@ -1237,13 +1237,36 @@ class FcnFrameMgrTest extends TestCase
     }
 
     /**
-     * testing invalid argument
+     * Testing invalid argument
      *
      * @test
      */
     public function fcnFrameMgrTest29() {
         try {
             FcnFrameMgr::init()->setArguments( [ 123 ] );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+
+    }
+
+    /**
+     * Testing invalid argument
+     *
+     * @test
+     */
+    public function fcnFrameMgrTest30() {
+        $ffm = FcnFrameMgr::init();
+
+        FcnFrameMgr::setTargetPhpVersion( '5.6.0' );
+        $ffm->setReturnType( $ffm );
+        $this->assertFalse( $ffm->isReturnTypeSet());
+
+        FcnFrameMgr::setTargetPhpVersion( PHP_VERSION );
+        try {
+            $ffm->setReturnType( $ffm );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {

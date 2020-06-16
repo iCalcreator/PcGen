@@ -123,7 +123,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         $code   = $this->renderClosureUseVariables( $code );
         $lastIx = count( $code ) - 1;
         $code[$lastIx] .= self::SP1;
-        if(( 7 <= substr( self::getTargetPhpVersion(), 0, 1)) && $this->isReturnTypeSet()) {
+        if( $this->isReturnTypeSet()) {
             $code[$lastIx] .= $COLONSP1 . $this->getReturnType() . self::SP1;
         }
         $code[$lastIx] .= self::$CODEBLOCKSTART;
@@ -310,10 +310,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @throws InvalidArgumentException
      */
     public function setReturnFixedValue( $value ) {
-        static $DOUBLE = 'double';
         $this->returnValue = ReturnClauseMgr::init( $this )->setFixedSourceValue( $value );
-        $valueType = gettype( $value );
-        $this->setReturnType((( $DOUBLE == $valueType ) ? self::FLOAT_T : $valueType ));
+        $this->setReturnType( gettype( $value ));
         return $this;
     }
 
@@ -339,7 +337,7 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      */
     public function setReturnThis() {
         $this->setReturnValue( self::THIS_KW );
-        $this->setReturnType( self::SELF_KW );
+//      $this->setReturnType( self::SELF_KW );
         return $this;
     }
 
@@ -384,10 +382,51 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
     }
 
     /**
+     * Set function return value type, PHP 7+ only, accepts type values types + <any>[] as array
+     *
+     * bool, double, float, int, integer, string, array, callable and interfaces
+     * @link https://www.tutorialspoint.com/php7/php7_returntype_declarations.htm
+     *
      * @param string $returnType
      * @return static
+     * @throws InvalidArgumentException
      */
     public function setReturnType( $returnType ) {
+        static $ERRTXT = 'Invalid function return value type : ';
+        static $TYPES = [
+            self::INT_T,
+            self::FLOAT_T,
+            self::BOOL_T,
+            self::STRING_T,
+            self::ARRAY_T,
+            self::CALLABLE_T,
+        ];
+        static $TYPES2 = [
+            self::BOOLEAN_T => self::BOOL_T,
+            self::INTEGER   => self::INT_T,
+            self::DOUBLE    => self::FLOAT_T,
+        ];
+        switch( true ) {
+            case ( 7 > substr( self::getTargetPhpVersion(), 0, 1)) :
+                return $this;
+                break;
+            case ( ! is_string( $returnType )) :
+                throw new InvalidArgumentException( $ERRTXT . var_export( $returnType, true ));
+                break;
+            case( self::ARRAY2_T == substr( $returnType, -2 )) :
+                $returnType = self::ARRAY_T;
+                break;
+            case isset( $TYPES2[$returnType] ) :
+                $returnType = $TYPES2[$returnType];
+                break;
+            case( in_array( $returnType, $TYPES )) :
+                break;
+            case is_string( $returnType ) :  // interfaces...
+                break;
+            default :
+                throw new InvalidArgumentException( $ERRTXT . var_export( $returnType, true ));
+                break;
+        }
         $this->returnType = $returnType;
         return $this;
     }

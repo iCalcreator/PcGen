@@ -54,7 +54,6 @@ interface PcGenInterface
     const CALLABLEARRAY_T   = 'callable[]';
     const FLOATARRAY_T      = 'float[]';
     const INTARRAY_T        = 'int[]';
-    const ITERABLEARRAY_T   = 'iterable[]';
     const RESOURCEARRAY_T   = 'resource[]';
     const STRINGARRAY_T     = 'string[]';
 
@@ -111,7 +110,9 @@ interface PcGenInterface
     const BOOLEAN_T         = 'boolean';
     const BOOLEANARRAY_T    = 'boolean[]';
     const CONST_            = 'const';
+    const DOUBLE            = 'double';
     const FACTORY           = 'factory';
+    const INTEGER           = 'integer';
     const SP0               = '';
     const SP1               = ' ';
     const VARPREFIX         = '$';

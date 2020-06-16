@@ -242,13 +242,28 @@ class ClassMgrTest extends TestCase
                         true,
                         true,
                     ],
+                17 => // VariableMgr in array, note, has public class instance property
+                    [
+                        VariableMgr::factory(
+                            self::$prop . 17,
+                            ClassMgr::MIXED_KW,
+                            self::$prop . 17,
+                            17 . $SUMMARY . self::$prop . 17,
+                            17 . $DESCRIPTION . self::$prop . 17 .
+                            ' NO getter/setter/argInFactory' .
+                            ', origins from a VariableMgr instance in array'
+                        ),
+                        true,
+                        true,
+                        true,
+                    ],
             ],  // property set end
             [
                 [1, 8 ],                        // constants
                 [2, 3 ],                        // static
-                [4, 5, 6, 7, 9, 12, 16 ],       // public with methods
+                [4, 5, 6, 7, 9, 12, 16, 17 ],   // public with methods
                 [13, 14, 15 ],                  // props without methods
-                [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16 ] // all
+                [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 17 ] // all
             ],
         ]; // test set 1 end
 
@@ -668,7 +683,7 @@ class ClassMgrTest extends TestCase
         }
 
         foreach( $expected[2] as $expNo ) {  // private/public property and public methods
-            if( 16 == $expNo ) {
+            if( in_array( $expNo, [ 16, 17 ] )) {
                 $this->assertTrue(
                     ( false !== strpos( $code, '    public $prop' . $expNo . ' =' )),
                     'Error in case ' . 'R1-' . $case . '-' . $expNo . PHP_EOL . $code
