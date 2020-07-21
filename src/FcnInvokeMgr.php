@@ -52,7 +52,8 @@ final class FcnInvokeMgr extends BaseA
      * @param array            $arguments
      * @return static
      */
-    public static function factory( $class, $fcnName, array $arguments = null) {
+    public static function factory( $class, $fcnName, array $arguments = null )
+    {
         $instance = self::init()->setName( $class, $fcnName );
         if( ! empty( $arguments )) {
             $instance->setArguments( $arguments );
@@ -66,7 +67,8 @@ final class FcnInvokeMgr extends BaseA
      * @return array
      * @throws RuntimeException
      */
-    public function toArray() {
+    public function toArray()
+    {
         static $ERR = 'No function directives';
         if(( null === $this->name ) && empty( $this->getArgumentCount())) {
             throw new RuntimeException( $ERR );
@@ -85,7 +87,8 @@ final class FcnInvokeMgr extends BaseA
     /**
      * @return EntityMgr
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
@@ -95,7 +98,8 @@ final class FcnInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setName( $class, $fcnName = null ) {
+    public function setName( $class, $fcnName = null )
+    {
         switch( true ) {
             case ( $class instanceof EntityMgr ) :
                 $this->name = $class->setForceVarPrefix( false );
@@ -111,7 +115,9 @@ final class FcnInvokeMgr extends BaseA
                 throw new InvalidArgumentException(
                     sprintf(
                         self::$ERRx,
-                        var_export( $fcnName, true ) . self::SP1 .  var_export( $fcnName, true )
+                        var_export( $fcnName, true ) .
+                        self::SP1 .
+                        var_export( $fcnName, true )
                     )
                 );
                 break;
@@ -126,7 +132,8 @@ final class FcnInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setClass( $class ) {
+    public function setClass( $class )
+    {
         if( empty( $this->name )) {
             throw new RuntimeException( self::$ERR );
         }
@@ -143,12 +150,12 @@ final class FcnInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setIsStatic( $staticStatus ) {
+    public function setIsStatic( $staticStatus )
+    {
         if( null === $this->name ) {
             throw new InvalidArgumentException( self::$ERR );
         }
         $this->getName()->setIsStatic((bool) $staticStatus );
         return $this;
     }
-
 }

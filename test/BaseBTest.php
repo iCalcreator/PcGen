@@ -65,7 +65,8 @@ class BaseBTest extends TestCase
         $output = $ffg->toString();
 
         $this->assertEquals(
-            'function halloWorld( $argument ) {' . $eol .
+            'function halloWorld( $argument )' .  $eol .
+            '{' . $eol .
             '  /* body row 1 */' . $eol .
             '  /* body row 2 */' . $eol .
             '  /* body row 3 */' . $eol .

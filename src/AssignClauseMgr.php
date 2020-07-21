@@ -44,7 +44,6 @@ use RuntimeException;
  */
 final class AssignClauseMgr extends BaseR1
 {
-
     /**
      * @var EntityMgr
      */
@@ -85,7 +84,8 @@ final class AssignClauseMgr extends BaseR1
      * @return array|
      * @throws RuntimeException
      */
-    public function toArray() {
+    public function toArray()
+    {
         static $ERR1 = 'No target set';
         if( ! $this->isTargetSet()) {
             throw new RuntimeException( $ERR1 );
@@ -103,14 +103,16 @@ final class AssignClauseMgr extends BaseR1
     /**
      * @return EntityMgr
      */
-    public function getTarget() {
+    public function getTarget()
+    {
         return $this->target;
     }
 
     /**
      * @return bool
      */
-    public function isTargetSet() {
+    public function isTargetSet()
+    {
         return ( null !== $this->target );
     }
 
@@ -123,7 +125,8 @@ final class AssignClauseMgr extends BaseR1
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setTarget( $class = null, $variable = null, $index = null ) {
+    public function setTarget( $class = null, $variable = null, $index = null )
+    {
         switch( true ) {
             case ( $class instanceof EntityMgr ) : // replace
                 $this->target = $class;
@@ -140,7 +143,10 @@ final class AssignClauseMgr extends BaseR1
                 }
                 break;
             default :
-                $this->getTarget()->setClass( $class )->setVariable( $variable )->setIndex( $index );
+                $this->getTarget()
+                    ->setClass( $class )
+                    ->setVariable( $variable )
+                    ->setIndex( $index );
         }
         return $this;
     }
@@ -153,9 +159,12 @@ final class AssignClauseMgr extends BaseR1
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisPropertyTarget( $property, $index = null ) {
+    public function setThisPropertyTarget( $property, $index = null )
+    {
         if( ! is_string( $property )) {
-            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $property, true )));
+            throw new InvalidArgumentException(
+                sprintf( self::$ERRx, var_export( $property, true ))
+            );
         }
         $this->target = EntityMgr::init( $this )
             ->setClass( self::THIS_KW )
@@ -174,9 +183,12 @@ final class AssignClauseMgr extends BaseR1
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVariableTarget( $variable, $index = null ) {
+    public function setVariableTarget( $variable, $index = null )
+    {
         if( ! is_string( $variable )) {
-            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $variable, true )));
+            throw new InvalidArgumentException(
+                sprintf( self::$ERRx, var_export( $variable, true ))
+            );
         }
         $this->target = EntityMgr::init( $this )
             ->setVariable( Util::setVarPrefix( $variable ));
@@ -190,7 +202,8 @@ final class AssignClauseMgr extends BaseR1
      * @param bool $isConst
      * @return static
      */
-    public function setTargetIsConst( $isConst = true ) {
+    public function setTargetIsConst( $isConst = true )
+    {
         if( null === $this->target ) {
             $this->setTarget();
         }
@@ -201,7 +214,8 @@ final class AssignClauseMgr extends BaseR1
     /**
      * @return bool
      */
-    public function isTargetStatic() {
+    public function isTargetStatic()
+    {
         return $this->isTargetSet() && $this->getTarget()->isStatic();
     }
 
@@ -209,7 +223,8 @@ final class AssignClauseMgr extends BaseR1
      * @param bool $staticStatus
      * @return static
      */
-    public function setTargetIsStatic( $staticStatus = true ) {
+    public function setTargetIsStatic( $staticStatus = true )
+    {
         if( null === $this->target ) {
             $this->setTarget();
         }

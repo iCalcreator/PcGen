@@ -37,7 +37,6 @@ use RuntimeException;
  */
 class VariableMgr extends BaseC
 {
-
     private static $ARREND   = ']';
     private static $ARRSTART = '[';
     private static $QUOTE    = '\'%s\'';
@@ -72,7 +71,8 @@ class VariableMgr extends BaseC
      * @param string $indent
      * @param string $baseIndent
      */
-    public function __construct( $eol = null, $indent = null, $baseIndent = null ) {
+    public function __construct( $eol = null, $indent = null, $baseIndent = null )
+    {
         parent::__construct( $eol, $indent, $baseIndent );
         $this->varDto = new varDto();
     }
@@ -82,20 +82,27 @@ class VariableMgr extends BaseC
      * @return static
      * @throws InvalidArgumentException
      */
-    public static function factory( ...$args ) {
+    public static function factory( ...$args )
+    {
         $instance = new static();
         switch ( true ) {
             case ( $args[0] instanceof VarDto ) :
                 $instance->setVarDto( $args[0] );
                 break;
             case ! empty( $args ) :
-                if( false === ( $varDto = call_user_func_array( [ VarDto::class, self::FACTORY ], $args ))) {
-                    throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $args, true )));
+                if( false ===
+                    ( $varDto = call_user_func_array( [ VarDto::class, self::FACTORY ], $args ))
+                ) {
+                    throw new InvalidArgumentException(
+                        sprintf( self::$ERRx, var_export( $args, true ))
+                    );
                 }
                 $instance->setVarDto( $varDto );
                 break;
             default :
-                throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $args, true )));
+                throw new InvalidArgumentException(
+                    sprintf( self::$ERRx, var_export( $args, true ))
+                );
                 break;
         } // end switch
         return $instance;
@@ -103,8 +110,10 @@ class VariableMgr extends BaseC
 
     /**
      * @return string
+     * @todo stringify
      */
-    public function __toString() {
+    public function __toString()
+    {
         $string  = empty( $this->varDto ) ? self::SP0 : $this->varDto;
         $string .= ', visibility : \'' . $this->getVisibility() . '\'';
         $string .= ', isStatic : ' . var_export( $this->isStatic(), true );
@@ -131,14 +140,17 @@ class VariableMgr extends BaseC
      * @return array
      * @throws RuntimeException
      */
-    public function toArray() {
+    public function toArray()
+    {
         static $CONSTTMPL = '%s %s';
         if( ! $this->varDto->isNameSet()) {
             throw new RuntimeException( self::$ERR1 );
         }
         $row = $this->baseIndent;
         if( $this->isVisibilitySet() &&
-            ( ! $this->isConst() || (( 7 <= PHP_MAJOR_VERSION ) && ( 1 <= PHP_MINOR_VERSION )))) {
+            ( ! $this->isConst() ||
+                (( 7 <= PHP_MAJOR_VERSION ) && ( 1 <= PHP_MINOR_VERSION )))
+        ) {
             $row .= $this->visibility . self::SP1;
         }
         if( $this->isConst()) {
@@ -171,7 +183,8 @@ class VariableMgr extends BaseC
      * @param string $row
      * @return array
      */
-    private function renderClosureBody( $row ) {
+    private function renderClosureBody( $row )
+    {
         $body          = $this->getBody();
         $body[0]       = $row . ltrim( $body[0] );
         $lastIx        = array_reverse( array_keys( $body ))[0];
@@ -185,14 +198,17 @@ class VariableMgr extends BaseC
      * @param string $row
      * @return array
      */
-    private function renderCallBlack( $row ) {
+    private function renderCallBlack( $row )
+    {
         if( is_string( $this->callback )) {
             return [ $row . self::renderCallBlackClass( $this->callback ) . self::$CLOSECLAUSE ];
         }
         // array
         $code[]  = $row . self::$ARRSTART;
-        $code[] = $this->baseIndent . $this->indent . self::renderCallBlackClass( $this->callback[0] ) . self::$COMMA;
-        $code[] = $this->baseIndent . $this->indent . sprintf( self::$QUOTE, $this->callback[1] );
+        $code[] = $this->baseIndent . $this->indent .
+            self::renderCallBlackClass( $this->callback[0] ) . self::$COMMA;
+        $code[] = $this->baseIndent . $this->indent .
+            sprintf( self::$QUOTE, $this->callback[1] );
         $code[] = $this->baseIndent . self::$ARREND . self::$CLOSECLAUSE;
         return $code;
     }
@@ -201,7 +217,8 @@ class VariableMgr extends BaseC
      * @param string $class
      * @return string
      */
-    private static function renderCallBlackClass( $class ) {
+    private static function renderCallBlackClass( $class )
+    {
         return Util::isVarPrefixed( $class ) ? $class : sprintf( self::$QUOTE, $class );
     }
 
@@ -211,13 +228,16 @@ class VariableMgr extends BaseC
      * @param string $row
      * @return array
      */
-    private function renderInitValue( $row ) {
+    private function renderInitValue( $row )
+    {
         static $KEYFMT = '"%s" => ';
         $initValue = $this->varDto->getDefault();
         $expType   = $this->varDto->getVarType();
         $code      = [];
         switch( true ) {
-            case is_bool( $initValue ) || Util::isFloat( $initValue ) || Util::isInt( $initValue ) :
+            case is_bool( $initValue ) ||
+                Util::isFloat( $initValue ) ||
+                Util::isInt( $initValue ) :
                 $initValue = Util::renderScalarValue( $initValue, $expType );
                 break;
             case $this->varDto->isDefaultTypedNull() :
@@ -229,13 +249,16 @@ class VariableMgr extends BaseC
             case $this->varDto->isDefaultArray() :
                 $code[]  = $row . self::$ARRSTART;
                 $indent  = $this->baseIndent . $this->indent;
-                $expType = $this->varDto->hasTypeHintArraySpec( null, $typeHint ) ? $typeHint : null;
+                $expType = $this->varDto->hasTypeHintArraySpec( null, $typeHint )
+                    ? $typeHint
+                    : null;
                 foreach( $initValue as $key => $value ) {
                     $row = $indent;
                     if( ! Util::isInt( $key )) {
                         $row .= sprintf( $KEYFMT, $key );
                     }
-                    $code[] = $row . Util::renderScalarValue( $value, $expType ) . self::$COMMA;
+                    $code[] =
+                        $row . Util::renderScalarValue( $value, $expType ) . self::$COMMA;
                 }
                 $code[] = $this->baseIndent . self::$ARREND . self::$CLOSECLAUSE;
                 return $code;
@@ -255,7 +278,8 @@ class VariableMgr extends BaseC
     /**
      * @return VarDto
      */
-    public function getVarDto() {
+    public function getVarDto()
+    {
         return $this->varDto;
     }
 
@@ -263,7 +287,8 @@ class VariableMgr extends BaseC
      * @param VarDto $varDto
      * @return static
      */
-    public function setVarDto( $varDto ) {
+    public function setVarDto( $varDto )
+    {
         $this->varDto = $varDto;
         return $this;
     }
@@ -273,7 +298,8 @@ class VariableMgr extends BaseC
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->varDto->getName();
     }
 
@@ -284,7 +310,8 @@ class VariableMgr extends BaseC
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setName( $name ) {
+    public function setName( $name )
+    {
         $this->varDto->setName( $name );
         return $this;
     }
@@ -293,7 +320,8 @@ class VariableMgr extends BaseC
      * @param mixed $initValue
      * @return static
      */
-    public function setInitValue( $initValue = null ) {
+    public function setInitValue( $initValue = null )
+    {
         switch( true ) {
             case (( null === $initValue ) ||
                 ( is_string( $initValue ) && ( 0 === strcasecmp(  self::NULL_T, $initValue )))) :
@@ -312,7 +340,8 @@ class VariableMgr extends BaseC
     /**
      * @return bool
      */
-    public function isConst() {
+    public function isConst()
+    {
         return $this->isConst;
     }
 
@@ -320,7 +349,8 @@ class VariableMgr extends BaseC
      * @param bool $isConst
      * @return VariableMgr
      */
-    public function setIsConst( $isConst = true ) {
+    public function setIsConst( $isConst = true )
+    {
         $this->isConst = (bool) $isConst;
         if( $this->isConst ) {
             $this->setStatic( false );
@@ -331,14 +361,16 @@ class VariableMgr extends BaseC
     /**
      * @return null
      */
-    public function getCallback() {
+    public function getCallback()
+    {
         return $this->callback;
     }
 
     /**
      * @return bool
      */
-    public function isCallBackSet() {
+    public function isCallBackSet()
+    {
         return ( ! empty( $this->callback ));
     }
 
@@ -359,7 +391,8 @@ class VariableMgr extends BaseC
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setCallback( $class, $method = null ) {
+    public function setCallback( $class, $method = null )
+    {
         if( Util::isVarPrefixed( $class ) ) {
             Assert::assertPhpVar( $class );
         }
@@ -374,7 +407,9 @@ class VariableMgr extends BaseC
             $this->callback = [ $class, $method ];
         }
         if( ! is_callable( $this->callback, true )) {
-            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $this->callback, true )));
+            throw new InvalidArgumentException(
+                sprintf( self::$ERRx, var_export( $this->callback, true ))
+            );
         }
         return $this;
     }
@@ -385,12 +420,12 @@ class VariableMgr extends BaseC
      * @param bool $static
      * @return static
      */
-    public function setStatic( $static = true ) {
+    public function setStatic( $static = true )
+    {
         $this->static = (bool) $static;
         if( $this->static ) {
             $this->setIsConst( false );
         }
         return $this;
     }
-
 }

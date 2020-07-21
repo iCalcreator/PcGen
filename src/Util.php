@@ -32,7 +32,6 @@ use RuntimeException;
  */
 class Util implements PcGenInterface
 {
-
     /**
      * Return type hint, if found, dep. on PHP version
      *
@@ -41,7 +40,11 @@ class Util implements PcGenInterface
      * @param string $typeHint
      * @return bool
      */
-    public static function evaluateTypeHint( $varType, $phpVersion = null, & $typeHint = null ) {
+    public static function evaluateTypeHint(
+        $varType,
+        $phpVersion = null,
+        & $typeHint = null
+    ) {
         static $DOT = '.';
         static $MIXEDTypeHints = [ self::MIXED_KW ];
         static $PHP5TypeHints  = [ self::ARRAY_T, self::CALLABLE_T, self::SELF_KW ];
@@ -102,7 +105,12 @@ class Util implements PcGenInterface
      * @param mixed      $default
      * @return mixed
      */
-    public static function getIfSet( $arg, $key = null, $type = null, $default = null ) {
+    public static function getIfSet(
+        $arg,
+        $key = null,
+        $type = null,
+        $default = null
+    ) {
         switch( true ) {
             case (( null === $arg ) && ( null === $key )) :
                 return $default;
@@ -137,7 +145,8 @@ class Util implements PcGenInterface
      * @param mixed $value
      * @return bool
      */
-    public static function isFloat( $value ) {
+    public static function isFloat( $value )
+    {
         static $FLOATS = [ 'double', 'float' ];
         static $PATTERN = "/^\\d+\\.\\d+$/";
         if( ! is_scalar( $value )) {
@@ -153,7 +162,8 @@ class Util implements PcGenInterface
      * @param mixed $value
      * @return bool
      */
-    public static function isInt( $value ) {
+    public static function isInt( $value )
+    {
         return ( ! is_int( $value ) ? ctype_digit( $value ) : true );
     }
 
@@ -161,15 +171,20 @@ class Util implements PcGenInterface
      * @param mixed $value
      * @return bool
      */
-    public static function isVarPrefixed( $value ) {
-        return ( is_string( $value ) && ( self::VARPREFIX == substr( $value, 0, 1 )));
+    public static function isVarPrefixed( $value )
+    {
+        return (
+            is_string( $value ) &&
+            ( self::VARPREFIX == substr( $value, 0, 1 ))
+        );
     }
 
     /**
      * @param string $value
      * @return string
      */
-    public static function setVarPrefix( $value ) {
+    public static function setVarPrefix( $value )
+    {
         $value = trim( $value );
         return self::isVarPrefixed( $value ) ? $value : self::VARPREFIX . $value;
     }
@@ -178,7 +193,8 @@ class Util implements PcGenInterface
      * @param string $value
      * @return string
      */
-    public static function unSetVarPrefix( $value ) {
+    public static function unSetVarPrefix( $value )
+    {
         $value = trim( $value );
         return self::isVarPrefixed( $value ) ? substr( $value, 1 )  : $value;
     }
@@ -189,7 +205,8 @@ class Util implements PcGenInterface
      * @param string|array $value
      * @return string|array
      */
-    public static function nullByteClean( $value ) {
+    public static function nullByteClean( $value )
+    {
         static $CHR0 = null;
         if( null === $CHR0 ) {
             $CHR0 = chr( 0 );
@@ -209,9 +226,12 @@ class Util implements PcGenInterface
      * @return string
      * @throws RuntimeException
      */
-    public static function renderScalarValue( $value, $expType = null ) {
+    public static function renderScalarValue( $value, $expType = null )
+    {
         if( ! is_scalar( $value )) {
-            throw new RuntimeException( sprintf( BaseA::$ERRx, var_export( $value, true )));
+            throw new RuntimeException(
+                sprintf( BaseA::$ERRx, var_export( $value, true ))
+            );
         }
         static $BOOLTYPES    = [ self::BOOL_T, self::BOOLEAN_T ];
         static $BOOLVALUEARR = [ 'true', 'false' ];
@@ -225,7 +245,8 @@ class Util implements PcGenInterface
         static $QUOTE2  = '"%s"';
         switch( true ) {
             case ( self::anyCaseStrInArray( $expType, $BOOLTYPES ) &&
-                is_string( $value ) && self::anyCaseStrInArray( $value, $BOOLVALUEARR )) :
+                is_string( $value ) &&
+                self::anyCaseStrInArray( $value, $BOOLVALUEARR )) :
                 return strtolower( $value );
                 break;
             case is_bool( $value ) :
@@ -266,7 +287,8 @@ class Util implements PcGenInterface
      * @param array  $hayStack
      * @return bool
      */
-    private static function anyCaseStrInArray( $value, array $hayStack ) {
+    private static function anyCaseStrInArray( $value, array $hayStack )
+    {
         foreach( $hayStack as $item ) {
             if( 0 == strcasecmp( $value, $item )) {
                 return true;
@@ -274,5 +296,4 @@ class Util implements PcGenInterface
         }
         return false;
     }
-
 }

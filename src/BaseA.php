@@ -27,7 +27,6 @@ use InvalidArgumentException;
 
 abstract class BaseA implements PcGenInterface
 {
-
     /**
      * Default
      *
@@ -40,31 +39,38 @@ abstract class BaseA implements PcGenInterface
     /**
      * @param array|string $eol
      */
-    public static function setDefaultEol( $eol ) {
+    public static function setDefaultEol( $eol )
+    {
         self::$DEFAULTEOL = $eol;
     }
 
     /**
      * @param string $indent
      */
-    public static function setDefaultIndent( $indent ) {
+    public static function setDefaultIndent( $indent )
+    {
         self::$DEFAULTINDENT = $indent;
     }
 
     /**
      * @param string $indent
      */
-    public static function setDefaultBaseIndent( $indent ) {
+    public static function setDefaultBaseIndent( $indent )
+    {
         self::$DEFAULTBASEINDENT = $indent;
     }
 
+    /**
+     * @var string
+     */
     protected static $DEFAULTVERSION = PHP_VERSION;
     public    static $TARGETVERSION  = null;
 
     /**
      * @return string
      */
-    public static function getTargetPhpVersion() {
+    public static function getTargetPhpVersion()
+    {
         return self::$TARGETVERSION;
     }
 
@@ -74,7 +80,8 @@ abstract class BaseA implements PcGenInterface
      * @param string $phpVersion
      * @return void
      */
-    public static function setTargetPhpVersion( $phpVersion ) {
+    public static function setTargetPhpVersion( $phpVersion )
+    {
         self::$TARGETVERSION = $phpVersion;
     }
 
@@ -108,7 +115,8 @@ abstract class BaseA implements PcGenInterface
      * @param string $indent
      * @param string $baseIndent
      */
-    public function __construct( $eol = null, $indent = null, $baseIndent = null ) {
+    public function __construct( $eol = null, $indent = null, $baseIndent = null )
+    {
         if( null === $this->eol ) {
             $this->eol = self::$DEFAULTEOL;
         }
@@ -140,7 +148,8 @@ abstract class BaseA implements PcGenInterface
      * @param string       $baseIndent
      * @return static
      */
-    public static function init( $base = null, $indent = null, $baseIndent = null ) {
+    public static function init( $base = null, $indent = null, $baseIndent = null )
+    {
         if( $base instanceof BaseA ) {
             return new static(
                 $base->getEol(),
@@ -163,14 +172,16 @@ abstract class BaseA implements PcGenInterface
      *
      * @return string
      */
-    public function toString() {
+    public function toString()
+    {
         return implode( $this->eol, $this->toArray()) . $this->eol;
     }
 
     /**
      * @return array|string|null
      */
-    public function getEol() {
+    public function getEol()
+    {
         return $this->eol;
     }
 
@@ -179,7 +190,8 @@ abstract class BaseA implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setEol( $eol ) {
+    public function setEol( $eol )
+    {
         $eol = Util::nullByteClean( $eol );
         if( empty( $eol )) {
             $this->eol =  self::$DEFAULTEOL;
@@ -199,7 +211,8 @@ abstract class BaseA implements PcGenInterface
     /**
      * @return string|null
      */
-    public function getIndent() {
+    public function getIndent()
+    {
         return $this->indent;
     }
 
@@ -207,7 +220,8 @@ abstract class BaseA implements PcGenInterface
      * @param string $indent
      * @return static
      */
-    public function setIndent( $indent = null ) {
+    public function setIndent( $indent = null )
+    {
         if( null === $indent ) {
             $this->indent = self::SP0;
         }
@@ -221,7 +235,8 @@ abstract class BaseA implements PcGenInterface
     /**
      * @return string|null
      */
-    public function getBaseIndent() {
+    public function getBaseIndent()
+    {
         return $this->baseIndent;
     }
 
@@ -229,7 +244,8 @@ abstract class BaseA implements PcGenInterface
      * @param string $indent
      * @return static
      */
-    public function setBaseIndent( $indent = null ) {
+    public function setBaseIndent( $indent = null )
+    {
         if( null === $indent ) {
             $this->baseIndent = self::SP0;
         }
@@ -244,7 +260,8 @@ abstract class BaseA implements PcGenInterface
      * @param BaseA $base
      * @return static
      */
-    public function rig( BaseA $base ) {
+    public function rig( BaseA $base )
+    {
         $this->setEol( $base->getEol());
         $this->setIndent( $base->getIndent());
         $this->setBaseIndent( $base->getBaseIndent());
@@ -254,9 +271,49 @@ abstract class BaseA implements PcGenInterface
     /**
      * @return string
      */
-    public function showIndents() {
+    public function showIndents()
+    {
         static $FMT = '%s baseIndent =>%s<-  indent =>%s<-';
         return sprintf( $FMT, get_called_class(), $this->baseIndent, $this->indent ); // test ###
     }
 
+    /**
+     * Remove leading empty array rows, all but last
+     *
+     * @parem array $array
+     * @return array
+     */
+    protected static function trimLeading( array $array )
+    {
+        if( empty( $array )) {
+            return [];
+        }
+        foreach( array_keys( $array ) as $ix ) {
+            if( ! empty( trim( $array[$ix] ))) {
+                break;
+            }
+            unset( $array[$ix] );
+        }
+        return empty( $array ) ? [] : $array;
+    }
+
+    /**
+     * Remove trailing empty array rows, all but first
+     *
+     * @parem array $array
+     * @return array
+     */
+    protected static function trimTrailing( array $array )
+    {
+        if( empty( $array )) {
+            return [];
+        }
+        foreach( array_reverse( array_keys( $array )) as $ix ) {
+            if( ! empty( trim( $array[$ix] ))) {
+                break;
+            }
+            unset( $array[$ix] );
+        }
+        return empty( $array ) ? [] : $array;
+    }
 }

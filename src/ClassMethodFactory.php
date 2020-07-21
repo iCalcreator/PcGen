@@ -35,7 +35,6 @@ use Kigkonsult\PcGen\Dto\VarDto;
  */
 class ClassMethodFactory implements PcGenInterface
 {
-
     /**
      * Fixed class methods
      */
@@ -46,7 +45,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param ClassMgr $classMgr
      * @return array
      */
-    public static function renderConstructorMethod( ClassMgr $classMgr ) {
+    public static function renderConstructorMethod( ClassMgr $classMgr )
+    {
         $TMPL1 = 'Class %s %s';
         $TMPL2 = 'constructor';
         $TMPL3 = '__construct';
@@ -66,7 +66,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param ClassMgr $classMgr
      * @return array
      */
-    public static function renderFactoryMethod( ClassMgr $classMgr ) {
+    public static function renderFactoryMethod( ClassMgr $classMgr )
+    {
         static $SUMMARY         = 'Class %s %s method';
         static $EXISTS          = ' exists';
         static $RETURNNEWSTATIC = 'return new static();';
@@ -83,7 +84,10 @@ class ClassMethodFactory implements PcGenInterface
             if( $classMgr->isExtendsSet()) {
                 $docBlock->setTag( self::TODO_T, self::PARENT_KW . $EXISTS );
             }
-            return array_merge( $docBlock->toArray(), $fcnFrameMgr->setBody( $RETURNNEWSTATIC )->toArray());
+            return array_merge(
+                $docBlock->toArray(),
+                $fcnFrameMgr->setBody( $RETURNNEWSTATIC )->toArray()
+            );
         }
         $body = [];
         foreach( $classMgr->getPropertyIndex() as $pIx ) {
@@ -93,7 +97,11 @@ class ClassMethodFactory implements PcGenInterface
             }
             $varDto = $property->getVarDto();
             $fcnFrameMgr->addArgument( $varDto );
-            $docBlock->setTag( self::PARAM_T, $varDto->getParamTagVarType(), $varDto->getName());
+            $docBlock->setTag(
+                self::PARAM_T,
+                $varDto->getParamTagVarType(),
+                $varDto->getName()
+            );
             self::renderPropertyAssignSetCode( $property, $body );
         } // end foreach
         if( empty( $body )) {
@@ -105,7 +113,10 @@ class ClassMethodFactory implements PcGenInterface
         }
         $docBlock->setTag( self::RETURN_T, self::STATIC_KW );
         if( $classMgr->isExtendsSet()) {
-            $docBlock->setTag( self::TODO_T, self::PARENT_KW . $EXISTS );
+            $docBlock->setTag(
+                self::TODO_T,
+                self::PARENT_KW . $EXISTS
+            );
         }
         return array_merge(
             $docBlock->toArray(),
@@ -120,7 +131,10 @@ class ClassMethodFactory implements PcGenInterface
      * @param array       $code
      * @return void
      */
-    private static function renderPropertyAssignSetCode( PropertyMgr $property, array & $code ) {
+    private static function renderPropertyAssignSetCode(
+        PropertyMgr $property,
+        array & $code
+    ) {
         static $INSTANCE = '$instance';
         static $SET = 'set';
         static $END = ';';
@@ -156,7 +170,10 @@ class ClassMethodFactory implements PcGenInterface
      * @param array  $code
      * @return void
      */
-    public static function renderGetterMethod( PropertyMgr $property, array & $code ) {
+    public static function renderGetterMethod(
+        PropertyMgr $property,
+        array & $code
+    ) {
         static $GET = 'get';
         static $IS  = 'is';
         static $SUMMARY = 'Return %s %s';
@@ -175,7 +192,8 @@ class ClassMethodFactory implements PcGenInterface
         $fcnFrameMgr = FcnFrameMgr::init( $property )
             ->setName( $fcnName )
             ->setReturnProperty( $propName );
-        if( ! empty( $varType ) && ! is_array( $varType ) && ( self::MIXED_KW != $varType )) {
+        if( ! empty( $varType ) &&
+            ! is_array( $varType ) && ( self::MIXED_KW != $varType )) {
             $fcnFrameMgr->setReturnType( $varType );
         }
         $code= array_merge( $code,
@@ -194,7 +212,10 @@ class ClassMethodFactory implements PcGenInterface
      * @param array  $code
      * @return void
      */
-    public static function renderIsPropertySetMethod( PropertyMgr $property, array & $code ) {
+    public static function renderIsPropertySetMethod(
+        PropertyMgr $property,
+        array & $code
+    ) {
         static $SUMMARY    = 'Return bool true if  %s  is set (i.e. not %s)';
         static $FCNNAME    = 'is%sSet';
         static $NULLCODE   = 'return ( null !== $this->%s );';
@@ -245,7 +266,10 @@ class ClassMethodFactory implements PcGenInterface
      * @param array  $code
      * @return void
      */
-    public static function renderPropertyCountMethod( PropertyMgr $property, array & $code ) {
+    public static function renderPropertyCountMethod(
+        PropertyMgr $property,
+        array & $code
+    ) {
         if( ! $property->getVarDto()->isTypedArray()) {
             return;
         }
@@ -265,7 +289,11 @@ class ClassMethodFactory implements PcGenInterface
      * @param string      $fcnNamePrefix
      * @return array
      */
-    private static function implIterCountMethod( PropertyMgr $property, $decsription = null, $fcnNamePrefix = null ) {
+    private static function implIterCountMethod(
+        PropertyMgr $property,
+        $decsription = null,
+        $fcnNamePrefix = null
+    ) {
         static $COUNT    = 'count';
         static $SUMMARY  = 'Return count of %s elements';
         static $CODETMPL = 'return count( $this->%s );';
@@ -301,7 +329,10 @@ class ClassMethodFactory implements PcGenInterface
      * @param array  $code
      * @return void
      */
-    public static function renderAppendArrayMethod( PropertyMgr $property, array & $code ) {
+    public static function renderAppendArrayMethod(
+        PropertyMgr $property,
+        array & $code
+    ) {
         $ADD1     = 'Append an %s array element';
         $ADD2     = 'append';
         $varDto   = $property->getVarDto();
@@ -311,7 +342,10 @@ class ClassMethodFactory implements PcGenInterface
                 ->setSummary( sprintf( $ADD1, $propName ))
                 ->setTag(
                     self::PARAM_T,
-                    $varDto->hasTypeHintArraySpec( DocBlockMgr::getTargetPhpVersion(), $typeHint )
+                    $varDto->hasTypeHintArraySpec(
+                        DocBlockMgr::getTargetPhpVersion(),
+                        $typeHint
+                    )
                         ? $typeHint
                         : self::MIXED_KW,
                     $propName
@@ -337,7 +371,10 @@ class ClassMethodFactory implements PcGenInterface
      * @param array  $code
      * @return void
      */
-    public static function renderSetterMethod( PropertyMgr $property, array & $code ) {
+    public static function renderSetterMethod(
+        PropertyMgr $property,
+        array & $code
+    ) {
         $SET      = 'set';
         $varDto   = $property->getVarDto();
         $propName = $varDto->getName();
@@ -365,7 +402,10 @@ class ClassMethodFactory implements PcGenInterface
      * @param BaseA       $base
      * @return array  $code
      */
-    public static function renderPropValueSetCode( ArgumentDto $argument, BaseA $base ) {
+    public static function renderPropValueSetCode(
+        ArgumentDto $argument,
+        BaseA $base
+    ) {
         static $IFNOTNULL = '%1$sif( null !== $%2$s ) {';
         static $ACTION    = '%1$s%2$s%3$s';
         static $END       = '%s}';
@@ -415,7 +455,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param ClassMgr $classMgr
      * @return void
      */
-    public static function setUpIteratorForClass( ClassMgr $classMgr ) {
+    public static function setUpIteratorForClass( ClassMgr $classMgr )
+    {
         if( $classMgr->isNamespaceSet()) {
             foreach( self::$USES as $use ) {
                 $classMgr->addUse( $use );
@@ -433,7 +474,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param ClassMgr $classMgr
      * @return void
      */
-    private static function setPositionProperty( ClassMgr $classMgr ) {
+    private static function setPositionProperty( ClassMgr $classMgr )
+    {
         static $ITERATORixTxt = 'Iterator index';
         foreach( $classMgr->getPropertyIndex() as $pIx ) {
             if( self::$POSITION == $classMgr->getProperty( $pIx )->getName()) {
@@ -442,7 +484,9 @@ class ClassMethodFactory implements PcGenInterface
         }
         $classMgr->addProperty(
             PropertyMgr::init( $classMgr )
-                ->setVarDto( VarDto::factory( self::$POSITION, self::INT_T, 0, $ITERATORixTxt ))
+                ->setVarDto(
+                    VarDto::factory( self::$POSITION, self::INT_T, 0, $ITERATORixTxt )
+                )
                 ->setMakeGetter( false )
                 ->setMakeSetter( false )
         );
@@ -455,7 +499,10 @@ class ClassMethodFactory implements PcGenInterface
      * @param array  $code
      * @return void
      */
-    public static function renderIteratorGetterMethods( PropertyMgr $property, array & $code ) {
+    public static function renderIteratorGetterMethods(
+        PropertyMgr $property,
+        array & $code
+    ) {
         $code = array_merge( $code,
             self::renderIterCountMethod( $property ),
             self::renderIterCurrentMethod( $property ),
@@ -475,7 +522,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterCountMethod( PropertyMgr $property ) {
+    private static function renderIterCountMethod( PropertyMgr $property )
+    {
         static $DESCRIPTION = 'Required method implementing the Countable interface';
         return self::implIterCountMethod( $property, $DESCRIPTION );
     }
@@ -484,12 +532,16 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterCurrentMethod( PropertyMgr $property ) {
+    private static function renderIterCurrentMethod( PropertyMgr $property )
+    {
         static $SUMMARY     = 'Return the current element';
         static $DESCRIPTION = 'Required method implementing the Iterator interface';
         static $FCNNAME     = 'current';
         static $CODETMPL    = 'return $this->%s[$this->position];';
-        $returnType = $property->getVarDto()->hasTypeHintArraySpec( DocBlockMgr::getTargetPhpVersion(), $typeHint )
+        $returnType = $property->getVarDto()->hasTypeHintArraySpec(
+            DocBlockMgr::getTargetPhpVersion(),
+            $typeHint
+        )
             ? $typeHint
             : self::MIXED_KW;
         return array_merge(
@@ -508,7 +560,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterExistsMethod( PropertyMgr $property ) {
+    private static function renderIterExistsMethod( PropertyMgr $property )
+    {
         static $SUMMARY     = 'Checks if position is set';
         static $FCNNAME     = 'exists';
         static $CODETMPL    = 'return array_key_exists( $position, $this->%s );';
@@ -536,7 +589,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterGetIteratorMethod( PropertyMgr $property ) {
+    private static function renderIterGetIteratorMethod( PropertyMgr $property )
+    {
         static $SUMMARY     = 'Retrieve an external iterator';
         static $DESCRIPTION =  [
             'Method implementing the IteratorAggregate interface,',
@@ -563,7 +617,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterKeyMethod( PropertyMgr $property ) {
+    private static function renderIterKeyMethod( PropertyMgr $property )
+    {
         static $SUMMARY     = 'Return the key of the current element';
         static $DESCRIPTION = 'Required method implementing the Iterator interface';
         static $FCNNAME     = 'key';
@@ -584,7 +639,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterLastMethod( PropertyMgr $property ) {
+    private static function renderIterLastMethod( PropertyMgr $property )
+    {
         static $SUMMARY  = 'Move position to last element';
         static $FCNNAME  = 'last';
         static $CODETMPL = '$this->position = count( $this->%s ) - 1;';
@@ -605,7 +661,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterNextMethod( PropertyMgr $property ) {
+    private static function renderIterNextMethod( PropertyMgr $property )
+    {
         static $SUMMARY     = 'Move position forward to next element';
         static $DESCRIPTION = 'Required method implementing the Iterator interface';
         static $FCNNAME     = 'next';
@@ -635,7 +692,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterPreviousMethod( PropertyMgr $property ) {
+    private static function renderIterPreviousMethod( PropertyMgr $property )
+    {
         static $SUMMARY  = 'Move position backward to previous element';
         static $FCNNAME  = 'previous';
         static $OPERATOR = '-=';
@@ -664,7 +722,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterRewindMethod( PropertyMgr $property ) {
+    private static function renderIterRewindMethod( PropertyMgr $property )
+    {
         static $SUMMARY     = 'Rewind the Iterator to the first element';
         static $DESCRIPTION = 'Required method implementing the Iterator interface';
         static $FCNNAME     = 'rewind';
@@ -692,7 +751,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterSeekMethod( PropertyMgr $property ) {
+    private static function renderIterSeekMethod( PropertyMgr $property )
+    {
         static $SUMMARY     = 'Seeks to a given position in the iterator';
         static $DESCRIPTION = 'Required method implementing the SeekableIterator interface';
         static $FCNNAME     = 'seek';
@@ -732,7 +792,8 @@ class ClassMethodFactory implements PcGenInterface
      * @param PropertyMgr $property
      * @return array
      */
-    private static function renderIterValidMethod( PropertyMgr $property ) {
+    private static function renderIterValidMethod( PropertyMgr $property )
+    {
         static $SUMMARY     = 'Checks if current position is valid';
         static $DESCRIPTION = 'Required method implementing the Iterator interface';
         static $FCNNAME     = 'valid';
@@ -749,5 +810,4 @@ class ClassMethodFactory implements PcGenInterface
                 ->toArray()
         ); // end return array_merge
     }
-
 }

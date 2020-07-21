@@ -47,7 +47,8 @@ trait ArgumentTrait
      * @param string $row
      * @return array
      */
-    private function renderArguments( $row ) {
+    private function renderArguments( $row )
+    {
         static $ARGSTART = '(';
         static $ARGEND   = ')';
         $cntArgs = count( $this->arguments );
@@ -77,7 +78,8 @@ trait ArgumentTrait
      * @return string
      * @todo fix PHP_VERSION for typeHint
      */
-    private static function renderOneArg( ArgumentDto $argumentDto ) {
+    private static function renderOneArg( ArgumentDto $argumentDto )
+    {
         static $REFERENCE = '& ';
         static $SPEQSP    = ' = ';
         static $ARRSTART  = '[ ';
@@ -138,7 +140,8 @@ trait ArgumentTrait
      * @param ArgumentDto[] $arguments
      * @return bool
      */
-    private static function hasOnlyNames( array $arguments ) {
+    private static function hasOnlyNames( array $arguments )
+    {
         foreach( array_keys( $arguments) as $argIx ) {
             if( $arguments[$argIx]->isVarTypeSet()) {
                 return false;
@@ -156,7 +159,8 @@ trait ArgumentTrait
      * @param ArgumentDto[] $arguments
      * @return string
      */
-    private static function renderArgsInOneRow( array $arguments ) {
+    private static function renderArgsInOneRow( array $arguments )
+    {
         $lastIx = count( $arguments ) - 1;
         $row    = BaseA::SP0;
         foreach( array_keys( $arguments) as $argIx ) {
@@ -173,7 +177,8 @@ trait ArgumentTrait
      * @param array $code
      * @return void
      */
-    private function renderArgsInRows( array $arguments, array & $code ) {
+    private function renderArgsInRows( array $arguments, array & $code )
+    {
         $lastIx  = count( $this->arguments ) - 1;
         foreach( array_keys( $arguments) as $argIx ) {
             $row = $this->baseIndent . $this->indent . self::renderOneArg( $arguments[$argIx] );
@@ -228,21 +233,24 @@ trait ArgumentTrait
      * @param $aIx
      * @return ArgumentDto
      */
-    public function getArgument( $aIx ) {
+    public function getArgument( $aIx )
+    {
         return $this->arguments[$aIx];
     }
 
     /**
      * @return int
      */
-    public function getArgumentCount() {
+    public function getArgumentCount()
+    {
         return count( $this->arguments );
     }
 
     /**
      * @return array
      */
-    public function getArgumentIndex() {
+    public function getArgumentIndex()
+    {
         return array_keys( $this->arguments );
     }
 
@@ -260,7 +268,8 @@ trait ArgumentTrait
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setArguments( array $arguments = null ) {
+    public function setArguments( array $arguments = null )
+    {
         static $ARGUMENT = 'argument';
         $this->arguments = [];
         if( empty( $arguments )) {
@@ -310,7 +319,8 @@ trait ArgumentTrait
      * @param int   $index
      * @return int
      */
-    private static function grabUpdClassProperty( array $argSet, $index ) {
+    private static function grabUpdClassProperty( array $argSet, $index )
+    {
         $updClassProperty = ArgumentDto::NONE;
         switch( true ) {
             case ! array_key_exists( $index, $argSet ) :
@@ -325,6 +335,4 @@ trait ArgumentTrait
         } // end switch
         return $updClassProperty;
     }
-
-
 }

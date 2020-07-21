@@ -42,7 +42,6 @@ use RuntimeException;
  */
 final class ReturnClauseMgr extends BaseR1
 {
-
     /**
      * @param string     $class
      * @param mixed      $variable
@@ -50,7 +49,8 @@ final class ReturnClauseMgr extends BaseR1
      * @return static
      * @throws InvalidArgumentException
      */
-    public static function factory( $class = null, $variable = null, $index = null ) {
+    public static function factory( $class = null, $variable = null, $index = null )
+    {
         return self::init()->setSource( $class, $variable, $index );
     }
 
@@ -60,7 +60,8 @@ final class ReturnClauseMgr extends BaseR1
      * @return array
      * @throws RuntimeException
      */
-    public function toArray() {
+    public function toArray()
+    {
         $row1 = $this->getbaseIndent() . $this->getIndent() . self::RETURN_T;
         $code = $this->getRenderedSource();
         if(( 1 == count( $code )) && empty( $code[0] )) { // Source initiated null, null, null
@@ -73,5 +74,4 @@ final class ReturnClauseMgr extends BaseR1
         $code[$lastIx] = rtrim( $code[$lastIx] ) . self::$END;
         return Util::nullByteClean( $code );
     }
-
 }

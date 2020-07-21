@@ -1,4 +1,7 @@
 
+1.1.32 Style review
+1.1.31 ClassMgr/FcnFrameMgr code output style
+
 1.1.30 FcnFrameMgr returnType bug
 
 1.1.29 Util TypeHint bug

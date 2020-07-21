@@ -27,7 +27,6 @@ use InvalidArgumentException;
 
 class Assert
 {
-
     /**
      * Assert valid PHP property/variable variable ($-class or leading alpha/digit), return non-$-prefixed variable
      *
@@ -35,7 +34,8 @@ class Assert
      * @return void
      * @throws InvalidArgumentException
      */
-    public static function assertFqcn( $fqcn ) {
+    public static function assertFqcn( $fqcn )
+    {
         static $DS = "\\";
         foreach( explode( $DS, $fqcn ) as $part ) {
             self::assertPhpVar( $part );
@@ -47,9 +47,12 @@ class Assert
      * @return void
      * @throws InvalidArgumentException
      */
-    public static function assertIndent( $indent ) {
+    public static function assertIndent( $indent )
+    {
         if( BaseA::SP0 != trim( $indent)) {
-            throw new InvalidArgumentException( sprintf( BaseA::$ERRx, var_export( $indent, true )));
+            throw new InvalidArgumentException(
+                sprintf( BaseA::$ERRx, var_export( $indent, true ))
+            );
         }
     }
 
@@ -97,25 +100,24 @@ class Assert
      * @throws InvalidArgumentException
      * @todo allow variable property names (ex '{$varDto}') ??
      */
-    public static function assertPhpVar( $value ) {
+    public static function assertPhpVar( $value )
+    {
         static $PATTERN = '/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/';
         static $ERR     = 'Invalid PHP value : %s';
         $value2 = Util::unSetVarPrefix( $value );
         if( empty( $value2 ) || ( 1 != preg_match( $PATTERN, $value2 )) ) {
-            throw new InvalidArgumentException( sprintf( $ERR, var_export( $value, true )));
+            throw new InvalidArgumentException(
+                sprintf( $ERR, var_export( $value, true ))
+            );
         }
         $value = trim( (string) $value );
         foreach( self::$RESERVEDWORDS as $reserved ) {
             if( 0 === strcasecmp( $reserved, $value )) {
-                throw new InvalidArgumentException( sprintf( $ERR, var_export( $value, true )));
+                throw new InvalidArgumentException(
+                    sprintf( $ERR, var_export( $value, true ))
+                );
             }
         } // end foreach
         return $value2;
     }
-
-    /*
-     * @param string $value
-     * @return bool
-     */
-
 }

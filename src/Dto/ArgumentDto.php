@@ -32,7 +32,6 @@ namespace Kigkonsult\PcGen\Dto;
  */
 final class ArgumentDto extends VarDto
 {
-
     /**
      * updClassProp arguments
      */
@@ -83,7 +82,8 @@ final class ArgumentDto extends VarDto
     /**
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return parent::__toString() .
             ', byReference: ' . ( $this->byReference ? '+' : '-' ) .
             ', updClassProp: ' . $this->updClassProp .
@@ -93,7 +93,8 @@ final class ArgumentDto extends VarDto
     /**
      * @return bool
      */
-    public function isByReference() {
+    public function isByReference()
+    {
         return $this->byReference;
     }
 
@@ -101,7 +102,8 @@ final class ArgumentDto extends VarDto
      * @param bool $byReference
      * @return ArgumentDto
      */
-    public function setByReference( $byReference = true ) {
+    public function setByReference( $byReference = true )
+    {
         $this->byReference = $byReference;
         return $this;
     }
@@ -109,7 +111,8 @@ final class ArgumentDto extends VarDto
     /**
      * @return int  1 or 9
      */
-    public function getUpdClassProp() {
+    public function getUpdClassProp()
+    {
         return $this->updClassProp;
     }
 
@@ -117,7 +120,8 @@ final class ArgumentDto extends VarDto
      * @param int $updClassProp  1=before, 9=after function body, before opt. set return(value)
      * @return ArgumentDto
      */
-    public function setUpdClassProperty( $updClassProp = self::BEFORE ) {
+    public function setUpdClassProperty( $updClassProp = self::BEFORE )
+    {
         if( in_array( $updClassProp, [ null, true, self::BEFORE ], true )) {
             $this->updClassProp = self::BEFORE;
         }
@@ -133,7 +137,8 @@ final class ArgumentDto extends VarDto
     /**
      * @return bool
      */
-    public function isNextVarPropIndex() {
+    public function isNextVarPropIndex()
+    {
         return $this->nextVarPropIndex;
     }
 
@@ -147,5 +152,4 @@ final class ArgumentDto extends VarDto
             : false;
         return $this;
     }
-
 }

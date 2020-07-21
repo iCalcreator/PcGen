@@ -28,7 +28,6 @@ use RuntimeException;
 
 final class ChainInvokeMgr extends BaseA
 {
-
     /**
      * @var FcnInvokeMgr[]
      */
@@ -43,7 +42,8 @@ final class ChainInvokeMgr extends BaseA
      * @param FcnInvokeMgr ...$args
      * @return static
      */
-    public static function factory( ...$args ) {
+    public static function factory( ...$args )
+    {
         return self::init()->setInvokes( $args );
     }
 
@@ -51,7 +51,8 @@ final class ChainInvokeMgr extends BaseA
      * @inheritDoc
      * @throws RuntimeException
      */
-    public function toArray() {
+    public function toArray()
+    {
         static $ERR = 'No function directives';
         if( ! $this->isInvokesSet()) {
             throw new RuntimeException( $ERR );
@@ -65,7 +66,8 @@ final class ChainInvokeMgr extends BaseA
         $ind  = $this->getBaseIndent() . $this->getIndent();
         for( $ifx = 1; $ifx < $cnt1; $ifx++ ) { // all next displ without class, now has all $-prefix
             $invoke = $this->invokes[$ifx]->toArray();
-            $code[] = $this->getIndent() . str_replace( $repl, self::SP0, trim( $invoke[0] ));
+            $code[] = $this->getIndent() .
+                str_replace( $repl, self::SP0, trim( $invoke[0] ));
             $cnt2   = count( $invoke );
             if( 1 == $cnt2 ) {
                 continue;
@@ -82,14 +84,16 @@ final class ChainInvokeMgr extends BaseA
     /**
      * @return FcnInvokeMgr[]
      */
-    public function getInvokes() {
+    public function getInvokes()
+    {
         return $this->invokes;
     }
 
     /**
      * @return bool
      */
-    public function isInvokesSet() {
+    public function isInvokesSet()
+    {
         return ( ! empty( $this->invokes ));
     }
 
@@ -104,7 +108,8 @@ final class ChainInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function appendInvoke( FcnInvokeMgr $invoke ) {
+    public function appendInvoke( FcnInvokeMgr $invoke )
+    {
         static $ERR1 = 'Invalid first \'%s\' for next \'%s\'';
         static $ERR2 = 'First \'%s\', invalid next \'%s\'';
         switch( true ) {
@@ -141,7 +146,8 @@ final class ChainInvokeMgr extends BaseA
      * @param string $invokeClass
      * @return bool
      */
-    private static function evaluateClass( $invokeClass ) {
+    private static function evaluateClass( $invokeClass )
+    {
         if( empty( $invokeClass )) {
             return false;
         }
@@ -162,7 +168,8 @@ final class ChainInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setInvokes( array $invokes ) {
+    public function setInvokes( array $invokes )
+    {
         $this->invokes     = [];
         $this->invokeClass = null;
         foreach( array_keys( $invokes ) as $fIx ) {
@@ -170,5 +177,4 @@ final class ChainInvokeMgr extends BaseA
         }
         return $this;
     }
-
 }

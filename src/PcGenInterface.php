@@ -25,7 +25,6 @@ namespace Kigkonsult\PcGen;
 
 interface PcGenInterface
 {
-
     /**
      * PHP visibilities
      */
@@ -116,5 +115,4 @@ interface PcGenInterface
     const SP0               = '';
     const SP1               = ' ';
     const VARPREFIX         = '$';
-
 }

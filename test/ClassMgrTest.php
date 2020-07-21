@@ -636,7 +636,7 @@ class ClassMgrTest extends TestCase
         );
 
         $this->assertTrue(
-            ( false !== strpos( $code, '    public function __construct() ' )),
+            ( false !== strpos( $code, '    public function __construct()' )),
             'Error in case ' . 'K-' . $case . 'K' . PHP_EOL . $code
         );
 
@@ -696,8 +696,8 @@ class ClassMgrTest extends TestCase
                 );
             }
             $this->assertTrue(
-                (( false !== strpos( $code, '    public function getProp' . $expNo . '() ' )) ||
-                 ( false !== strpos( $code, '    public function isProp' . $expNo . '() ' ))), // type bool
+                (( false !== strpos( $code, '    public function getProp' . $expNo . '()' )) ||
+                 ( false !== strpos( $code, '    public function isProp' . $expNo . '()' ))), // type bool
                 'Error in case ' . 'R2-' . $case . '-' . $expNo . PHP_EOL . $code
             );
             $this->assertTrue(
@@ -883,35 +883,35 @@ class ClassMgrTest extends TestCase
         );
 
         $this->assertTrue(
-            ( false !== stripos( $code, 'public function current() ' )),
+            ( false !== stripos( $code, 'public function current()' )),
             'Error 5 in case ' . $case . PHP_EOL . $code
         );
         $this->assertTrue(
-            ( false !== stripos( $code, 'public function getIterator() ' )),
+            ( false !== stripos( $code, 'public function getIterator()' )),
             'Error 6 in case ' . $case . PHP_EOL . $code
         );
         $this->assertTrue(
-            ( false !== stripos( $code, 'public function key() ' )),
+            ( false !== stripos( $code, 'public function key()' )),
             'Error 7 in case ' . $case . PHP_EOL . $code
         );
         $this->assertTrue(
-            ( false !== stripos( $code, 'public function last() ' )),
+            ( false !== stripos( $code, 'public function last()' )),
             'Error 8 in case ' . $case . PHP_EOL . $code
         );
         $this->assertTrue(
-            ( false !== stripos( $code, 'public function next() ' )),
+            ( false !== stripos( $code, 'public function next()' )),
             'Error 9 in case ' . $case . PHP_EOL . $code
         );
         $this->assertTrue(
-            ( false !== stripos( $code, 'public function previous() ' )),
+            ( false !== stripos( $code, 'public function previous()' )),
             'Error 10 in case ' . $case . PHP_EOL . $code
         );
         $this->assertTrue(
-            ( false !== stripos( $code, 'public function rewind() ' )),
+            ( false !== stripos( $code, 'public function rewind()' )),
             'Error 11 in case ' . $case . PHP_EOL . $code
         );
         $this->assertTrue(
-            ( false !== stripos( $code, 'public function valid() ' )),
+            ( false !== stripos( $code, 'public function valid()' )),
             'Error 12 in case ' . $case . PHP_EOL . $code
         );
 

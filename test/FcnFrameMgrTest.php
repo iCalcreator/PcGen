@@ -455,7 +455,7 @@ class FcnFrameMgrTest extends TestCase
      * @param string $expected
      */
     public function fcnFrameMgrTest1( $case, $argName, $varType, $default, $expected ) {
-        static $tmpl = '    public function %1$s( %2$s%3$s ) {%4$s    }%4$s';
+        static $tmpl = '    public function %1$s( %2$s%3$s )%4$s    {%4$s    }%4$s';
         $fcnName  = __FUNCTION__ . '_' . $case;
         $varDto   = VarDto::factory( $argName, $varType, $default );
         $typeHint = ( $varDto->isTypeHint( FcnFrameMgr::getTargetPhpVersion(), $typeHint2 ))

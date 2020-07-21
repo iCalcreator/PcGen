@@ -60,7 +60,8 @@ final class PropertyMgr extends VariableMgr
      * @param VariableMgr $variableMgr
      * @return static
      */
-    public function cloneFromParent( VariableMgr $variableMgr ) {
+    public function cloneFromParent( VariableMgr $variableMgr )
+    {
         return $this->setVarDto( $variableMgr->getVarDto())
             ->setStatic( $variableMgr->isStatic())
             ->setVisibility( $variableMgr->getVisibility());
@@ -69,7 +70,8 @@ final class PropertyMgr extends VariableMgr
     /**
      * @return bool
      */
-    public function isMakeGetter() {
+    public function isMakeGetter()
+    {
         return $this->makeGetter;
     }
 
@@ -77,7 +79,8 @@ final class PropertyMgr extends VariableMgr
      * @param bool $makeGetter
      * @return PropertyMgr
      */
-    public function setMakeGetter( $makeGetter ) {
+    public function setMakeGetter( $makeGetter )
+    {
         $this->makeGetter = (bool) $makeGetter;
         if( $this->makeGetter && ( $this->isConst() || $this->isStatic())) {
             $this->makeGetter = false;
@@ -88,7 +91,8 @@ final class PropertyMgr extends VariableMgr
     /**
      * @return bool
      */
-    public function isMakeSetter() {
+    public function isMakeSetter()
+    {
         return $this->makeSetter;
     }
 
@@ -96,7 +100,8 @@ final class PropertyMgr extends VariableMgr
      * @param bool $makeSetter
      * @return PropertyMgr
      */
-    public function setMakeSetter( $makeSetter ) {
+    public function setMakeSetter( $makeSetter )
+    {
         $this->makeSetter = (bool) $makeSetter;
         if( $this->makeSetter && ( $this->isConst() || $this->isStatic())) {
             $this->makeSetter = false;
@@ -116,7 +121,8 @@ final class PropertyMgr extends VariableMgr
      * @param bool $argInFactory
      * @return static
      */
-    public function setArgInFactory( $argInFactory ) {
+    public function setArgInFactory( $argInFactory )
+    {
         $this->argInFactory = (bool) $argInFactory;
         if( $this->argInFactory && ( $this->isConst() || $this->isStatic())) {
             $this->argInFactory = false;
@@ -133,7 +139,8 @@ final class PropertyMgr extends VariableMgr
      * @param bool $isConst
      * @return VariableMgr
      */
-    public function setIsConst( $isConst = true ) {
+    public function setIsConst( $isConst = true )
+    {
         $this->isConst = (bool) $isConst;
         if( $this->isConst ) {
             $this->makeGetter = false;
@@ -151,7 +158,8 @@ final class PropertyMgr extends VariableMgr
      * @param bool $static
      * @return static
      */
-    public function setStatic( $static = true ) {
+    public function setStatic( $static = true )
+    {
         $this->static = (bool) $static;
         if( $this->static ) {
             $this->makeGetter = false;
@@ -160,5 +168,4 @@ final class PropertyMgr extends VariableMgr
         }
         return $this;
     }
-
 }

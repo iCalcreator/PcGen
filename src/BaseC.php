@@ -47,14 +47,16 @@ abstract class BaseC extends BaseB
     /**
      * @return string
      */
-    public function getVisibility() {
+    public function getVisibility()
+    {
         return $this->visibility;
     }
 
     /**
      * @return bool
      */
-    public function isVisibilitySet() {
+    public function isVisibilitySet()
+    {
         return ( null !== $this->visibility );
     }
 
@@ -63,7 +65,8 @@ abstract class BaseC extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVisibility( $visibility = null ) {
+    public function setVisibility( $visibility = null )
+    {
         static $FMT = 'Invalid visibility ';
         static $VISIBILITIES = [
             self::PUBLIC_,
@@ -86,7 +89,8 @@ abstract class BaseC extends BaseB
     /**
      * @return bool
      */
-    public function isStatic() {
+    public function isStatic()
+    {
         return $this->static;
     }
 
@@ -94,9 +98,9 @@ abstract class BaseC extends BaseB
      * @param bool $static
      * @return static
      */
-    public function setStatic( $static = true ) {
+    public function setStatic( $static = true )
+    {
         $this->static = (bool) $static;
         return $this;
     }
-
 }

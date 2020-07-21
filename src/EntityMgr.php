@@ -38,7 +38,6 @@ use InvalidArgumentException;
  */
 final class EntityMgr extends BaseA
 {
-
     /**
      * @var array
      */
@@ -88,7 +87,12 @@ final class EntityMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public static function factory( $class = null, $variable = null, $index = null, $forceVarPrefix = true ) {
+    public static function factory(
+        $class = null,
+        $variable = null,
+        $index = null,
+        $forceVarPrefix = true
+    ) {
         $instance = self::init();
         $instance->setClass( $class );
         if( null !== $variable ) {
@@ -104,7 +108,8 @@ final class EntityMgr extends BaseA
     /**
      * @return string  testing
      */
-    public function __toString() {
+    public function __toString()
+    {
         static $D  = ' - ';
         static $P1 = '[';
         static $P2 = ']';
@@ -122,7 +127,8 @@ final class EntityMgr extends BaseA
     /**
      * @return array
      */
-    public function toArray() {
+    public function toArray()
+    {
         return [ $this->toString() ];
     }
 
@@ -131,7 +137,8 @@ final class EntityMgr extends BaseA
      *
      * @return string
      */
-    public function toString() {
+    public function toString()
+    {
         if(( null === $this->class ) && ( null === $this->variable )) { // empty ??
             return self::SP0;
         }
@@ -144,7 +151,8 @@ final class EntityMgr extends BaseA
     /**
      * @return string
      */
-    private function getPrefixCode() {
+    private function getPrefixCode()
+    {
         $row = self::SP0;
         switch( true ) {
             case empty( $this->class ) :
@@ -163,7 +171,8 @@ final class EntityMgr extends BaseA
      * @param string $row
      * @return string
      */
-    private function getSubjectCode( $row ) {
+    private function getSubjectCode( $row )
+    {
         static $COLONCOLON = '::';
         static $DASHARROW  = '->';
         switch( true ) {
@@ -209,7 +218,8 @@ final class EntityMgr extends BaseA
      * @param bool $expectVarPrefixed
      * @return string
      */
-    private function fixVariablePrefix( $expectVarPrefixed ) {
+    private function fixVariablePrefix( $expectVarPrefixed )
+    {
         if( $expectVarPrefixed ) {
             return Util::setVarPrefix( $this->variable );
         }
@@ -220,7 +230,8 @@ final class EntityMgr extends BaseA
      * @param string $row
      * @return string
      */
-    private function getIndexCode( $row ) {
+    private function getIndexCode( $row )
+    {
         static $ARR = '[%s]';
         switch( true ) { // index
             case ( 0 == strcmp( self::ARRAY2_T, (string) $this->index )) :
@@ -241,7 +252,8 @@ final class EntityMgr extends BaseA
     /**
      * @return string
      */
-    public function getClass() {
+    public function getClass()
+    {
         return $this->class;
     }
 
@@ -252,7 +264,8 @@ final class EntityMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setClass( $class = null ) {
+    public function setClass( $class = null )
+    {
         switch( true ) {
             case ( empty( $class ) || in_array( $class, self::$CLASSPREFIXes )) :
                 break;
@@ -270,7 +283,8 @@ final class EntityMgr extends BaseA
     /**
      * @return bool|string
      */
-    public function getVariable() {
+    public function getVariable()
+    {
         return $this->variable;
     }
 
@@ -281,7 +295,8 @@ final class EntityMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVariable( $variable ) {
+    public function setVariable( $variable )
+    {
         if( ! is_string( $variable ) || empty( $variable )) {
             throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $variable, true )));
         }
@@ -293,7 +308,8 @@ final class EntityMgr extends BaseA
     /**
      * @return int|string
      */
-    public function getIndex() {
+    public function getIndex()
+    {
         return $this->index;
     }
 
@@ -304,14 +320,17 @@ final class EntityMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setIndex( $index ) {
+    public function setIndex( $index )
+    {
         switch( true ) {
             case Util::isInt( $index ) :
                 break;
             case (( null === $index ) || empty( $index )):
                 return $this;
             case ( ! is_string( $index )) :
-                throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $index, true )));
+                throw new InvalidArgumentException(
+                    sprintf( self::$ERRx, var_export( $index, true ))
+                );
                 break;
             case ( self::ARRAY2_T == $index ) :
                 break;
@@ -327,7 +346,8 @@ final class EntityMgr extends BaseA
     /**
      * @return bool
      */
-    public function isConst() {
+    public function isConst()
+    {
         return $this->isConst;
     }
 
@@ -335,7 +355,8 @@ final class EntityMgr extends BaseA
      * @param bool $isConst
      * @return static
      */
-    public function setIsConst( $isConst = true ) {
+    public function setIsConst( $isConst = true )
+    {
         $this->isConst = (bool) $isConst;
         return $this;
     }
@@ -343,7 +364,8 @@ final class EntityMgr extends BaseA
     /**
      * @return bool
      */
-    public function isStatic() {
+    public function isStatic()
+    {
         return $this->isStatic;
     }
 
@@ -353,7 +375,8 @@ final class EntityMgr extends BaseA
      * @param bool $isStatic
      * @return static
      */
-    public function setIsStatic( $isStatic = true ) {
+    public function setIsStatic( $isStatic = true )
+    {
         $this->isStatic = (bool) $isStatic;
         return $this;
     }
@@ -362,9 +385,9 @@ final class EntityMgr extends BaseA
      * @param bool $forceVarPrefix
      * @return EntityMgr
      */
-    public function setForceVarPrefix( $forceVarPrefix = true ) {
+    public function setForceVarPrefix( $forceVarPrefix = true )
+    {
         $this->forceVarPrefix = (bool) $forceVarPrefix;
         return $this;
     }
-
 }

@@ -114,23 +114,32 @@ class VarDto implements PcGenInterface
     /**
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
+        static $SEARCH = [ PHP_EOL, ' ' ];
+        static $REPL   = '';
+        static $P1     = ' (';
+        static $P2     = ') : ';
         return $this->name .
-            ' (' . str_replace( [PHP_EOL, ' ' ], '', var_export( $this->varType, true )) . ') : ' .
-            str_replace( [PHP_EOL, ' ' ], '', var_export( $this->default, true ));
+            $P1 .
+            str_replace( $SEARCH, $REPL, var_export( $this->varType, true )) .
+            $P2 .
+            str_replace( $SEARCH, $REPL, var_export( $this->default, true ));
     }
 
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @return bool
      */
-    public function isNameSet() {
+    public function isNameSet()
+    {
         return ( null !== $this->name );
     }
 
@@ -139,7 +148,8 @@ class VarDto implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setName( $name ) {
+    public function setName( $name )
+    {
         if( self::SP0 != trim( $name )) {
             $this->name = Assert::assertPhpVar( Util::unSetVarPrefix( $name ));
         }
@@ -149,21 +159,24 @@ class VarDto implements PcGenInterface
     /**
      * @return string
      */
-    public function getVarType() {
+    public function getVarType()
+    {
         return $this->varType;
     }
 
     /**
      * @return string
      */
-    public function getParamTagVarType() {
+    public function getParamTagVarType()
+    {
         return $this->isVarTypeSet() ? $this->getVarType() : self::MIXED_KW;
     }
 
     /**
      * @return bool
      */
-    public function isTypedArray() {
+    public function isTypedArray()
+    {
         if( is_array( $this->varType )) { // mixed types
             return false;
         }
@@ -183,7 +196,8 @@ class VarDto implements PcGenInterface
      * @param string $typeHint
      * @return bool
      */
-    public function hasTypeHintArraySpec( $phpVersion = null, & $typeHint = null ) {
+    public function hasTypeHintArraySpec( $phpVersion = null, & $typeHint = null )
+    {
         if( empty( $this->varType ) ||
 //          ! is_string( $this->varType ) ||
             ( self::ARRAY_T == $this->varType ) ||
@@ -191,7 +205,11 @@ class VarDto implements PcGenInterface
             ( self::ARRAY2_T != substr( $this->varType, -2 ))) {
             return false;
         }
-        return Util::evaluateTypeHint( substr( $this->varType, 0, -2 ), $phpVersion, $typeHint );
+        return Util::evaluateTypeHint(
+            substr( $this->varType, 0, -2 ),
+            $phpVersion,
+            $typeHint
+        );
     }
 
     /**
@@ -201,7 +219,8 @@ class VarDto implements PcGenInterface
      * @param string $typeHint
      * @return bool
      */
-    public function isTypeHint( $phpVersion = null, & $typeHint = null ) {
+    public function isTypeHint( $phpVersion = null, & $typeHint = null )
+    {
         if( empty( $this->varType ) || ! is_string( $this->varType )) {
             return false;
         }
@@ -217,7 +236,8 @@ class VarDto implements PcGenInterface
     /**
      * @return bool
      */
-    public function isVarTypeSet() {
+    public function isVarTypeSet()
+    {
         return ( null !== $this->varType );
     }
 
@@ -226,7 +246,8 @@ class VarDto implements PcGenInterface
      * @return static
      * @todo move to assert::varType? const/fqcn, also in DocBlockMgr
      */
-    public function setVarType( $varType = null ) {
+    public function setVarType( $varType = null )
+    {
         switch( true ) {
             case is_array( $varType ) :
                 $this->varType = $varType;
@@ -247,7 +268,8 @@ class VarDto implements PcGenInterface
     /**
      * @return mixed
      */
-    public function getDefault() {
+    public function getDefault()
+    {
         return $this->default;
     }
 
@@ -256,7 +278,8 @@ class VarDto implements PcGenInterface
      *
      * @return bool
      */
-    public function isDefaultArray() {
+    public function isDefaultArray()
+    {
         return is_array( $this->default );
     }
 
@@ -265,7 +288,8 @@ class VarDto implements PcGenInterface
      *
      * @return bool
      */
-    public function isDefaultSet() {
+    public function isDefaultSet()
+    {
         return ( null !== $this->default );
     }
 
@@ -274,7 +298,8 @@ class VarDto implements PcGenInterface
      *
      * @return bool
      */
-    public function isDefaultTypedArray() {
+    public function isDefaultTypedArray()
+    {
         if( ! is_scalar( $this->default )) {
             return false;
         }
@@ -290,7 +315,8 @@ class VarDto implements PcGenInterface
     /**
      * @return bool
      */
-    public function isDefaultTypedNull() {
+    public function isDefaultTypedNull()
+    {
         return ( self::NULL_T === $this->default );
     }
 
@@ -300,9 +326,14 @@ class VarDto implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setDefault( $default = null ) {
-        if(( null !== $default ) && ! is_scalar( $default ) && ! is_array( $default )) {
-            throw new InvalidArgumentException( sprintf( BaseA::$ERRx, var_export( $default, true )));
+    public function setDefault( $default = null )
+    {
+        if(( null !== $default ) &&
+            ! is_scalar( $default ) &&
+            ! is_array( $default )) {
+            throw new InvalidArgumentException(
+                sprintf( BaseA::$ERRx, var_export( $default, true ))
+            );
         }
         $this->default = $default;
         return $this;
@@ -311,14 +342,16 @@ class VarDto implements PcGenInterface
     /**
      * @return string
      */
-    public function getSummary() {
+    public function getSummary()
+    {
         return $this->summary;
     }
 
     /**
      * @return bool
      */
-    public function isSummarySet() {
+    public function isSummarySet()
+    {
         return ( null !==  $this->summary );
     }
 
@@ -326,7 +359,8 @@ class VarDto implements PcGenInterface
      * @param string $summary
      * @return static
      */
-    public function setSummary( $summary = null ) {
+    public function setSummary( $summary = null )
+    {
         $this->summary = $summary;
         return $this;
     }
@@ -334,14 +368,16 @@ class VarDto implements PcGenInterface
     /**
      * @return array
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
     /**
      * @return bool
      */
-    public function isDescriptionSet() {
+    public function isDescriptionSet()
+    {
         return ( ! empty( $this->description ));
     }
 
@@ -349,9 +385,9 @@ class VarDto implements PcGenInterface
      * @param string|array $description
      * @return static
      */
-    public function setDescription( $description = null ) {
+    public function setDescription( $description = null )
+    {
         $this->description = ( null === $description ) ? null : (array) $description;
         return $this;
     }
-
 }

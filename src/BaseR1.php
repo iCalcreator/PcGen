@@ -28,7 +28,6 @@ use RuntimeException;
 
 abstract class BaseR1 extends BaseA
 {
-
     /**
      * @var string
      */
@@ -60,7 +59,8 @@ abstract class BaseR1 extends BaseA
      * @return array
      * @throws RuntimeException
      */
-    protected function getRenderedSource() {
+    protected function getRenderedSource()
+    {
         static $ERR = 'No source set';
         $code = [];
         switch( true ) {
@@ -83,7 +83,8 @@ abstract class BaseR1 extends BaseA
      * @param bool $strict  false returns fixedSourceValue as string
      * @return bool|float|int|string
      */
-    public function getFixedSourceValue( $strict = true ) {
+    public function getFixedSourceValue( $strict = true )
+    {
         if( $strict || $this->isExpression ) {
             return $this->fixedSourceValue;
         }
@@ -93,7 +94,8 @@ abstract class BaseR1 extends BaseA
     /**
      * @return bool
      */
-    public function isFixedSourceValueSet() {
+    public function isFixedSourceValueSet()
+    {
         return ( null !== $this->fixedSourceValue );
     }
 
@@ -102,9 +104,12 @@ abstract class BaseR1 extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setFixedSourceValue( $fixedSourceValue ) {
+    public function setFixedSourceValue( $fixedSourceValue )
+    {
         if( ! is_scalar( $fixedSourceValue )) {
-            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $fixedSourceValue, true  )));
+            throw new InvalidArgumentException(
+                sprintf( self::$ERRx, var_export( $fixedSourceValue, true  ))
+            );
         }
         $this->fixedSourceValue = $fixedSourceValue;
         $this->isExpression     = false;
@@ -115,9 +120,12 @@ abstract class BaseR1 extends BaseA
      * @param string $expression  any PHP expression
      * @return static
      */
-    public function setSourceExpression( $expression ) {
+    public function setSourceExpression( $expression )
+    {
         if( ! is_string( $expression )) {
-            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $expression, true  )));
+            throw new InvalidArgumentException(
+                sprintf( self::$ERRx, var_export( $expression, true  ))
+            );
         }
         $this->fixedSourceValue = rtrim( trim( $expression ), self::$END );
         $this->isExpression     = true;
@@ -127,14 +135,16 @@ abstract class BaseR1 extends BaseA
     /**
      * @return EntityMgr
      */
-    public function getSource() {
+    public function getSource()
+    {
         return $this->source;
     }
 
     /**
      * @return bool
      */
-    public function isSourceSet() {
+    public function isSourceSet()
+    {
         return ( null !==  $this->source );
     }
 
@@ -147,7 +157,8 @@ abstract class BaseR1 extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setSource( $class = null, $variable = null, $index = null ) {
+    public function setSource( $class = null, $variable = null, $index = null )
+    {
         switch( true ) {
             case ( $class instanceof EntityMgr ) :
                 $this->source = $class;
@@ -191,9 +202,12 @@ abstract class BaseR1 extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisPropertySource( $property, $index = null ) {
+    public function setThisPropertySource( $property, $index = null )
+    {
         if( ! is_string( $property )) {
-            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $property, true )));
+            throw new InvalidArgumentException(
+                sprintf( self::$ERRx, var_export( $property, true ))
+            );
         }
         $this->source = EntityMgr::init( $this )
             ->setClass( self::THIS_KW )
@@ -212,9 +226,12 @@ abstract class BaseR1 extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVariableSource( $variable, $index = null ) {
+    public function setVariableSource( $variable, $index = null )
+    {
         if( ! is_string( $variable )) {
-            throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $variable, true )));
+            throw new InvalidArgumentException(
+                sprintf( self::$ERRx, var_export( $variable, true ))
+            );
         }
         $this->source = EntityMgr::init( $this )
             ->setVariable( Util::setVarPrefix( $variable ));
@@ -228,7 +245,8 @@ abstract class BaseR1 extends BaseA
      * @param bool $isConst
      * @return static
      */
-    public function setSourceIsConst( $isConst = true ) {
+    public function setSourceIsConst( $isConst = true )
+    {
         if( null === $this->source ) {
             $this->setSource();
         }
@@ -239,7 +257,8 @@ abstract class BaseR1 extends BaseA
     /**
      * @return bool
      */
-    public function isSourceStatic() {
+    public function isSourceStatic()
+    {
         return $this->isSourceSet() && $this->getSource()->isStatic();
     }
 
@@ -247,7 +266,8 @@ abstract class BaseR1 extends BaseA
      * @param bool $staticStatus
      * @return static
      */
-    public function setSourceIsStatic( $staticStatus = true ) {
+    public function setSourceIsStatic( $staticStatus = true )
+    {
         if( null === $this->source ) {
             $this->setSource();
         }
@@ -258,14 +278,16 @@ abstract class BaseR1 extends BaseA
     /**
      * @return ChainInvokeMgr
      */
-    public function getFcnInvoke() {
+    public function getFcnInvoke()
+    {
         return $this->fcnInvoke;
     }
 
     /**
      * @return bool
      */
-    public function isFcnInvokeSet() {
+    public function isFcnInvokeSet()
+    {
         return ( null !== $this->fcnInvoke );
     }
 
@@ -274,7 +296,8 @@ abstract class BaseR1 extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function appendInvoke( FcnInvokeMgr $invoke ) {
+    public function appendInvoke( FcnInvokeMgr $invoke )
+    {
         if( empty( $this->fcnInvoke )) {
             $this->fcnInvoke = ChainInvokeMgr::init( $this );
         }
@@ -287,9 +310,9 @@ abstract class BaseR1 extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setFcnInvoke( array $fcnInvokes ) {
+    public function setFcnInvoke( array $fcnInvokes )
+    {
         $this->fcnInvoke = ChainInvokeMgr::init( $this )->setInvokes( $fcnInvokes );
         return $this;
     }
-
 }

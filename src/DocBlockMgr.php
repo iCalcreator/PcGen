@@ -32,9 +32,8 @@ use InvalidArgumentException;
  * @link https://phpdoc.org
  * @todo accept annotations in the same way as tags
  */
-final class DocBlockMgr extends BaseA implements PcGenInterface
+final class DocBlockMgr extends BaseA
 {
-
     /**
      * Row template
      *
@@ -140,7 +139,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      *
      * @return array
      */
-    public function toArray() {
+    public function toArray()
+    {
         $code = $this->initCode( $addEmptyRow );
         if( ! empty( $this->summary )) {
             $this->summaryToArray( $code, $addEmptyRow );
@@ -160,7 +160,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param       $addEmptyRow
      * @return array
      */
-    private function initCode( & $addEmptyRow ) {
+    private function initCode( & $addEmptyRow )
+    {
         static $START = '%s/**';
         $addEmptyRow  = false;
         return [ self::SP0, sprintf( $START, $this->baseIndent ) ];
@@ -172,7 +173,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param array $code
      * @return array
      */
-    private function exitCode( $code ) {
+    private function exitCode( $code )
+    {
         static $END = '%s */';
         $code[]     = sprintf( $END, $this->baseIndent );
         return Util::nullByteClean( $code );
@@ -184,7 +186,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param array $code
      * @param bool  $addEmptyRow
      */
-    private function summaryToArray( & $code, & $addEmptyRow ) {
+    private function summaryToArray( & $code, & $addEmptyRow )
+    {
         $code[]      = sprintf( self::$TMPLROW1, $this->baseIndent, $this->summary );
         $addEmptyRow = true;
     }
@@ -199,7 +202,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param array $code
      * @param bool  $addEmptyRow
      */
-    private function descriptionToArray( & $code, & $addEmptyRow = false) {
+    private function descriptionToArray( & $code, & $addEmptyRow = false)
+    {
         foreach( $this->description as $description ) {
             if( $addEmptyRow ) {
                 $this->addEmptyRow( $code );
@@ -232,7 +236,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param array $code
      * @param bool  $addEmptyRow
      */
-    private function tagsToArray( & $code, $addEmptyRow = false ) {
+    private function tagsToArray( & $code, $addEmptyRow = false )
+    {
         static $TMPLROW = '%s * @%s %s %s %s %s';
         if( $addEmptyRow ) {
             $this->addEmptyRow( $code );
@@ -268,7 +273,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      *
      * @param array $code
      */
-    private function addEmptyRow( & $code ) {
+    private function addEmptyRow( & $code )
+    {
         static $EMPTY = '%s *';
         $code[] = sprintf( $EMPTY, $this->baseIndent );
     }
@@ -276,7 +282,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
     /**
      * @return bool
      */
-    public function isSummarySet() {
+    public function isSummarySet()
+    {
         return ( null !== $this->summary );
 
     }
@@ -287,7 +294,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param string $summary
      * @return DocBlockMgr
      */
-    public function setSummary( $summary ) {
+    public function setSummary( $summary )
+    {
         if( ! empty( $summary )) {
             $this->summary = $summary;
         }
@@ -300,7 +308,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param string|array $description
      * @return DocBlockMgr
      */
-    public function setDescription( $description ) {
+    public function setDescription( $description )
+    {
         if( ! empty( $description )) {
             $this->description[] = $description;
         }
@@ -316,7 +325,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param string|array $description
      * @return DocBlockMgr
      */
-    public function setInfo( $summary, $description = null) {
+    public function setInfo( $summary, $description = null )
+    {
         $this->setSummary( $summary );
         if( null !== $description ) {
             $this->setDescription( $description );
@@ -328,7 +338,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param $tagName
      * @return bool
      */
-    public function isTagSet( $tagName ) {
+    public function isTagSet( $tagName )
+    {
         return array_key_exists( $tagName, $this->tags );
     }
     /**
@@ -344,7 +355,13 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @return DocBlockMgr
      * @throws InvalidArgumentException
      */
-    public function setTag( $tagName, $tagType = null, $tagText = null, $tagComment = null, $tagExt = null ) {
+    public function setTag(
+        $tagName,
+        $tagType = null,
+        $tagText = null,
+        $tagComment = null,
+        $tagExt = null
+    ) {
         static $PIPE  = '|';
         $tagName = self::assertTagName( $tagName );
         if( self::PARAM_T == $tagName ) {
@@ -367,7 +384,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @param string $tagName
      * @return bool
      */
-    public static function isValidTagName( $tagName ) {
+    public static function isValidTagName( $tagName )
+    {
         foreach( self::$TAGNAMELIST as $validTagname ) {
             if( 0 === strcasecmp( $tagName, $validTagname )) {
                 return true;
@@ -384,7 +402,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @return string
      * @throws InvalidArgumentException
      */
-    private static function assertTagName( $tagName ) {
+    private static function assertTagName( $tagName )
+    {
         static $ERR1 = 'Invalid tag %s';
         foreach( self::$TAGNAMELIST as $validTagName ) {
             if( 0 === strcasecmp( $tagName, $validTagName )) {
@@ -402,7 +421,8 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
      * @return string
      * @todo move to assert::varType? const/fqcn, also in VarDto
      */
-    private static function assertTagType( $tagType ) {
+    private static function assertTagType( $tagType )
+    {
         if( ! is_array( $tagType )) {
             $tagType = [ $tagType ];
         }
@@ -423,5 +443,4 @@ final class DocBlockMgr extends BaseA implements PcGenInterface
         } // end foreach
         return ( 1 == count( $tagType )) ? reset( $tagType ) : $tagType;
     }
-
 }

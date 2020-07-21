@@ -34,7 +34,6 @@ use InvalidArgumentException;
  */
 abstract class BaseB extends BaseA
 {
-
     /**
      * @var string
      */
@@ -57,14 +56,16 @@ abstract class BaseB extends BaseA
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @return bool
      */
-    public function isNameSet() {
+    public function isNameSet()
+    {
         return ( null !== $this->name );
     }
 
@@ -73,7 +74,8 @@ abstract class BaseB extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setName( $name ) {
+    public function setName( $name )
+    {
         $this->name = Assert::assertPhpVar( $name );
         return $this;
     }
@@ -84,13 +86,16 @@ abstract class BaseB extends BaseA
      * @param string $indent
      * @return array
      */
-    public function getBody( $indent = null ) {
+    public function getBody( $indent = null )
+    {
         $output = [];
         if( empty( $indent )) {
             $indent = self::SP0;
         }
         foreach( $this->body as $row ) {
-            $output[] = ( empty( $row )) ? self::SP0 : $this->baseIndent . $indent . $row;
+            $output[] = ( empty( $row ))
+                ? self::SP0
+                : $this->baseIndent . $indent . $row;
         }
         return $output;
     }
@@ -108,7 +113,8 @@ abstract class BaseB extends BaseA
      * @param string|string[] $body
      * @return static
      */
-    public function setBody( ...$body ) {
+    public function setBody( ...$body )
+    {
         $repl = bin2hex( openssl_random_pseudo_bytes( 16 ));
         $tmp  = [];
         foreach( $body as $bodyPart ) {
@@ -132,16 +138,19 @@ abstract class BaseB extends BaseA
                     $this->body[] = self::SP0;
                     continue;
                 }
-                if( ! empty( $lSpaceLen ) && empty( ltrim( substr( $row, 0, $lSpaceLen )))) {
+                if( ! empty( $lSpaceLen ) &&
+                    empty( ltrim( substr( $row, 0, $lSpaceLen )))) {
                     $row = substr( $row, $lSpaceLen );
                 }
                 $this->body[] = $row;
             }
         }
         $this->body = implode( $repl, $this->body );
-        $this->body = rtrim( str_replace( self::$CRLFs, $repl, $this->body ), $this->eol );
+        $this->body = rtrim(
+            str_replace( self::$CRLFs, $repl, $this->body ),
+            $this->eol
+        );
         $this->body = explode( $repl, $this->body );
         return $this;
     }
-
 }

@@ -216,7 +216,8 @@ class VariableMgrTest extends TestCase
 
         $output = $vm->setName( 'theVariableName41' )->setBody( $closure )->toString();
         $exp =
-            '$theVariableName41 = function( $arg ) {' . PHP_EOL .
+            '$theVariableName41 = function( $arg )' . PHP_EOL .
+            '{' . PHP_EOL .
             '     /* this is the closure body */' . PHP_EOL .
             '}' .PHP_EOL;
         $this->assertEquals( $exp, $output, 'error in ' . PHP_EOL . $exp );
@@ -239,7 +240,7 @@ class VariableMgrTest extends TestCase
             ->setBaseIndent()
             ->setVisibility()
             ->setArguments( [ 'arg' ] )
-            ->setBody( [ '', ' /* this is the closure body */', '' ] )
+            ->setBody( [ '', ' /* this is the closure body */', '' ] ) // note : empty rows here
             ->toArray();
         $output = VariableMgr::init()
             ->setStatic( true )
@@ -247,12 +248,11 @@ class VariableMgrTest extends TestCase
             ->setBody( $closure )
             ->toString();
         $exp =
-            '    public static $theVariableName42 = function( $arg ) {' . PHP_EOL .
-            '' . PHP_EOL .
+            '    public static $theVariableName42 = function( $arg )' . PHP_EOL .
+            '    {' . PHP_EOL .
             '         /* this is the closure body */' . PHP_EOL .
-            '' . PHP_EOL .
             '    }' .PHP_EOL;
-        $this->assertEquals( $exp, $output, 'error in ' . PHP_EOL . $exp );
+        $this->assertEquals( $exp, $output, 'error in ' . __FUNCTION__ . PHP_EOL . $exp );
         if( DISPLAYvm ) {
             echo __FUNCTION__ . ' : ' . PHP_EOL . $output . PHP_EOL;
         }

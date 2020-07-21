@@ -41,9 +41,8 @@ use RuntimeException;
  *
  * @package Kigkonsult\PcGen
  */
-final class FcnFrameMgr extends BaseC implements PcGenInterface
+final class FcnFrameMgr extends BaseC
 {
-
    use ArgumentTrait;
 
     /**
@@ -68,7 +67,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @param array $arguments
      * @return static
      */
-    public static function factory( $name, array $arguments = null ) {
+    public static function factory( $name, array $arguments = null )
+    {
         $instance = self::init()->setName( $name );
         if( ! empty( $arguments )) {
             $instance->setArguments( $arguments );
@@ -82,7 +82,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @return array
      * @throws RuntimeException
      */
-    public function toArray() {
+    public function toArray()
+    {
         static $ERR = 'No function directives';
         if( ! $this->isNameSet() &&
             empty( $this->getArgumentCount()) &&
@@ -90,14 +91,25 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
             ! $this->isReturnValueSet()) {
             throw new RuntimeException( $ERR );
         }
-        $code = array_merge(
-            $this->initCode(),
-            $this->getPropValueSetCode( ArgumentDto::BEFORE ),
-            $this->getBody( $this->indent ),
-            $this->getPropValueSetCode( ArgumentDto::AFTER ),
-            $this->exitCode()
+        $leadFound = $trailFound = false;
+        $leadCode  = $this->getPropValueSetCode( ArgumentDto::BEFORE, $leadFound  );
+        $trailCode = $this->getPropValueSetCode( ArgumentDto::AFTER, $trailFound  );
+        $body      = $this->getBody( $this->indent );
+        if( ! $leadFound ) {
+            $body = self::trimLeading( $body );
+        }
+        if( ! $trailFound ) {
+            $body = self::trimTrailing( $body );
+        }
+        return Util::nullByteClean(
+            array_merge(
+                $this->initCode(),
+                $leadCode,
+                $body,
+                $trailCode,
+                $this->exitCode()
+            )
         );
-        return Util::nullByteClean( $code );
     }
 
     /**
@@ -105,9 +117,10 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      *
      * @return array
      */
-    private function initCode() {
+    private function initCode()
+    {
         static $FUNCTION  = 'function';
-        static $COLONSP1 = ': ';
+        static $SP1CLNSP1 = ' : ';
         $row      = $this->baseIndent;
         if( $this->isVisibilitySet()) {
             $row .= $this->visibility . self::SP1;
@@ -121,12 +134,11 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
         }
         $code   = $this->renderArguments( $row );
         $code   = $this->renderClosureUseVariables( $code );
-        $lastIx = count( $code ) - 1;
-        $code[$lastIx] .= self::SP1;
         if( $this->isReturnTypeSet()) {
-            $code[$lastIx] .= $COLONSP1 . $this->getReturnType() . self::SP1;
+            $lastIx = count( $code ) - 1;
+            $code[$lastIx] .= $SP1CLNSP1 . $this->getReturnType();
         }
-        $code[$lastIx] .= self::$CODEBLOCKSTART;
+        $code[] = $this->baseIndent . self::$CODEBLOCKSTART;
         return $code;
     }
 
@@ -134,7 +146,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @param array $code
      * @return array
      */
-    private function renderClosureUseVariables( array $code ) {
+    private function renderClosureUseVariables( array $code )
+    {
         static $USESTART = 'use ';
         static $ARGSTART = '(';
         static $ARGEND   = ')';
@@ -165,15 +178,19 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      *
      * Opt ReturnValue after (and after body)
      *
-     * @param int $firstLast   1=before, 9 = after, 0 = none
+     * @param int  $firstLast   1=before, 9 = after, 0 = none
+     * @param bool $found
      * @return array
      */
-    private function getPropValueSetCode( $firstLast ) {
-        $code = [];
+    private function getPropValueSetCode( $firstLast, & $found = false )
+    {
+        $code  = [];
+        $found = false;
         foreach( $this->getArgumentIndex() as $argIx ) {
             $argumentDto = $this->getArgument( $argIx );
             if( $firstLast == $argumentDto->getUpdClassProp()) {
-                $code = array_merge( $code,
+                $found = true;
+                $code  = array_merge( $code,
                     ClassMethodFactory::renderPropValueSetCode( $argumentDto, $this )
                 );
             }
@@ -186,7 +203,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      *
      * @return array
      */
-    private function exitCode() {
+    private function exitCode()
+    {
         return array_merge(
             (
                 $this->isReturnValueSet()
@@ -207,7 +225,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function addVarUse( $name, $byReference = false ) {
+    public function addVarUse( $name, $byReference = false )
+    {
         switch( true ) {
             case ( $name instanceof ArgumentDto ) :
                 $this->varUses[] = $name;
@@ -221,7 +240,9 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
                     ->setByReference( (bool) $byReference );
                 break;
             default :
-                throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $name, true )));
+                throw new InvalidArgumentException(
+                    sprintf( self::$ERRx, var_export( $name, true ))
+                );
                 break;
         }
         return $this;
@@ -236,7 +257,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVarUse( array $varUse = null ) {
+    public function setVarUse( array $varUse = null )
+    {
         static $CLOSUREUSE = 'closure use';
         $this->varUses = [];
         if( null === $varUse ) {
@@ -254,7 +276,9 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
                     $this->addVarUse( ArgumentDto::factory( $argSet ));
                     break;
                 case ! is_array( $argSet ) :
-                    throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $argSet, true )));
+                    throw new InvalidArgumentException(
+                        sprintf( self::$ERRx, var_export( $argSet, true ))
+                    );
                     break;
                 case ( $argSet[0] instanceof VarDto ) :
                     $this->addVarUse(
@@ -275,14 +299,16 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
     /**
      * @return ReturnClauseMgr
      */
-    public function getReturnValue() {
+    public function getReturnValue()
+    {
         return $this->returnValue;
     }
 
     /**
      * @return bool
      */
-    public function isReturnValueSet() {
+    public function isReturnValueSet()
+    {
         return ( null !== $this->returnValue );
     }
 
@@ -293,7 +319,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnValue( $prefix = null, $source = null, $index = null ) {
+    public function setReturnValue( $prefix = null, $source = null, $index = null )
+    {
         if( empty( $prefix ) && is_scalar( $source ) && ! is_string( $source )) {
             return $this->setReturnFixedValue( $source );
         }
@@ -309,8 +336,10 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnFixedValue( $value ) {
-        $this->returnValue = ReturnClauseMgr::init( $this )->setFixedSourceValue( $value );
+    public function setReturnFixedValue( $value )
+    {
+        $this->returnValue =
+            ReturnClauseMgr::init( $this )->setFixedSourceValue( $value );
         $this->setReturnType( gettype( $value ));
         return $this;
     }
@@ -323,7 +352,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnProperty( $source = null, $index = null ) {
+    public function setReturnProperty( $source = null, $index = null )
+    {
         $this->setReturnValue( self::THIS_KW, $source, $index );
         return $this;
     }
@@ -335,7 +365,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      *
      * @return static
      */
-    public function setReturnThis() {
+    public function setReturnThis()
+    {
         $this->setReturnValue( self::THIS_KW );
 //      $this->setReturnType( self::SELF_KW );
         return $this;
@@ -351,7 +382,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnVariable( $source, $index = null ) {
+    public function setReturnVariable( $source, $index = null )
+    {
         if( is_string( $source )) {
             $source = Util::setVarPrefix( $source );
         }
@@ -362,7 +394,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
     /**
      * @return static
      */
-    public function unsetReturnValue() {
+    public function unsetReturnValue()
+    {
         $this->returnValue = null;
         return $this;
     }
@@ -370,14 +403,16 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
     /**
      * @return string
      */
-    public function getReturnType() {
+    public function getReturnType()
+    {
         return $this->returnType;
     }
 
     /**
      * @return bool
      */
-    public function isReturnTypeSet() {
+    public function isReturnTypeSet()
+    {
         return ( null !== $this->returnType );
     }
 
@@ -391,7 +426,8 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnType( $returnType ) {
+    public function setReturnType( $returnType )
+    {
         static $ERRTXT = 'Invalid function return value type : ';
         static $TYPES = [
             self::INT_T,
@@ -411,7 +447,9 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
                 return $this;
                 break;
             case ( ! is_string( $returnType )) :
-                throw new InvalidArgumentException( $ERRTXT . var_export( $returnType, true ));
+                throw new InvalidArgumentException(
+                    $ERRTXT . var_export( $returnType, true )
+                );
                 break;
             case( self::ARRAY2_T == substr( $returnType, -2 )) :
                 $returnType = self::ARRAY_T;
@@ -424,11 +462,12 @@ final class FcnFrameMgr extends BaseC implements PcGenInterface
             case is_string( $returnType ) :  // interfaces...
                 break;
             default :
-                throw new InvalidArgumentException( $ERRTXT . var_export( $returnType, true ));
+                throw new InvalidArgumentException(
+                    $ERRTXT . var_export( $returnType, true )
+                );
                 break;
         }
         $this->returnType = $returnType;
         return $this;
     }
-
 }

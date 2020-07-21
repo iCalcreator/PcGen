@@ -29,7 +29,6 @@ use RuntimeException;
 
 final class ClassMgr extends BaseB
 {
-
     /**
      * @var string  targetTypes
      */
@@ -108,7 +107,8 @@ final class ClassMgr extends BaseB
      * @param string $indent
      * @param string $baseIndent
      */
-    public function __construct( $eol = null, $indent = null, $baseIndent = null ) {
+    public function __construct( $eol = null, $indent = null, $baseIndent = null )
+    {
         parent::__construct( $eol, $indent, $baseIndent );
         $this->targetType = self::$class;
         $this->docBlock   = DocBlockMgr::init( $this );
@@ -120,7 +120,8 @@ final class ClassMgr extends BaseB
      * @return array
      * @throws RuntimeException
      */
-    public function toArray() {
+    public function toArray()
+    {
         static $NAME = 'name';
         if( ! $this->isNameSet()) {
             throw new RuntimeException( sprintf( self::$ERR1, $NAME ));
@@ -137,7 +138,8 @@ final class ClassMgr extends BaseB
     /**
      * @return array
      */
-    private function initCode() {
+    private function initCode()
+    {
         $TMPL1 = 'namespace %s;';
         $TMPL2 = 'use %s;';
         $TMPL3 = 'use %s as %s;';
@@ -146,7 +148,9 @@ final class ClassMgr extends BaseB
         $TMPL6 = ' implements ';
         $this->docBlock->setBaseIndent();
         if( ! $this->docBlock->isSummarySet()) {
-            $this->docBlock->setSummary( ucfirst( $this->getTargetType()) . self::SP1 . $this->getName());
+            $this->docBlock->setSummary(
+                ucfirst( $this->getTargetType()) . self::SP1 . $this->getName()
+            );
         }
         $this->setBaseIndent( self::$DEFAULTINDENT );
         $code = [];
@@ -163,7 +167,9 @@ final class ClassMgr extends BaseB
             $code[] = self::SP0;
             asort( $this->uses, SORT_FLAG_CASE | SORT_STRING );
             foreach( $this->uses as $alias => $fqcn ) {
-                $code[] = ctype_digit((string) $alias ) ? sprintf( $TMPL2, $fqcn ) : sprintf( $TMPL3, $fqcn, $alias );
+                $code[] = ctype_digit((string) $alias )
+                    ? sprintf( $TMPL2, $fqcn )
+                    : sprintf( $TMPL3, $fqcn, $alias );
             }
         }
         $code   = array_merge( $code, $this->docBlock->toArray());
@@ -181,21 +187,26 @@ final class ClassMgr extends BaseB
     /**
      * @return array
      */
-    private function bodyCode() {
+    private function bodyCode()
+    {
         $hasProperties = ! empty( $this->getPropertyCount());
-        return array_merge(
+        $body = array_merge(
             ( $hasProperties     ? $this->defineProperties() : [] ),
             ( $this->construct   ? ClassMethodFactory::renderConstructorMethod( $this ) : [] ),
             ( $this->factory     ? ClassMethodFactory::renderFactoryMethod( $this ) : [] ),
             ( $this->isBodySet() ? array_merge( [ self::SP0 ], $this->getBody()) : [] ),
             ( $hasProperties     ? $this->produceMethodsForProperties() : [] )
         );
+        $body = self::trimLeading( $body );
+        $body = self::trimTrailing( $body );
+        return empty( $body ) ? [] : $body;
     }
 
     /**
      * @return array
      */
-    private function defineProperties() {
+    private function defineProperties()
+    {
         $code  = [];
         $props = [ [], [] ];
         foreach( $this->getPropertyIndex() as $p1Ix ) {
@@ -229,7 +240,8 @@ final class ClassMgr extends BaseB
     /**
      * @return array
      */
-    private function produceMethodsForProperties() {
+    private function produceMethodsForProperties()
+    {
         $code    = [];
         $oneOnly = $this->hasOneArrayProperty( $propIx );
         foreach( $this->getPropertyIndex() as $pIx ) {
@@ -262,28 +274,32 @@ final class ClassMgr extends BaseB
     /**
      * @return string
      */
-    private function getTargetType() {
+    private function getTargetType()
+    {
         return $this->targetType;
     }
 
     /**
      * @return ClassMgr
      */
-    public function setClass() {
+    public function setClass()
+    {
         $this->targetType = self::$class;
         return $this;
     }
     /**
      * @return ClassMgr
      */
-    public function setInterface() {
+    public function setInterface()
+    {
         $this->targetType = self::$interface;
         return $this;
     }
     /**
      * @return ClassMgr
      */
-    public function setTrait() {
+    public function setTrait()
+    {
         $this->targetType = self::$trait;
         return $this;
     }
@@ -291,7 +307,8 @@ final class ClassMgr extends BaseB
     /**
      * @return bool
      */
-    public function isNamespaceSet() {
+    public function isNamespaceSet()
+    {
         return ( null !== $this->namespace );
     }
 
@@ -300,7 +317,8 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setNamespace( $namespace ) {
+    public function setNamespace( $namespace )
+    {
         Assert::assertFqcn( $namespace );
         $this->namespace = $namespace;
         return $this;
@@ -314,7 +332,8 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function addUse( $fqcn, $alias = null ) {
+    public function addUse( $fqcn, $alias = null )
+    {
         if( is_array( $this->uses ) && in_array( $fqcn, $this->uses )) {
             foreach( array_keys( $this->uses, $fqcn ) as $key ) {
                 if(( null === $alias ) && is_int( $key )) {
@@ -326,7 +345,9 @@ final class ClassMgr extends BaseB
             }
         }
         Assert::assertFqcn( $fqcn );
-        $key = ( null === $alias ) ? count( $this->uses ) : Assert::assertPhpVar( $alias );
+        $key = ( null === $alias )
+            ? count( $this->uses )
+            : Assert::assertPhpVar( $alias );
         if( ! is_array( $this->uses )) {
             $this->uses = [];
         }
@@ -341,7 +362,8 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setUses( $uses ) {
+    public function setUses( $uses )
+    {
         static $USE = 'use';
         if( empty( $uses )) {
             throw new InvalidArgumentException( sprintf( self::$ERR1, $USE ));
@@ -362,7 +384,8 @@ final class ClassMgr extends BaseB
     /**
      * @return DocBlockMgr
      */
-    public function getDocBlock() {
+    public function getDocBlock()
+    {
         return $this->docBlock;
     }
 
@@ -370,7 +393,8 @@ final class ClassMgr extends BaseB
      * @param DocBlockMgr $docBlock
      * @return ClassMgr
      */
-    public function setDocBlock( $docBlock ) {
+    public function setDocBlock( $docBlock )
+    {
         $this->docBlock = $docBlock;
         return $this;
     }
@@ -378,7 +402,8 @@ final class ClassMgr extends BaseB
     /**
      * @return bool
      */
-    public function isAbstract() {
+    public function isAbstract()
+    {
         return $this->abstract;
     }
 
@@ -388,7 +413,8 @@ final class ClassMgr extends BaseB
      * @param bool $abstract
      * @return ClassMgr
      */
-    public function setAbstract( $abstract ) {
+    public function setAbstract( $abstract )
+    {
         $this->abstract = (bool) $abstract;
         return $this;
     }
@@ -397,14 +423,16 @@ final class ClassMgr extends BaseB
      * @return string
      * @throws InvalidArgumentException
      */
-    public function getExtend() {
+    public function getExtend()
+    {
         return $this->extend;
     }
 
     /**
      * @return bool
      */
-    public function isExtendsSet() {
+    public function isExtendsSet()
+    {
         return ( null !== $this->extend );
     }
 
@@ -413,7 +441,8 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setExtend( $extend ) {
+    public function setExtend( $extend )
+    {
         Assert::assertFqcn( $extend );
         $this->extend = $extend;
         return $this;
@@ -424,8 +453,10 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function addImplement( $implement ) {
-        if( is_array( $this->implements ) && in_array( $implement, $this->implements )) {
+    public function addImplement( $implement )
+    {
+        if( is_array( $this->implements ) &&
+            in_array( $implement, $this->implements )) {
             return $this;
         }
         Assert::assertFqcn( $implement );
@@ -443,7 +474,8 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setImplements( array $implements ) {
+    public function setImplements( array $implements )
+    {
         static $IMPLEMENTS = 'implements';
         if( empty( $implements )) {
             throw new InvalidArgumentException( sprintf( self::$ERR1, $IMPLEMENTS ));
@@ -462,7 +494,8 @@ final class ClassMgr extends BaseB
      * @param bool $construct
      * @return ClassMgr
      */
-    public function setConstruct( $construct = true ) {
+    public function setConstruct( $construct = true )
+    {
         $this->construct = (bool) $construct;
         return $this;
     }
@@ -471,7 +504,8 @@ final class ClassMgr extends BaseB
      * @param bool $factory
      * @return ClassMgr
      */
-    public function setFactory( $factory = true ) {
+    public function setFactory( $factory = true )
+    {
         $this->factory = (bool) $factory;
         return $this;
     }
@@ -538,7 +572,9 @@ final class ClassMgr extends BaseB
                     ->setArgInFactory( Util::getIfSet( $argInFactory, null, self::BOOL_T, false ));
                 break;
             default :
-                throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $name, true )));
+                throw new InvalidArgumentException(
+                    sprintf( self::$ERRx, var_export( $name, true ))
+                );
                 break;
 
         } // end switch
@@ -550,21 +586,24 @@ final class ClassMgr extends BaseB
      * @param $pIx
      * @return PropertyMgr
      */
-    public function getProperty( $pIx ) {
+    public function getProperty( $pIx )
+    {
         return $this->properties[$pIx];
     }
 
     /**
      * @return int
      */
-    public function getPropertyCount() {
+    public function getPropertyCount()
+    {
         return count( $this->properties );
     }
 
     /**
      * @return array
      */
-    public function getPropertyIndex() {
+    public function getPropertyIndex()
+    {
         return array_keys( $this->properties );
     }
 
@@ -572,14 +611,17 @@ final class ClassMgr extends BaseB
      * @param int $propIx
      * @return bool
      */
-    private function hasOneArrayProperty( & $propIx = null ) {
+    private function hasOneArrayProperty( & $propIx = null )
+    {
         $cntProps = 0;
         $arrayPropIx = null;
         foreach( $this->getPropertyIndex() as $pIx ) {
             switch( true ) {
-                case ( $this->properties[$pIx]->isConst() || $this->properties[$pIx]->isStatic()) :
+                case ( $this->properties[$pIx]->isConst() ||
+                    $this->properties[$pIx]->isStatic()) :
                     continue 2;
-                case ( ClassMethodFactory::$POSITION == $this->properties[$pIx]->getVarDto()->getName()) :
+                case ( ClassMethodFactory::$POSITION ==
+                    $this->properties[$pIx]->getVarDto()->getName()) :
                     continue 2;
                 case ( null !== $arrayPropIx ) :
                     break;
@@ -614,7 +656,8 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setProperties( $properties ) {
+    public function setProperties( $properties )
+    {
         static $ERRx1 = 'Invalid property (#%d) %s';
         $this->properties = [];
         if( ! is_array( $properties )) {
@@ -646,7 +689,9 @@ final class ClassMgr extends BaseB
                     );
                     break;
                 case ( ! is_array( $property )) :
-                    throw new InvalidArgumentException( sprintf( $ERRx1, $pIx, var_export( $property, true )));
+                    throw new InvalidArgumentException(
+                        sprintf( $ERRx1, $pIx, var_export( $property, true ))
+                    );
                     break;
                 case ( $property[0] instanceof VariableMgr ) :
                     $this->addProperty(
@@ -666,9 +711,6 @@ final class ClassMgr extends BaseB
                     );
                     break;
                 default :
-
-                    echo __FUNCTION__ . ' input ' . var_export( $property, true ) . PHP_EOL; // test ###
-
                     $this->addProperty(
                         PropertyMgr::factory(
                             Util::getIfSet( $property, 0 ),                 // variable,
@@ -686,5 +728,4 @@ final class ClassMgr extends BaseB
         } // end foreach
         return $this;
     }
-
 }

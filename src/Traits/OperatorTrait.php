@@ -47,7 +47,8 @@ trait OperatorTrait
     /**
      * @return string[]
      */
-    public static function getOperators() {
+    public static function getOperators()
+    {
         return self::$OPERATORARR;
     }
 
@@ -60,7 +61,8 @@ trait OperatorTrait
      * @param bool $strict
      * @return string
      */
-    public function getOperator( $strict = false ) {
+    public function getOperator( $strict = false )
+    {
         static $OPERATORfmt = ' %s ';
         return $strict ? $this->operator : sprintf( $OPERATORfmt, $this->operator );
     }
@@ -70,7 +72,8 @@ trait OperatorTrait
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setOperator( $operator ) {
+    public function setOperator( $operator )
+    {
         if( ! in_array( $operator, self::$OPERATORARR )) {
             throw new InvalidArgumentException(
                 sprintf( self::$ERRx, var_export( $operator, true ))
@@ -79,5 +82,4 @@ trait OperatorTrait
         $this->operator = trim( $operator );
         return $this;
     }
-
 }
