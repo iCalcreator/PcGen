@@ -1272,7 +1272,6 @@ class FcnFrameMgrTest extends TestCase
         catch( Exception $e ) {
             $this->assertTrue( true );
         }
-
     }
 
     /**
@@ -1283,11 +1282,11 @@ class FcnFrameMgrTest extends TestCase
     public function fcnFrameMgrTest33() {
         $rvm = FcnFrameMgr::init()->setReturnValue( null, 123 )->getReturnValue();
         $this->assertTrue( $rvm instanceof ReturnClauseMgr );
-        $this->assertEquals( 123, $rvm->getFixedSourceValue());
+        $this->assertEquals( 123, $rvm->getScalar());
 
         $rvm = FcnFrameMgr::init()->setReturnFixedValue( 'test' )->getReturnValue();
         $this->assertTrue( $rvm instanceof ReturnClauseMgr );
-        $this->assertEquals( 'test', $rvm->getFixedSourceValue());
+        $this->assertEquals( 'test', $rvm->getScalar());
 
         $rvm = FcnFrameMgr::init()->setReturnValue( null, '$test' )->getReturnValue();
         $this->assertTrue( $rvm instanceof ReturnClauseMgr );

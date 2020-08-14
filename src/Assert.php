@@ -25,6 +25,13 @@ namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 
+/**
+ * Class Assert
+ *
+ * More general asserts
+ *
+ * @package Kigkonsult\PcGen
+ */
 class Assert
 {
     /**

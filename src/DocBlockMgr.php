@@ -253,8 +253,8 @@ final class DocBlockMgr extends BaseA
                         $paramTypePadLen = strlen( $data[0] );
                     }
                 }
-            }
-        }
+            } // end if
+        } // end foreach
         foreach( $this->tags as $tagName => $tagInfoArr ) {
             $theTagName = str_pad( $tagName, $namePadLen );
             foreach( $tagInfoArr as $data ) {

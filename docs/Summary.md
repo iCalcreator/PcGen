@@ -5,6 +5,10 @@
 
 The PHP Code Generation support package
 
+[FileMgr] manages file 
+* docBlock
+* (class/interface/trait) body
+
 [ClassMgr] generate PHP class, interface and trait code
 * with namespace, use, extends, implements 
 * with constuctor and factory methods 
@@ -32,26 +36,42 @@ For function/method invoke, opt with argument
 * supports property/variable/constant define with PHP primitive value, array, closure or callback 
 * allow insert of closure (pre-produced, logic) code 
 
-[VarDto] holds variable base data, [ArgumentMgr] extends [VarDto], used for function/method base arguments.
+Logic support
+* [AssignClauseMgr] assign target (variable/property) value from
+  * variable/property value
+  * (scalar) fixedSourceValue
+  * PHP expression
+  * constant
+  * function/method invoke(s)
+* [CtrlStructMgr] manages control structures
+  * Simpler conditions only
+  * _if_, _elseif_ and _else_
+  * _switch_ with _case_ and _default_
+  * _while_
+  * _do-while_
+  * allow insert of (pre-produced, logic) code 
+* [ForeachMgr] manages control structure _foreach_
+  * iterates variable, classProperty, class function
+  * allow insert of (pre-produced, logic) code
+* [TryCatchMgr]  manages _try_-_catch_ expressions
+* [ReturnClauseMgr] manages function/method return of
+  * variable/property value
+  * (scalar) fixedSourceValue
+  * PHP expression
+  * constant
+  * function/method invoke(s)
    
-[AssignClauseMgr] assign target (variable/property) value from
-* variable/property value
-* (scalar) fixedSourceValue
-* PHP expression
-* constant
-* function/method invoke(s)
-    
-[ReturnClauseMgr] manages function/method return of 
-* variable/property value
-* (scalar) fixedSourceValue
-* PHP expression
-* constant  
-* function/method invoke(s)
+[VarDto]
+* holds variable base data
+
+[ArgumentDto] extends [VarDto]
+* function/method base arguments.
+
+[EntityMgr]
+* entity : (opt) class, variable/property, (opt) index
    
 [PcGenInterface]
 * provide convenient constants
-  
-[Misc](#misc) - [Tests](#tests) - [Support](#support) - [Install](#install) - [License]("license)
  
 ---
 
@@ -166,7 +186,7 @@ class HalloWorld
      *
      * prop1 description
      *
-     * @varDto AnotherClass $prop1
+     * @param AnotherClass $prop1
      */
     private $prop1 = null;
 
@@ -175,7 +195,7 @@ class HalloWorld
      *
      * prop2 description
      *
-     * @varDto array $prop2
+     * @param array $prop2
      */
     private $prop2 = [];
 
@@ -246,7 +266,8 @@ class HalloWorld
     }
 }
 ```
-Methods in details are found in [ClassMgr] docs.
+Methods in details and more examples are found in [ClassMgr] 
+and for logic : [AssignClauseMgr], [CtrlStructMgr], [ForeachMgr], [TryCatchMgr] and [ReturnClauseMgr].
 ClassMgr uses [DocBlockMgr], [FcnFrameMgr] and ([VariableMgr]/)[PropertyMgr] and for data, [VarDto]/[ArgumentDto], below.
 You will find more examples in test/ClassMgrTest.php.
 
@@ -292,28 +313,6 @@ $result = DocBlockMgr::init()
     // string output (with row trailing eols)
     ->toString();
 
-    // array output (no row trailing eols)
-    // ->toArray();
-
-```
-The same as above but shorter :
-``` php
-<?php
-namespace Kigkonsult\PcGen;
- 
-$result = DocBlockMgr::init()
-    ->setIndent()
-    ->setSummary( 'This is a top (shorter) summary' )
-    ->setDescription( 'This is a longer description' )
-    ->setDescription( 
-        [
-            'This is another longer description', 
-            'with more info on the next row'
-        ]
-    ) 
-    ->setTag( DocBlockMgr::RETURN_T, DocBlockMgr::ARRAY_T )
-    ->setTag( DocBlockMgr::PACKAGE_T, __NAMESPACE__ )
-    ->toString();
 ```
 Result :
 ``` php
@@ -330,7 +329,7 @@ Result :
  */
 ```
 
-Methods in details are found in [DocBlockMgr].
+Methods in details and more examples are found in [DocBlockMgr].
 
 You will find more usage examples of DocBlockMgr and [FcnFrameMgr] in src/ClassMethodFactory.php (and test/DocBlockMgrTest.php).
 
@@ -382,21 +381,6 @@ $result = FcnFrameMgr::init() // eol/indent default
     // ->toArray();
 
 ```
-The same as above but shorter :
-``` php
-<?php
-namespace Kigkonsult\PcGen;
- 
-$result = FcnFrameMgr::init()
-    ->setName( 'theFunctionName' )
-    ->setArguments(
-        [
-            'argument',
-            [ 'argument2', FcnFrameMgr::ARRAY_T, FcnFrameMgr::ARRAY2_T, true ]
-        ]
-    ->setBody( ' /* her comes some logic */' );
-    ->setReturnThis( true );
-    >toString();
 ```
 Result :
 ``` php
@@ -406,9 +390,10 @@ Result :
     }
 ```
 
-Methods in details are found in [FcnFrameMgr].
+Methods in details and more examples are found in [FcnFrameMgr]
+and for logic : [AssignClauseMgr], [CtrlStructMgr], [ForeachMgr], [TryCatchMgr] and [ReturnClauseMgr].
 FcnFrameMgr uses for data [VarDto]/[ArgumentDto].
-You will find more usage examples of [DocBlockMgr] and FcnFrameMgr in src/ClassMethodFactory.php (and test/FcnFrameMgrTest.php).
+You will find more usage examples of [DocBlockMgr] and [FcnFrameMgr] in src/ClassMethodFactory.php (and test/FcnFrameMgrTest.php).
 
 <small>Go to [Top](#top).</small>
 
@@ -434,7 +419,7 @@ Result :
 $this->method( $arg1, $arg2 )
 ```
 
-Methods in details are found in [FcnInvokeMgr] and [ChainInvokeMgr],
+Methods in details and more examples are found in [FcnInvokeMgr] and [ChainInvokeMgr],
 used by [AssignClauseMgr]/[ReturnClauseMgr]. 
 FcnInvokeMgr is supported by [EntityMgr] with source management.
 You will find more examples in test/FcnInvokeMgrTest.php.
@@ -505,65 +490,6 @@ VarDto methods in details are found in [VarDto], ArgumentDto methods in [Argumen
 
 <a name="misc"></a>
 
-###### Misc
-
-The target PHP version code is, for now, the current PHP version. 
-
-Using a PHP reserved name as _name_ (ex FQCN/className) will thow an InvalidArgumentException. 
-
-You may need to readjust result output code style and indents.
-
-<a name="tests"></a>
-
-###### Tests
-
-Tests are executed in ```DISPLAY``` mode, to alter, update _PHP_ const in top of ```phpunit.xml```.  
-
-<a name="support"></a>
-
-###### Support
-
-For support use [github.com PcGen]. Non-emergence support issues are, unless sponsored, fixed in due time.
-
-<a name="sponsorship"></a>
-
-###### Sponsorship
-
-Donation using <a href="https://paypal.me/kigkonsult?locale.x=en_US" rel="nofollow">paypal.me/kigkonsult</a> are appreciated. 
-For invoice, <a href="mailto:ical@kigkonsult.se">please e-mail</a>.
-
-<a name="install"></a>
-
-###### Install
-
-``` php
-composer require kigkonsult/pcgen:dev-master
-```
-
-Composer, in your `composer.json`:
-
-``` json
-{
-    "require": {
-        "kigkonsult/pcgen": "dev-master"
-    }
-}
-```
-
-Otherwise , download and acquire..
-
-``` php
-namespace Kigkonsult\PcGen;
-...
-include 'pathToSource/Kigkonsult/PcGen/autoload.php';
-```
-
-<a name="license"></a>
-
-###### License
-
-This project is licensed under the GPLv3 License
-
 ---
 <small>Return to [README]</small>
 
@@ -572,15 +498,19 @@ This project is licensed under the GPLv3 License
 [ChainInvokeMgr]:ChainInvokeMgr.md
 [ClassMgr]:ClassMgr.md
 [Composer]:https://getcomposer.org/
+[CtrlStructMgr]:CtrlStructMgr.md
 [DocBlockMgr]:DocBlockMgr.md
-[EntityMgr]:EntityMgr.md
+[EntityMgr]:EntityMgr.md    
 [FcnFrameMgr]:FcnFrameMgr.md
 [FcnInvokeMgr]:FcnInvokeMgr.md
+[FileMgr]:FileMgr.md
+[ForeachMgr]:ForeachMgr.md
 [github.com PcGen]:https://github.com/iCalcreator/PcGen
 [PcGenInterface]:src/PcGenInterface.php
 [phpdoc]:https://phpdoc.org
 [PropertyMgr]:PropertyMgr.md
 [README]:../README.md
-[ReturnClauseMgr]:ReturnClauseMgrmd   
+[ReturnClauseMgr]:ReturnClauseMgr.md  
+[TryCatchMgr]:TryCatchMgr.md
 [VarDto]:VarDto.md
 [VariableMgr]:VariableMgr.md

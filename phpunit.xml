@@ -34,10 +34,10 @@
         <!-- Display (most) results, 0=no display -->
         <const name="DISPLAYacm"  value="1"/>  <!-- AssignClauseMgr tests -->
         <const name="DISPLAYacm2" value="1"/>  <!-- AssignClauseMgr2 tests -->
-        <const name="DISPLAYcm"   value="1"/>  <!-- ClassMgr tests -->
+        <const name="DISPLAYcm"   value="1"/>  <!-- ClassMgr and FileMgr tests -->
         <const name="DISPLAYdbm"  value="1"/>  <!-- DocBlockMgr tests -->
         <const name="DISPLAYem"   value="1"/>  <!-- EntityMgr tests -->
-        <const name="DISPLAYffm"  value="1"/>  <!-- FcnFrameMgr tests -->
+        <const name="DISPLAYffm"  value="1"/>  <!-- FcnFrameMgr, CtrlStructMgr and ForeachMgr tests -->
         <const name="DISPLAYfim"  value="1"/>  <!-- FcninvokeMgr tests -->
         <const name="DISPLAYrcm"  value="1"/>  <!-- ReturnClauseMgr tests -->
         <const name="DISPLAYrcm2" value="1"/>  <!-- ReturnClauseMgr2 tests -->
@@ -66,12 +66,18 @@
             <file>./test/FcnInvokeMgrTest.php</file>
             <file>./test/AssignClauseMgrTest2.php</file>
             <file>./test/ReturnClauseMgrTest2.php</file>
+            <file>./test/CtrlStructMgrTest.php</file>
+            <file>./test/ForeachMgrTest.php</file>
+            <file>./test/TryCatchMgrTest.php</file>
         </testsuite>
         <testsuite variable="VariableMgr Tests">
             <file>./test/VariableMgrTest.php</file>
         </testsuite>
         <testsuite variable="ClassMgr Tests">
             <file>./test/ClassMgrTest.php</file>
+        </testsuite>
+        <testsuite variable="FileMgr Tests">
+            <file>./test/FileMgrTest.php</file>
         </testsuite>
     </testsuites>
     <filter>
@@ -82,21 +88,29 @@
             <file>./src/BaseA.php</file>
             <file>./src/BaseB.php</file>
             <file>./src/BaseC.php</file>
-            <file>./src/BaseR1.php</file>
+            <file>./src/CatchMgr.php</file>
             <file>./src/ChainInvokeMgr.php</file>
             <file>./src/ClassMethodFactory.php</file>
             <file>./src/ClassMgr.php</file>
+            <file>./src/CtrlStructMgr.php</file>
             <file>./src/DocBlockMgr.php</file>
             <file>./src/Dto/ArgumentDto.php</file>
             <file>./src/Dto/VarDto.php</file>
             <file>./src/EntityMgr.php</file>
             <file>./src/FcnFrameMgr.php</file>
+            <file>./src/FileMgr.php</file>
+            <file>./src/ForeachMgr.php</file>
             <file>./src/FcnInvokeMgr.php</file>
             <file>./src/PcGenInterface.php</file>
             <file>./src/PropertyMgr.php</file>
             <file>./src/ReturnClauseMgr.php</file>
+            <file>./src/SimpleCondMgr.php</file>
             <file>./src/Traits/ArgumentTrait.php</file>
+            <file>./src/Traits/NameTrait.php</file>
             <file>./src/Traits/OperatorTrait.php</file>
+            <file>./src/Traits/ScalarTrait.php</file>
+            <file>./src/Traits/SourceTrait.php</file>
+            <file>./src/TryCatchMgr.php</file>
             <file>./src/Util.php</file>
             <file>./src/VariableMgr.php</file>
         </whitelist>

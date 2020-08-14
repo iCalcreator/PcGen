@@ -77,7 +77,7 @@ final class ChainInvokeMgr extends BaseA
                 $code[] = $ind . trim( $invoke[$iVx] );
             }
             $code[] = $this->getBaseIndent() . trim( $invoke[$iVx] ); // last invoke row
-        }
+        } // end for
         return $code;
     }
 
@@ -135,13 +135,13 @@ final class ChainInvokeMgr extends BaseA
             default : // next invoke, force same class as first
                 $invoke->getName()->setClass( Util::setVarPrefix( $this->invokeClass ));
                 break;
-        }
+        } // end switch
         $this->invokes[] = $invoke->rig( $this );
         return $this;
     }
 
     /**
-     * Most (all?) errors here catched by FcnInvokeMgr/EntityMgr
+     * Most (all?) errors here already catched by FcnInvokeMgr/EntityMgr
      *
      * @param string $invokeClass
      * @return bool
@@ -173,7 +173,7 @@ final class ChainInvokeMgr extends BaseA
         $this->invokes     = [];
         $this->invokeClass = null;
         foreach( array_keys( $invokes ) as $fIx ) {
-            $this->appendInvoke( $invokes[ $fIx ] );
+            $this->appendInvoke( $invokes[$fIx] );
         }
         return $this;
     }

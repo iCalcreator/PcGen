@@ -19,7 +19,7 @@ Inherited [Common methods]
 ```VariableMgr::factory( varDto )```
 * ```varDto``` _VarDto_
     * note *VarDto* below
-* Return static
+* Return _static_
 
 ```VariableMgr::factory( name [, varType [, default [, summary [, description ]]]] )```
 * ```name``` _string_, argument name   ( with or without leading '$')
@@ -29,17 +29,17 @@ Inherited [Common methods]
 * ```summary``` _string_
 * ```description``` _string_|_array
 * For eol and indents, defaults are used
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 ---
 
 ```VariableMgr::toArray()```
 * Return _array_, result code rows (null-bytes removed) no trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 
 ```VariableMgr::toString()```
 * Return _string_ with code rows (extends toArray), each code row with trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 ---
 
 ```VariableMgr::setVisibility( [ visibility ] )```
@@ -58,13 +58,13 @@ Inherited [Common methods]
 * ```varDto``` _VarDto_  
     * note *VarDto* below
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```VariableMgr::setName( name )```
 * ```name``` _string_ variable/property name 
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```VariableMgr::setInitValue( value )```

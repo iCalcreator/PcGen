@@ -26,32 +26,32 @@ Inherited [Common methods]
   * variable $-prefixed
 * ```index```  _int_|_string_ opt array index, if _string_, index will be $-prefixed 
 * For eol and indents, defaults are used
-* Return static
+* Return _static_
 * Throws InvalidException
 
 ```ReturnClauseMgr::factory( entity )```
 * ```entity``` [EntityMgr]
   *  note ```EntityMgr``` below
-* Return static
+* Return _static_
 * Throws InvalidException
 ---
 
 ```ReturnClauseMgr::toArray()```
 * Return _array_, result code rows (null-bytes removed) no trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 
 ```ReturnClauseMgr::toString()```
 * Return _string_ with code rows (extends toArray), each code row with trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 ---
 
-```ReturnClauseMgr::getFixedSourceValue()```
+```ReturnClauseMgr::getScalar()```
 * Return _bool_|_int_|_float_|_string_, scalar
 
-```ReturnClauseMgr::isFixedSourceValueSet()```
+```ReturnClauseMgr::isScalarSet()```
 * Return _bool_ true if not null
 
-```ReturnClauseMgr::setFixedSourceValue( fixedSourceValue )```
+```ReturnClauseMgr::setScalar( fixedSourceValue )```
 * ```fixedSourceValue``` _bool_|_int_|_float_|_string_, scalar
 * Return _static_
 * Throws InvalidException
@@ -77,30 +77,30 @@ Inherited [Common methods]
   * uppercase is autodetected as CONSTANT
   * variable $-prefixed
 * ```index```  _int_|_string_ opt array index, if _string_, index will be $-prefixed 
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```ReturnClauseMgr::setSource( entity )```
 * ```entity``` [EntityMgr]
   *  note ```EntityMgr``` below
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```ReturnClauseMgr::setThisPropertySource( property [, index ] )```
 * convenient shortcut for ```ReturnClauseMgr::setSource()```
 * Give source result ```$this->property```
 * ```property``` _string_
 * ```index```  _int_|_string_ opt array index
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```ReturnClauseMgr::setVariableSource( variable [, index ] )```
 * convenient shortcut for ```ReturnClauseMgr::setSource()```
 * Give source result ```$variable```
 * ```variable``` _string_
 * ```index```  _int_|_string_ opt array index
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```ReturnClauseMgr::setSourceIsConst( isConst )```
  * Results in uppercase constant
@@ -126,13 +126,13 @@ Inherited [Common methods]
 
 ```ReturnClauseMgr::appendInvoke( fcnInvoke )```
 * ```fcnInvoke``` [FcnInvokeMgr]
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```ReturnClauseMgr::setFcnInvoke( fcnInvoke )```
 * ```fcnInvoke``` [FcnInvokeMgr]\[]
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 Note on chained invokes
 * The first must have a "class" : parent, self, $this, 'otherClass', '$class' when next is set
@@ -160,6 +160,61 @@ _EntityMgr_ instance creation ([EntityMgr])<br><br>
 * ```class```, _string_, one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
   * convenient constants found in PcGenInterface
 * ```fcnName``` _string_, the name
+---
+
+#### Example 1
+
+```
+<?php
+
+$code = ReturnClauseMgr::factory( null, 'variable' )
+    ->toString();
+
+$code .= ReturnClauseMgr::factory( ReturnClauseMgr::THIS_KW, 'variable' )
+    ->toString();
+
+$code .= ReturnClauseMgr::factory( ReturnClauseMgr::THIS_KW )
+    ->toString();
+
+```
+
+Result :
+
+```
+    return $variable;
+    return $this->variable;
+    return $this;
+```
+
+#### Example 2
+
+```
+<?php
+
+$rcm = ReturnClauseMgr::init()
+    ->setBaseIndent()
+    ->setFcnInvoke( 
+        FcnInvokeMgr::factory( 'SourceClass', FcnInvokeMgr::FACTORY, [ 'arg11', 'arg12' ] ),
+        FcnInvokeMgr::factory( 'SourceClass', 'method2', [ 'arg21', 'arg22' ] ),
+        FcnInvokeMgr::factory( 'SourceClass', 'method3', [ 'arg31', 'arg32' ] ),
+        FcnInvokeMgr::factory( 'SourceClass', 'method4', [ 'arg41', 'arg42' ] ),
+        FcnInvokeMgr::factory( 'SourceClass', 'method5' )
+    )
+    ->toString());
+
+```
+
+Result :
+
+```
+return SourceClass::factory( $arg11, $arg12 )
+    ->method2( $arg21, $arg22 )
+    ->method3( $arg31, $arg32 )
+    ->method4( $arg41, $arg42 )
+    ->method5();
+
+```
+
 ---
 
 

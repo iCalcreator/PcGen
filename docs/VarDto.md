@@ -15,7 +15,7 @@ Used in [ClassMgr], [FcnFrameMgr] and [FcnInvokeMgr], defining (simpler) argumen
 * ```default```, _mixed_, the argument (init-)value if null
 * ```summary``` _string_, the [phpdoc] summary
 * ```description``` _string_|_array_, the [phpdoc] description
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```VarDto::factory( [ varName [, varType [ default [, summary [, description ]]]]] )```
 * ```varName``` _string_ 
@@ -26,12 +26,12 @@ Used in [ClassMgr], [FcnFrameMgr] and [FcnInvokeMgr], defining (simpler) argumen
 * ```description``` _string_|_array_, the [phpdoc] description
 * Return _static_
 * Static
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```VarDto::getName()```
 * Return _string_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```VarDto::isNameSet()```
 * Return _bool_, true if varName is set 
@@ -39,7 +39,7 @@ Used in [ClassMgr], [FcnFrameMgr] and [FcnInvokeMgr], defining (simpler) argumen
 ```VarDto::setName( varName )```
 * ```varName``` _string_ 
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```VarDto::getVarType()```

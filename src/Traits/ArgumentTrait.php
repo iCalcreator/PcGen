@@ -68,7 +68,7 @@ trait ArgumentTrait
                 $code[] = $this->baseIndent . $ARGEND;
                 return $code;
                 break;
-        }
+        } // end switch
         return [ $row . $ARGEND ];
     }
 
@@ -149,7 +149,7 @@ trait ArgumentTrait
             if( $arguments[$argIx]->isDefaultSet()) {
                 return false;
             }
-        }
+        } // end foreach
         return true;
     }
 
@@ -186,7 +186,7 @@ trait ArgumentTrait
                 $row .= BaseA::$COMMA;
             }
             $code[] = $row;
-        }
+        } // end foreach
     }
 
     /**

@@ -208,4 +208,33 @@ class DocBlockMgrTest extends TestCase
         }
     }
 
+    /**
+     * @test
+     */
+    public function docBlockMgrDemoTest() {
+        $code = DocBlockMgr::init()
+            ->setSummary( 'Summary' )
+            ->setDescription( 'Decription 1' )
+            ->setDescription( [ 'Description 2', 'some text here...'] )
+            ->setTag(
+                DocBlockMgr::PARAM_T,
+                [ DocBlockMgr::STRING_T, DocBlockMgr::STRINGARRAY_T ],
+                self::PARAMETER
+            )
+            ->setTag(
+                DocBlockMgr::PARAM_T,
+                DocBlockMgr::INT_T,
+                self::QUANTITY
+            )
+            ->setTag( DocBlockMgr::RETURN_T, DocBlockMgr::ARRAY_T )
+            ->toString();
+
+        $this->assertNotFalse(
+            strpos( $code, 'Summary' )
+        );
+        if( DISPLAYdbm ) {
+            echo __FUNCTION__ . ' : ' . PHP_EOL . $code . PHP_EOL;
+        }
+    }
+
 }

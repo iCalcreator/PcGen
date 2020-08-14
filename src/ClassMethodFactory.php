@@ -188,7 +188,7 @@ class ClassMethodFactory implements PcGenInterface
                 break;
             default :
                 $fcnName = $GET . ucfirst( $propName );
-        }
+        } // end switch
         $fcnFrameMgr = FcnFrameMgr::init( $property )
             ->setName( $fcnName )
             ->setReturnProperty( $propName );
@@ -503,7 +503,8 @@ class ClassMethodFactory implements PcGenInterface
         PropertyMgr $property,
         array & $code
     ) {
-        $code = array_merge( $code,
+        $code = array_merge(
+            $code,
             self::renderIterCountMethod( $property ),
             self::renderIterCurrentMethod( $property ),
             self::renderIterExistsMethod( $property ),
@@ -680,7 +681,7 @@ class ClassMethodFactory implements PcGenInterface
                         ->setIndent()
                         ->setTarget( self::THIS_KW, self::$POSITION )
                         ->setOperator( $OPERATOR )
-                        ->setFixedSourceValue( 1 )
+                        ->setScalar( 1 )
                         ->toString()
                 )
                 ->setReturnThis()
@@ -710,7 +711,7 @@ class ClassMethodFactory implements PcGenInterface
                         ->setIndent()
                         ->setTarget( self::THIS_KW, self::$POSITION )
                         ->setOperator( $OPERATOR )
-                        ->setFixedSourceValue( 1 )
+                        ->setScalar( 1 )
                         ->toString()
                 )
                 ->setReturnThis()
@@ -739,7 +740,7 @@ class ClassMethodFactory implements PcGenInterface
                         ->setBaseIndent()
                         ->setIndent()
                         ->setTarget( self::THIS_KW, self::$POSITION )
-                        ->setFixedSourceValue( 0 )
+                        ->setScalar( 0 )
                         ->toString()
                 )
                 ->setReturnThis()

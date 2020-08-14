@@ -88,10 +88,11 @@ abstract class BaseA implements PcGenInterface
     /**
      * @var string
      */
-    protected static $COMMA = ',';
-    protected static $CRLFs = [ "\r\n", "\n\r", "\n", "\r" ];
-    protected static $ERR1  = 'Empty argument %s';
-    public    static $ERRx  = 'Invalid argument(s) %s';
+    protected static $COMMA       = ',';
+    protected static $CLOSECLAUSE = ';';
+    protected static $CRLFs       = [ "\r\n", "\n\r", "\n", "\r" ];
+    protected static $ERR1        = 'Empty argument %s';
+    public    static $ERRx        = 'Invalid argument(s) %s';
 
     /**
      * @var string
@@ -277,43 +278,4 @@ abstract class BaseA implements PcGenInterface
         return sprintf( $FMT, get_called_class(), $this->baseIndent, $this->indent ); // test ###
     }
 
-    /**
-     * Remove leading empty array rows, all but last
-     *
-     * @parem array $array
-     * @return array
-     */
-    protected static function trimLeading( array $array )
-    {
-        if( empty( $array )) {
-            return [];
-        }
-        foreach( array_keys( $array ) as $ix ) {
-            if( ! empty( trim( $array[$ix] ))) {
-                break;
-            }
-            unset( $array[$ix] );
-        }
-        return empty( $array ) ? [] : $array;
-    }
-
-    /**
-     * Remove trailing empty array rows, all but first
-     *
-     * @parem array $array
-     * @return array
-     */
-    protected static function trimTrailing( array $array )
-    {
-        if( empty( $array )) {
-            return [];
-        }
-        foreach( array_reverse( array_keys( $array )) as $ix ) {
-            if( ! empty( trim( $array[$ix] ))) {
-                break;
-            }
-            unset( $array[$ix] );
-        }
-        return empty( $array ) ? [] : $array;
-    }
 }

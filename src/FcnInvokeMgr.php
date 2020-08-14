@@ -79,7 +79,7 @@ final class FcnInvokeMgr extends BaseA
                 ->setByReference( false )
                 ->setVarType()
                 ->setDefault();
-        }
+        } // end foreach
         $code = $this->renderArguments( $row );
         return Util::nullByteClean( $code );
     }

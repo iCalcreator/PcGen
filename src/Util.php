@@ -39,6 +39,7 @@ class Util implements PcGenInterface
      * @param string $phpVersion  expected PHP version, default PHP_MAJOR_VERSION
      * @param string $typeHint
      * @return bool
+     * @todo https://www.infoq.com/articles/php7-new-type-features/
      */
     public static function evaluateTypeHint(
         $varType,
@@ -71,16 +72,16 @@ class Util implements PcGenInterface
                   in_array( $varType, $PHP72TypeHints ))) :
                 $return = false;
                 break;
-            case ( ( 7 == $phpMajor ) && in_array( $varType, $PHP70TypeHints )) :
+            case (( 7 == $phpMajor ) && in_array( $varType, $PHP70TypeHints )) :
                 $typeHint = $varType;
                 break;
-            case ( ( 7 == $phpMajor ) && in_array( $varType, $PHP71TypeHints )) :
+            case (( 7 == $phpMajor ) && in_array( $varType, $PHP71TypeHints )) :
                 if( 1 > $phpMinor ) {
                     $return = false;
                 }
                 $typeHint = $varType;
                 break;
-            case ( ( 7 == $phpMajor ) && in_array( $varType, $PHP72TypeHints )) :
+            case (( 7 == $phpMajor ) && in_array( $varType, $PHP72TypeHints )) :
                 if( 2 > $phpMinor ) {
                     $return = false;
                 }
@@ -92,7 +93,7 @@ class Util implements PcGenInterface
             default :
                 $return = false;
                 break;
-        }
+        } // end switch
         return $return;
     }
 
@@ -124,7 +125,7 @@ class Util implements PcGenInterface
             default :
                 $value = $arg[ $key ];
                 break;
-        }
+        } // end switch
         switch( $type ) {
             case self::BOOL_T :
                 return (bool) $value;
@@ -272,7 +273,7 @@ class Util implements PcGenInterface
                     default :
                         $precision = strlen( $value ) - strpos( $value, $DOT ) - 1;
                         $value = number_format( $value, $precision, $DOT, self::SP0 );
-                }
+                } // end switch
                 return ( self::STRING_T != $expType ) ? $value : sprintf( $QUOTE1, $value );
                 break;
             default :
@@ -295,5 +296,43 @@ class Util implements PcGenInterface
             }
         }
         return false;
+    }
+
+    /**
+     * Remove leading empty array rows, all but last
+     *
+     * @param array $array
+     * @return array
+     */
+    public static function trimLeading( array $array ) {
+        if( empty( $array ) ) {
+            return [];
+        }
+        foreach( array_keys( $array ) as $ix ) {
+            if( ! empty( trim( $array[$ix] ) ) ) {
+                break;
+            }
+            unset( $array[$ix] );
+        }
+        return empty( $array ) ? [] : $array;
+    }
+
+    /**
+     * Remove trailing empty array rows, all but first
+     *
+     * @param array $array
+     * @return array
+     */
+    public static function trimTrailing( array $array ) {
+        if( empty( $array ) ) {
+            return [];
+        }
+        foreach( array_reverse( array_keys( $array ) ) as $ix ) {
+            if( ! empty( trim( $array[$ix] ) ) ) {
+                break;
+            }
+            unset( $array[$ix] );
+        }
+        return empty( $array ) ? [] : $array;
     }
 }

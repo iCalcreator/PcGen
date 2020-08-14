@@ -259,7 +259,7 @@ class VariableMgr extends BaseC
                     }
                     $code[] =
                         $row . Util::renderScalarValue( $value, $expType ) . self::$COMMA;
-                }
+                } // end foreach
                 $code[] = $this->baseIndent . self::$ARREND . self::$CLOSECLAUSE;
                 return $code;
                 break;
@@ -269,7 +269,7 @@ class VariableMgr extends BaseC
             default :
                 $initValue = self::NULL_T;
                 break;
-        }
+        } // end switch
         $row .= $initValue . self::$CLOSECLAUSE;
         $code[] = $row;
         return $code;
@@ -332,7 +332,7 @@ class VariableMgr extends BaseC
                 break;
             default :
                 break;
-        }
+        } // end switch
         $this->varDto->setDefault( $initValue );
         return $this;
     }

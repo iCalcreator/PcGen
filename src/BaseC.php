@@ -28,7 +28,7 @@ use InvalidArgumentException;
 /**
  * Class BaseC
  *
- * Adds visibility and static to BaseB
+ * Extend BaseB with visibility and static properties
  *
  * @package Kigkonsult\PcGen
  */
@@ -82,7 +82,7 @@ abstract class BaseC extends BaseB
                 $this->visibility = $vsblt;
                 return $this;
             }
-        }
+        } // end foreach
         throw new InvalidArgumentException( $FMT . $visibility );
     }
 

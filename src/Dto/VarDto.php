@@ -261,7 +261,7 @@ class VarDto implements PcGenInterface
             default :
                 $this->varType = $varType;
                 break;
-        }
+        } // end switch
         return $this;
     }
 

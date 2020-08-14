@@ -104,6 +104,18 @@ interface PcGenInterface
     const VERSION_T         = 'version';
 
     /**
+     * Comparison operators
+     */
+    const EQ                = '==';
+    const NEQ               = '!=';
+    const EQ3               = '===';
+    const NEQ3              = '!==';
+    const GT                = '>';
+    const GTEQ              = '>=';
+    const LT                = '<';
+    const LTEQ              = '<=';
+
+    /**
      * Misc
      */
     const BOOLEAN_T         = 'boolean';

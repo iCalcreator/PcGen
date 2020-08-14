@@ -24,6 +24,7 @@
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
+use Kigkonsult\PcGen\Traits\SourceTrait;
 use RuntimeException;
 
 /**
@@ -32,16 +33,20 @@ use RuntimeException;
  * Manages method/function coded return values
  *
  * With return values means
+ *   PHP expression
  *   fixed (scalar) values
- *   constant or variable
- *   class property (opt static) or constant
- *   class means 'this' (ie class instance) or otherClass
- *   otherClass means class instance (variable) or FQCN (also interface)
+ *   PHP entity (value)
+ *       constant or variable
+ *       class property (opt static) or constant
+ *           class is 'this' (ie class instance) or otherClass
+ *           otherClass is class instance (variable) or FQCN (also interface)
  *
  * @package Kigkonsult\PcGen\Rows
  */
-final class ReturnClauseMgr extends BaseR1
+final class ReturnClauseMgr extends BaseA
 {
+    use SourceTrait;
+
     /**
      * @param string     $class
      * @param mixed      $variable
@@ -71,7 +76,7 @@ final class ReturnClauseMgr extends BaseR1
             $code[0] = $row1 . self::SP1 . $code[0];
         }
         $lastIx        = count( $code ) - 1;
-        $code[$lastIx] = rtrim( $code[$lastIx] ) . self::$END;
+        $code[$lastIx] = rtrim( $code[$lastIx] ) . self::$CLOSECLAUSE;
         return Util::nullByteClean( $code );
     }
 }

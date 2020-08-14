@@ -28,11 +28,11 @@ Inherited [Common methods]
 
 ```FcnFrameMgr::toArray()```
 * Return _array_, result code rows (null-bytes removed) no trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 
 ```FcnFrameMgr::toString()```
 * Return _array_, result code rows (null-bytes removed) no trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 ---
 
 ```FcnFrameMgr::setVisibility( [ visibility ] )```
@@ -51,7 +51,7 @@ Inherited [Common methods]
 * Function/method name, note, not for closures
 * ```name``` _string_ 
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```FcnFrameMgr::addArgument( argument )```
@@ -86,7 +86,7 @@ Inherited [Common methods]
 * ```updClassProp``` _bool_, above 
 * ```nextVarPropIndex``` _bool_ above
 * Return _static_
-* throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```FcnFrameMgr::setArguments( argumentSets )```
 * ```argumentSets``` _array_, elements any of below 
@@ -97,7 +97,7 @@ Inherited [Common methods]
     * note ```VarDto``` below
   * array( name [, varType [, default [, by-reference [, updClassProp [, nextVarPropIndex ]]]]] ) (above)
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```FcnFrameMgr::addVarUse( argumentDto )```
@@ -118,7 +118,7 @@ Inherited [Common methods]
 * ```name``` _string_, variable name, with or without leading '$'
 * ```by-reference``` _bool_, passing variable by reference or not, default false
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```FcnFrameMgr::setVarUse( useVariableSets )```
 * Set sets of closure use variables
@@ -131,7 +131,7 @@ Inherited [Common methods]
   * array( VarDto [, by-reference ] ), above
   * array( name [, by-reference ] ), above
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```FcnFrameMgr::setBody( ...body )```
@@ -147,14 +147,14 @@ Inherited [Common methods]
 * ```source``` _string_
 * ```index``` _int_|string_ array index
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```FcnFrameMgr::setReturnFixedValue( returnArg )```
 * ```FcnFrameMgr::setReturnValue()``` alias
 * Set directive for method/function end-up scalar return code (ex 'return true;')
 * ```returnArg``` _bool_|_int_|_float_|_string_
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```FcnFrameMgr::setReturnThis()```
 * ```FcnFrameMgr::setReturnValue()``` alias
@@ -169,7 +169,7 @@ Inherited [Common methods]
 * ```returnArg2``` _int_|_string_
   * 'return $this->returnArg\[$returnArg2];' (if string)
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```FcnFrameMgr::setReturnVariable( returnArg, returnArg2 )```
 * ```FcnFrameMgr::setReturnValue()``` alias
@@ -179,7 +179,7 @@ Inherited [Common methods]
 * ```returnArg2``` _int_|_string_, 
   * 'return $returnArg\[$returnArg2];' (if string)
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ###### ArgumentDto
@@ -207,6 +207,30 @@ _VarDto_ instance creation ([VarDto])<br><br>
 * ```description``` _string_|_array_, the [phpdoc] description
 ---
 
+#### Example
+
+```
+<?php
+
+$code = FcnFrameMgr::init()
+    ->setName( 'someFunction' )
+    ->addArgument( 'iterator', FcnFrameMgr::ARRAY ) 
+    ->setBody(
+        ' // this is the function body'
+    )
+    ->toString();
+```
+
+Result :
+
+```
+    public function someFunction( array $iterator )
+    {
+        // this is the function body
+    }
+```
+
+---
 <small>Return to PcGen [README], [Summary]</small> 
 
 [ArgumentDto]:ArgumentDto.md

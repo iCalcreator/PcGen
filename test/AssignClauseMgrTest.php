@@ -350,12 +350,14 @@ class AssignClauseMgrTest extends TestCase
                 $acm = AssignClauseMgr::init()
                     ->setThisPropertyTarget( $targetArgSet[1], $targetArgSet[2] )
                     ->setSource( $sourceArgSet[0], $sourceArgSet[1], $sourceArgSet[2] );
+                $case .= 'A';
                 break;
             case ( empty( $targetArgSet[0] )) :
                 $targetArgSet[1] = Util::unSetVarPrefix( $targetArgSet[1] );
                 $acm = AssignClauseMgr::init()
                     ->setVariableTarget( $targetArgSet[1], $targetArgSet[2] )
                     ->setSource( $sourceArgSet[0], $sourceArgSet[1], $sourceArgSet[2] );
+                $case .= 'B';
                 break;
 
             case (( AssignClauseMgr::THIS_KW == $sourceArgSet[0] ) &&
@@ -364,6 +366,7 @@ class AssignClauseMgrTest extends TestCase
                 $acm = AssignClauseMgr::init()
                     ->setTarget( $targetArgSet[0], $targetArgSet[1], $targetArgSet[2] )
                     ->setThisPropertySource( $sourceArgSet[1], $sourceArgSet[2] );
+                $case .= 'C';
                 break;
             case ( empty( $sourceArgSet[0] ) &&
                 is_string( $sourceArgSet[1] ) && Util::isVarPrefixed( $sourceArgSet[1] )
@@ -372,6 +375,7 @@ class AssignClauseMgrTest extends TestCase
                 $acm = AssignClauseMgr::init()
                     ->setTarget( $targetArgSet[0], $targetArgSet[1], $targetArgSet[2] )
                     ->setVariableSource( $sourceArgSet[1], $sourceArgSet[2] );
+                $case .= 'D';
                 break;
 
             default :
@@ -379,6 +383,7 @@ class AssignClauseMgrTest extends TestCase
                     $targetArgSet[0], $targetArgSet[1], $targetArgSet[2],
                     $sourceArgSet[0], $sourceArgSet[1], $sourceArgSet[2]
                 );
+                $case .= 'E';
                 break;
         }
         $acm->setOperator( $operator );
@@ -572,12 +577,35 @@ class AssignClauseMgrTest extends TestCase
     }
 
     /**
+     * Test setExpression
+     *
      * @test
      */
-    public function returnClauseMgrTest6() {
+    public function AssignClauseMgrTest6() {
+        $code = AssignClauseMgr::init()
+            ->setThisPropertyTarget( 'property' )
+            ->setExpression( 'trim( $argument )' )
+            ->toString();
+
+        $exp = '$this->property = trim( $argument );';
+        $got = trim( $code );
+        $this->assertEquals(
+            $exp,
+            $got,
+            'exp : ' . $exp . ' got : ' . $got
+        );
+        if( DISPLAYacm ) {
+            echo __FUNCTION__ . ' : ' . trim( $code ) . PHP_EOL;
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function returnClauseMgrTest7() {
         $acm = AssignClauseMgr::init();
         try {
-            $acm->setSourceExpression( 123 );
+            $acm->setExpression( 123 );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
@@ -585,7 +613,7 @@ class AssignClauseMgrTest extends TestCase
         }
 
         $expression = 'array_rand( [ 1,2 ] )';
-        $this->assertEquals( $expression, $acm->setSourceExpression( $expression )->getFixedSourceValue());
+        $this->assertEquals( $expression, $acm->setExpression( $expression )->getScalar());
 
         $acm->setVariableTarget( 'variable' )
             ->setIndent()
@@ -599,7 +627,7 @@ class AssignClauseMgrTest extends TestCase
     /**
      * @test
      */
-    public function AssignClauseMgrTest7() {
+    public function AssignClauseMgrTest8() {
         $acm = AssignClauseMgr::init();
         $this->assertEquals(
             AssignClauseMgr::SELF_KW,
@@ -634,7 +662,7 @@ class AssignClauseMgrTest extends TestCase
     /**
      * @test
      */
-    public function AssignClauseMgrTest8() {
+    public function AssignClauseMgrTest9() {
         try {
             AssignClauseMgr::init()->toArray();
             $this->assertTrue( false );

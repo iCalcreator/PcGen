@@ -24,63 +24,46 @@
 namespace Kigkonsult\PcGen\Traits;
 
 use InvalidArgumentException;
+use Kigkonsult\PcGen\Assert;
 
 /**
- * Trait OperatorTrait
+ * Class NameTrait
  *
- * Manages assignment operators
+ * Add name property
  *
  * @package Kigkonsult\PcGen\Traits
  */
-trait OperatorTrait
+trait NameTrait
 {
     /**
-     * @var string[]
+     * @var string
      */
-    private static $OPERATORARR = [
-        '=',                           // default
-        '+=', '-=', '*=', '/=', '%/',  // arethmetic
-        '.=',                          // string
-        '&=', '|=', '^=', '<<=', '>>=' // bitwise
-    ];
+    private $name = null;
 
     /**
-     * @return string[]
-     */
-    public static function getOperators()
-    {
-        return self::$OPERATORARR;
-    }
-
-    /**
-     * $var string
-     */
-    private $operator = '=';
-
-    /**
-     * @param bool $strict
      * @return string
      */
-    public function getOperator( $strict = false )
+    public function getName()
     {
-        static $OPERATORfmt = ' %s ';
-        return $strict ? $this->operator : sprintf( $OPERATORfmt, $this->operator );
+        return $this->name;
     }
 
     /**
-     * @param string $operator
+     * @return bool
+     */
+    public function isNameSet()
+    {
+        return ( null !== $this->name );
+    }
+
+    /**
+     * @param string $name
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setOperator( $operator )
+    public function setName( $name )
     {
-        $operator = trim( $operator );
-        if( ! in_array( $operator, self::$OPERATORARR )) {
-            throw new InvalidArgumentException(
-                sprintf( self::$ERRx, var_export( $operator, true ))
-            );
-        }
-        $this->operator = $operator;
+        $this->name = Assert::assertPhpVar( $name );
         return $this;
     }
 }

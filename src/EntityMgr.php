@@ -163,7 +163,7 @@ final class EntityMgr extends BaseA
             default : // otherClass(fqcn) or $class  with class constant or class variable
                 $row .= $this->class;
                 break;
-        }
+        } // end switch
         return $row;
     }
 
@@ -210,7 +210,7 @@ final class EntityMgr extends BaseA
                 $row .= $COLONCOLON;
                 $row .= $this->fixVariablePrefix( $this->forceVarPrefix );
                 break;
-        }
+        } // end switch
         return $row;
     }
 
@@ -233,7 +233,7 @@ final class EntityMgr extends BaseA
     private function getIndexCode( $row )
     {
         static $ARR = '[%s]';
-        switch( true ) { // index
+        switch( true ) {
             case ( 0 == strcmp( self::ARRAY2_T, (string) $this->index )) :
                 $row .= self::ARRAY2_T;
                 break;
@@ -245,7 +245,7 @@ final class EntityMgr extends BaseA
             default :
                 $row .= sprintf( $ARR, $this->index );
                 break;
-        }
+        } // end switch
         return $row;
     }
 
@@ -275,7 +275,7 @@ final class EntityMgr extends BaseA
             default :
                 Assert::assertFqcn( $class );
                 break;
-        }
+        } // end switch
         $this->class = $class;
         return $this;
     }

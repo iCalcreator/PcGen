@@ -75,7 +75,8 @@ class EntityMgrTest extends TestCase
      * @test
      */
     public function EntityMgrTest36() {
-        foreach( [ null, EntityMgr::PARENT_KW, EntityMgr::SELF_KW, EntityMgr::THIS_KW, '$class' ] as $ix => $prefix ) {
+        $prefixes = [ null, EntityMgr::PARENT_KW, EntityMgr::SELF_KW, EntityMgr::THIS_KW, '$class' ];
+        foreach( $prefixes as $ix => $prefix ) {
             switch( true ) {
                 case empty( $prefix ) :
                     $expected = '$variable';
@@ -96,6 +97,9 @@ class EntityMgrTest extends TestCase
                 $code,
                 'case' . ' A-' . $ix . ' expected: ' . $expected . '  result : ' . trim( $code )
             );
+            if( DISPLAYem ) {
+                echo __FUNCTION__ . ' ' . $ix . 'A ' . $code . PHP_EOL;
+            }
 
             $expected = empty( $prefix ) ? 'VARIABLE' : $prefix . '::VARIABLE';
             $code     = EntityMgr::factory( $prefix, 'variable' )->setIsConst( true )->toString();
@@ -105,12 +109,10 @@ class EntityMgrTest extends TestCase
                 'case' . ' B-' . $ix . ' expected: ' . $expected . '  result : ' . trim( $code )
             );
 
+            if( DISPLAYem ) {
+                echo __FUNCTION__ . ' ' . $ix . 'A ' . $code . PHP_EOL;
+            }
         } // end foreach
-
-        if( DISPLAYem ) {
-            echo __FUNCTION__ . ' ' . $ix . ' ' . $code . PHP_EOL;
-        }
-
     }
 
     /**
@@ -135,6 +137,18 @@ class EntityMgrTest extends TestCase
                 EntityMgr::factory( 'klass', 'variable', 82 )
                     ->__toString()
             )
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function AssignClauseMgrTest91() {
+        $test = EntityMgr::factory( null, 'boole' )->toString();
+        $this->assertEquals(
+            '$boole',
+            $test,
+            '\'@boole\' exp, got : ' . var_export( $test, true )
         );
     }
 

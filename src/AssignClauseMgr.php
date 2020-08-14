@@ -25,25 +25,27 @@ namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use Kigkonsult\PcGen\Traits\OperatorTrait;
+use Kigkonsult\PcGen\Traits\SourceTrait;
 use RuntimeException;
 
 /**
  * Class AssignClauseMgr
  *
  * Manages assign target (value) from
- *   source (value)
- *   (scalar) fixedSourceValue
- *   no 'body' code
- *
- * With
- *   target/source (values) means variable, constant, class property (opt static) or constant
- *   class means 'this' (ie class instance) or otherClass
- *   otherClass means class instance (variable) or FQCN (also interface)
+ *   PHP expression
+ *   fixed (scalar) values
+ *   PHP entity (value)
+ *       constant or variable
+ *       class property (opt static) or constant
+ *           class is 'this' (ie class instance) or otherClass
+ *           otherClass is class instance (variable) or FQCN (also interface)
  *
  * @package Kigkonsult\PcGen\Rows
  */
-final class AssignClauseMgr extends BaseR1
+final class AssignClauseMgr extends BaseA
 {
+    use SourceTrait;
+
     /**
      * @var EntityMgr
      */
@@ -52,7 +54,7 @@ final class AssignClauseMgr extends BaseR1
     use OperatorTrait;
 
     /**
-     * Set (EntityMgr) target and (EntityMgr) source
+     * Class factory method, set (EntityMgr) target and (EntityMgr) source
      *
      * 'Fixed' values are autodetected and update this->fixedSourceValue
      *
@@ -81,7 +83,7 @@ final class AssignClauseMgr extends BaseR1
     /**
      * Return single row assign clause
      *
-     * @return array|
+     * @return array
      * @throws RuntimeException
      */
     public function toArray()
@@ -96,7 +98,7 @@ final class AssignClauseMgr extends BaseR1
         $code    = $this->getRenderedSource();
         $code[0] = $row1 . $code[0];
         $lastIx         = count( $code ) - 1;
-        $code[$lastIx] .= self::$END;
+        $code[$lastIx] .= self::$CLOSECLAUSE;
         return Util::nullByteClean( $code );
     }
 
@@ -147,7 +149,7 @@ final class AssignClauseMgr extends BaseR1
                     ->setClass( $class )
                     ->setVariable( $variable )
                     ->setIndex( $index );
-        }
+        } // end switch
         return $this;
     }
 

@@ -15,12 +15,12 @@ Inherited [VarDto] methods
 * ```varDto``` _VarDto_
 * Return _static_
 * Static
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```ArgumentDto::isByReference()```
 * Return _bool_, true, if argument is passed as reference
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```ArgumentDto::setByReference( by-reference )```
 * If not set, default, false.
@@ -33,7 +33,7 @@ Inherited [VarDto] methods
   * ```ArgumentDto::BEFORE``` : argument (value) will update the class property first in method body
   * ```ArgumentDto::AFTER``` : argument (value) will update the class property last in method body (but before opt. set return(value))
   * ```ArgumentDto::NONE``` : no update
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```ArgumentDto::setUpdClassProperty( updClassProp )```
 * If not set, default, no update.
@@ -46,7 +46,7 @@ Inherited [VarDto] methods
 
 ```ArgumentDto::isNextVarPropIndex()```
 * Return _bool_, true, if argument (value) will append the class property array
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 
 ```ArgumentDto::setNextVarPropIndex( nextVarPropIndex )```
 * only if argument type/value array (and ! ```ArgumentDto::NONE```, above) 

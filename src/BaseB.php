@@ -23,12 +23,10 @@
  */
 namespace Kigkonsult\PcGen;
 
-use InvalidArgumentException;
-
 /**
  * Class BaseB
  *
- * Adds variable and body to BaseA
+ * Extend BaseA with body property
  *
  * @package Kigkonsult\PcGen
  */
@@ -39,46 +37,13 @@ abstract class BaseB extends BaseA
      */
     protected static $CODEBLOCKSTART = '{';
     protected static $CODEBLOCKEND   = '}';
-    protected static $CLOSECLAUSE    = ';';
     protected static $ERR1           = 'No variable set';
     protected static $STATIC         = 'static';
-
-    /**
-     * @var string
-     */
-    protected $name = null;
 
     /**
      * @var string[]
      */
     protected $body = [];
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNameSet()
-    {
-        return ( null !== $this->name );
-    }
-
-    /**
-     * @param string $name
-     * @return static
-     * @throws InvalidArgumentException
-     */
-    public function setName( $name )
-    {
-        $this->name = Assert::assertPhpVar( $name );
-        return $this;
-    }
 
     /**
      * Return body code rows, all rows has (at least) leading baseIndent
@@ -124,7 +89,7 @@ abstract class BaseB extends BaseA
             foreach( $bodyPart as $row ) {
                 $tmp[] = ( self::SP0 == trim( $row )) ? self::SP0 : rtrim( $row );
             }
-        } // end array
+        } // end foreach
         $this->body = [];
         if( 1 == count( $tmp )) {
             $this->body[] = $tmp[0];
@@ -143,7 +108,7 @@ abstract class BaseB extends BaseA
                     $row = substr( $row, $lSpaceLen );
                 }
                 $this->body[] = $row;
-            }
+            } // end foreach
         }
         $this->body = implode( $repl, $this->body );
         $this->body = rtrim(

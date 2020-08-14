@@ -25,10 +25,20 @@ namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use Kigkonsult\PcGen\Dto\VarDto;
+use Kigkonsult\PcGen\Traits\NameTrait;
 use RuntimeException;
 
+/**
+ * Class ClassMgr
+ *
+ * Manages class, interface and trait
+ *
+ * @package Kigkonsult\PcGen
+ */
 final class ClassMgr extends BaseB
 {
+    use NameTrait;
+
     /**
      * @var string  targetTypes
      */
@@ -197,8 +207,8 @@ final class ClassMgr extends BaseB
             ( $this->isBodySet() ? array_merge( [ self::SP0 ], $this->getBody()) : [] ),
             ( $hasProperties     ? $this->produceMethodsForProperties() : [] )
         );
-        $body = self::trimLeading( $body );
-        $body = self::trimTrailing( $body );
+        $body = Util::trimLeading( $body );
+        $body = Util::trimTrailing( $body );
         return empty( $body ) ? [] : $body;
     }
 
@@ -342,8 +352,8 @@ final class ClassMgr extends BaseB
                 if( $key == $alias ) {
                     return $this; // also duplicate (on fqcn and alias)
                 }
-            }
-        }
+            } // end foreach
+        } // end if
         Assert::assertFqcn( $fqcn );
         $key = ( null === $alias )
             ? count( $this->uses )

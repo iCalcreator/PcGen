@@ -4,6 +4,7 @@
 ###### the PHP Code Generation support package
 
 * create PHP class / interface / trait code<br>
+  * opt shipped with file docBlock
   * with namespace, use, extends, implements 
   * with constuctor and factory methods 
   * with constants and properties with opt. getter(+iterator) and setter methods
@@ -29,7 +30,11 @@
   * PHP expression
   * constant
   * function/method invoke(s)
-    
+
+* create logic code using control structures
+  * simpler conditions  
+  * try/catch-blocks  
+
 * create code for function/method return of 
   * variable/property value
   * (scalar) fixedSourceValue
@@ -42,7 +47,7 @@ More info in the PcGen [Summary].
 --- 
 ###### Misc
 
-The target PHP version code is, for now, the current PHP version. 
+The target PHP version code is, default, the current PHP version but configurable.
 
 Using a PHP reserved name as _name_ (ex FQCN/className) will thow an InvalidArgumentException. 
 
@@ -52,6 +57,7 @@ You may need to readjust result output code style and indents.
 ###### Tests
 
 Tests are executed in ```DISPLAY``` mode, to alter, update _PHP_ const in top of ```phpunit.xml```.  
+Asserted PHP 7+ compability using [PHPCompatibility].
 
 
 ###### Support
@@ -97,3 +103,4 @@ This project is licensed under the GPLv3 License
 [github.com PcGen]:https://github.com/iCalcreator/PcGen
 [phpdoc]:https://phpdoc.org
 [Summary]:docs/Summary.md
+[PHPCompatibility]:https://github.com/PHPCompatibility/PHPCompatibility

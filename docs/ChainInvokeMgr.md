@@ -18,17 +18,17 @@ Inherited [Common methods]
 ```ChainInvokeMgr::factory( ...FcnInvoke )```
 * ```FcnInvoke``` any number of [FcnInvokeMgr]
 * For eol and indents, defaults are used
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 ---
 
 ```ChainInvokeMgr::toArray()```
 * Return _array_, result code rows (null-bytes removed) no trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 
 ```ChainInvokeMgr::toString()```
 * Return _array_, result code rows (null-bytes removed) no trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 ---
 
 ```ChainInvokeMgr::getInvokes()```
@@ -38,21 +38,21 @@ Inherited [Common methods]
 * Return _bool_ true if set
 
 ```ChainInvokeMgr::appendInvoke( fcnInvoke )```
-* fcnInvoke [FcnInvokeMgr]
-* Return static
-* Throws InvalidArgumentException
+* ```fcnInvoke``` [FcnInvokeMgr]
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```ChainInvokeMgr::setInvokes( invokes )```
 * ```invokes``` [FcnInvokeMgr]\[]
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 ---
 
 <small>Return to [README] - [Summary]</small>
 
 [AssignClauseMgr]:AssignClauseMgr.md
 [Common methods]:CommonMethods.md
-[FcnInvokeMgr]:EntityMgr.md
+[FcnInvokeMgr]:FcnInvokeMgr.md
 [README]:../README.md
 [ReturnClauseMgr]:ReturnClauseMgr.md
 [Summary]:Summary.md

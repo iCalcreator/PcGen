@@ -27,6 +27,7 @@ use InvalidArgumentException;
 use Kigkonsult\PcGen\Dto\ArgumentDto;
 use Kigkonsult\PcGen\Dto\VarDto;
 use Kigkonsult\PcGen\Traits\ArgumentTrait;
+use Kigkonsult\PcGen\Traits\NameTrait;
 use RuntimeException;
 
 /**
@@ -43,7 +44,9 @@ use RuntimeException;
  */
 final class FcnFrameMgr extends BaseC
 {
-   use ArgumentTrait;
+    use NameTrait;
+
+    use ArgumentTrait;
 
     /**
      * @var ArgumentDto[]   array of closure use variables
@@ -96,10 +99,10 @@ final class FcnFrameMgr extends BaseC
         $trailCode = $this->getPropValueSetCode( ArgumentDto::AFTER, $trailFound  );
         $body      = $this->getBody( $this->indent );
         if( ! $leadFound ) {
-            $body = self::trimLeading( $body );
+            $body = Util::trimLeading( $body );
         }
         if( ! $trailFound ) {
-            $body = self::trimTrailing( $body );
+            $body = Util::trimTrailing( $body );
         }
         return Util::nullByteClean(
             array_merge(
@@ -194,7 +197,7 @@ final class FcnFrameMgr extends BaseC
                     ClassMethodFactory::renderPropValueSetCode( $argumentDto, $this )
                 );
             }
-        }
+        } // end foreach
         return $code;
     }
 
@@ -244,7 +247,7 @@ final class FcnFrameMgr extends BaseC
                     sprintf( self::$ERRx, var_export( $name, true ))
                 );
                 break;
-        }
+        } // end switch
         return $this;
     }
 
@@ -339,7 +342,7 @@ final class FcnFrameMgr extends BaseC
     public function setReturnFixedValue( $value )
     {
         $this->returnValue =
-            ReturnClauseMgr::init( $this )->setFixedSourceValue( $value );
+            ReturnClauseMgr::init( $this )->setScalar( $value );
         $this->setReturnType( gettype( $value ));
         return $this;
     }
@@ -466,7 +469,7 @@ final class FcnFrameMgr extends BaseC
                     $ERRTXT . var_export( $returnType, true )
                 );
                 break;
-        }
+        } // end switch
         $this->returnType = $returnType;
         return $this;
     }

@@ -29,11 +29,11 @@ These methods are shared by all but *Dto :
 
 ```Class::toArray()```
 * Return _array_, result code rows (null-bytes removed) no trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 
 ```Class::toString()```
 * Return _string_ with code rows (extends toArray), each code row with trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 ---
 
 ```Class::getEol()```

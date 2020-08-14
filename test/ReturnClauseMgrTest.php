@@ -346,41 +346,41 @@ class ReturnClauseMgrTest extends TestCase
             case ( false !== strpos( $subject, 'CONSTANT' )) :
                 $rcm->setSourceIsConst( true )
                     ->setSource( $prefix, $subject, $index );
-                $case .= '-1';
+                $case .= '-A';
                 break;
             case ( is_bool( $subject ) || is_int( $subject ) || is_float( $subject ) ||
                 ( false !== strpos( $expected, 'return \'' ))) :
                 if( 1 == array_rand( [ 1, 2 ] )) {
-                    $rcm->setFixedSourceValue( $subject );
-                    $case .= '-2';
+                    $rcm->setScalar( $subject );
+                    $case .= '-B1';
                     break;
                 }
                 $rcm = ReturnClauseMgr::factory( $prefix, $subject, $index );
-                $case .= '-3';
+                $case .= '-B2';
                 break;
             case (( ReturnClauseMgr::THIS_KW == $prefix ) &&
                 is_string( $subject ) && ! empty( $index )) :
                 $subject = Util::setVarPrefix( $subject );
                 $rcm->setThisPropertySource( $subject, $index );
-                $case .= '-4';
+                $case .= '-C';
                 break;
             case ( empty( $prefix ) && Util::isVarPrefixed( $subject )) :
                 $subject = Util::unSetVarPrefix( $subject );
                 $rcm->setVariableSource( $subject, $index );
-                $case .= '-5';
+                $case .= '-D';
                 break;
             case Util::isVarPrefixed( $subject ) :
                 if( 1 == array_rand( [ 1, 2 ] )) {
                     $rcm->setSource( $prefix, $subject, $index );
-                    $case .= '-6';
+                    $case .= '-E';
                     break;
                 }
                 $rcm->setSource( EntityMgr::factory( $prefix, $subject, $index ));
-                $case .= '-7';
+                $case .= '-F';
                 break;
             default :
                 $rcm = ReturnClauseMgr::factory( $prefix, $subject, $index );
-                $case .= '-8';
+                $case .= '-G';
                 break;
         }
         $code = $rcm->toString();
@@ -494,7 +494,7 @@ class ReturnClauseMgrTest extends TestCase
      */
     public function returnClauseMgrTest5() {
         $rcm = ReturnClauseMgr::init();
-        $this->assertEquals( '[]', $rcm->setFixedSourceValue( '[]' )->getFixedSourceValue());
+        $this->assertEquals( '[]', $rcm->setScalar( '[]' )->getScalar());
     }
 
     /**
@@ -503,7 +503,7 @@ class ReturnClauseMgrTest extends TestCase
     public function returnClauseMgrTest6() {
         $rcm = ReturnClauseMgr::init();
         try {
-            $rcm->setSourceExpression( 123 );
+            $rcm->setExpression( 123 );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
@@ -511,7 +511,7 @@ class ReturnClauseMgrTest extends TestCase
         }
 
         $expression = 'array_rand( [ 1,2 ] )';
-        $this->assertEquals( $expression, $rcm->setSourceExpression( $expression )->getFixedSourceValue());
+        $this->assertEquals( $expression, $rcm->setExpression( $expression )->getScalar());
     }
 
     /**
@@ -568,7 +568,7 @@ class ReturnClauseMgrTest extends TestCase
 
         try {
             ReturnClauseMgr::init()
-                ->setFixedSourceValue( null );
+                ->setScalar( null );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {

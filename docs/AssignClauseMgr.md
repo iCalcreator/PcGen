@@ -35,16 +35,16 @@ Inherited [Common methods]
   * variable $-prefixed
 * ```sourceIndex```  _int_|_string_ opt array index
 * For eol and indents, defaults are used
-* Return static
+* Return _static_
 ---
 
 ```AssignClauseMgr::toArray()```
 * Return _array_, result code rows (null-bytes removed) no trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 
 ```AssignClauseMgr::toString()```
 * Return _string_ with code rows (extends toArray), each code row with trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 ---
 
 ```AssignClauseMgr::getTarget()```
@@ -60,24 +60,24 @@ Inherited [Common methods]
   * uppercase is autodetected as CONSTANT
   * variable $-prefixed
 * ```index```  _int_|_string_ opt array index
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```AssignClauseMgr::setThisPropertyTarget( property [, index ] )```
 * convenient shortcut for ```AssignClauseMgr::setTarget()```
 * Give target result ```$this->property```
 * ```property``` _string_
 * ```index```  _int_|_string_ opt array index
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```AssignClauseMgr::setVariableTarget( variable [, index ] )```
 * convenient shortcut for ```AssignClauseMgr::setTarget()```
 * Give target result ```$variable```
 * ```variable``` _string_
 * ```index```  _int_|_string_ opt array index
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```AssignClauseMgr::setForceTargetAsInstance( forceTargetAsInstance )```
 * Only applicable for '$targetClass', ignored by the others
@@ -87,13 +87,13 @@ Inherited [Common methods]
 * Return _static_
 ---
 
-```AssignClauseMgr::getFixedSourceValue()```
+```AssignClauseMgr::getScalar()```
 * Return _bool_|_int_|_float_|_string_, scalar
 
-```AssignClauseMgr::isFixedSourceValueSet()```
+```AssignClauseMgr::isScalarSet()```
 * Return _bool_ true if not null
 
-```AssignClauseMgr::setFixedSourceValue( fixedSourceValue )```
+```AssignClauseMgr::setScalar( fixedSourceValue )```
 * Set a fixed (scalar) source
 * ```fixedSourceValue``` _bool_|_int_|_float_|_string_, scalar
 * Return _static_
@@ -102,7 +102,7 @@ Inherited [Common methods]
 
 ```AssignClauseMgr::setSourceExpression( expression )```
 * Set a PHP expression
-* ```expression``` _string_
+* ```expression``` _string_  any PHP expression
 * Return _static_
 * Throws InvalidException
 ---
@@ -119,30 +119,30 @@ Inherited [Common methods]
 * ```variable``` _string_ class/variable/property/constant name
   * variable $-prefixed
 * ```index```  _int_|_string_ opt array index
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```AssignClauseMgr::setSource( source )```
 * ```source``` [EntityMgr]
   *  note ```EntityMgr``` below
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```AssignClauseMgr::setThisPropertySource( property [, index ] )```
 * convenient shortcut for ```AssignClauseMgr::setSource()```
 * Give source result ```$this->property```
 * ```property``` _string_
 * ```index```  _int_|_string_ opt array index
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```AssignClauseMgr::setVariableSource( variable [, index ] )```
 * convenient shortcut for ```AssignClauseMgr::setSource()```
 * Give source result ```$variable```
 * ```variable``` _string_
 * ```index```  _int_|_string_ opt array index
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```AssignClauseMgr::setSourceIsConst( isConst )```
 * ```isConst``` _bool_
@@ -165,13 +165,13 @@ Inherited [Common methods]
 
 ```AssignClauseMgr::appendInvoke( fcnInvoke )```
 * ```fcnInvoke``` [FcnInvokeMgr]
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 ```AssignClauseMgr::setFcnInvoke( fcnInvoke )```
 * ```fcnInvoke``` [FcnInvokeMgr]\[]  
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 
 Note on chained invokes
 * The first must have a "class" : parent, self, $this, 'otherClass', '$class' when next is set
@@ -192,7 +192,7 @@ aClass::factory( $arg1, arg2 )
 ---
 
 ```AssignClauseMgr::setOperator( operator )```
-* Default assign operator is ```=```  
+* Set assign operator, default  ```=```  
 * ```operator``` _string_, one of ```=```, ```+=```, ..., see [operators]
 * Return _static_
 * Throws InvalidException
@@ -205,7 +205,53 @@ _EntityMgr_ instance creation ([EntityMgr])<br><br>
 * ```class```, _string_, one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
   * convenient constants found in PcGenInterface
 * ```fcnName``` _string_, the name
+
 ---
+
+#### Example
+
+```
+<?php
+
+$code = AssignClauseMgr::init()
+    ->setVariableTarget( 'target' )
+    ->setVariableSource( 'source' )
+    ->toString;
+
+$code .= AssignClauseMgr::init()
+    ->setThisPropertyTarget( 'target' )
+    ->setThisPropertySource( 'source', 0 )
+    ->toString
+
+$code .= AssignClauseMgr::init()
+    ->setVariableTarget( 'target' )
+    ->setFcnInvoke(
+        [
+            FcnInvokeMgr::factory( FcnInvokeMgr::THIS_KW, 'function', [ 'argument' ] ),
+            FcnInvokeMgr::factory( FcnInvokeMgr::THIS_KW, 'testMethod1', [ 'argument' ] ),
+            FcnInvokeMgr::factory( FcnInvokeMgr::THIS_KW, 'testMethod2' )
+        ]
+    )
+    ->toString
+
+
+
+```
+
+Result :
+
+```
+
+$target = $source;
+$this->target = $this->source[0];
+$target = $this->function( $argument )
+    ->testMethod1( $argument )
+    ->testMethod2();
+
+```
+
+---
+
 <small>Return to [README] - [Summary]</small>
 
 [ChainInvokeMgr]:ChainInvokeMgr.md

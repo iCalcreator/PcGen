@@ -69,8 +69,52 @@ Inherited [Common methods]
 
 ```DocBlockMgr::assertTagName( tag )```
 * ```tag``` _string_
-* Throws InvalidArgumentException on not accepted tag
+* Throws _InvalidArgumentException_ on not accepted tag
 * Static
+
+---
+#### Example
+
+```
+<?php
+
+$code = DocBlockMgr::init()
+    ->setSummary( 'Summary' )
+    ->setDescription( 'Decription 1' )
+    ->setDescription( [ 'Description 2', 'some text here...'] )
+    ->setTag(
+        DocBlockMgr::PARAM_T,
+        [ DocBlockMgr::STRING_T, DocBlockMgr::STRINGARRAY_T ],
+        'parameter'
+    )
+    ->setTag(
+        DocBlockMgr::PARAM_T,
+        DocBlockMgr::INT_T,
+        'quantity'
+    )
+    ->setTag( DocBlockMgr::RETURN_T, DocBlockMgr::ARRAY_T )
+    ->toString();
+
+```
+
+Result :
+
+```
+    /**
+     * Summary
+     *
+     * Decription 1
+     *
+     * Description 2
+     * some text here...
+     *
+     * @param   string|string[] $parameter
+     * @param   int             $quantity
+     * @return  array
+     */
+
+```
+
 ---
 
 <small>Return to [README] - [Summary]</small>

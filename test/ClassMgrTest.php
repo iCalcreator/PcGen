@@ -1057,5 +1057,30 @@ class ClassMgrTest extends TestCase
         $this->assertEquals( $vm->getVisibility(), $pm->getVisibility());
     }
 
+    /**
+     * Prep Iterator tests
+     *
+     * @test
+     */
+    public function classMgrDemoTest() {
+        $code = ClassMgr::init()
+            ->setNamespace( __NAMESPACE__ )
+            ->setName( 'TestClass' )
+            ->setProperties(
+                PropertyMgr::factory(
+                    'variable',
+                    ClassMgr::ARRAY_T,
+                    ClassMgr::ARRAY2_T,
+                    'an array of values'
+                )
+            )
+            ->toString();
+        $this->assertNotFalse(
+            strpos( $code, 'variable' )
+        );
+        if( DISPLAYcm ) {
+            echo __FUNCTION__ . ' : ' . PHP_EOL . $code . PHP_EOL;
+        }
+    }
 }
 

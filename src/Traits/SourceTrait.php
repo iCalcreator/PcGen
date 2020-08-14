@@ -21,41 +21,39 @@
  * You should have received a copy of the GNU General Public License
  * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
-namespace Kigkonsult\PcGen;
+namespace Kigkonsult\PcGen\Traits;
 
 use InvalidArgumentException;
+use Kigkonsult\PcGen\ChainInvokeMgr;
+use Kigkonsult\PcGen\EntityMgr;
+use Kigkonsult\PcGen\FcnInvokeMgr;
+use Kigkonsult\PcGen\Util;
 use RuntimeException;
 
-abstract class BaseR1 extends BaseA
+/**
+ * Trait SourceTrait
+ *
+ * Used by AssignClauseMgr, ReturnClauseMgr
+ *
+ * @package Kigkonsult\PcGen\Traits
+ */
+trait SourceTrait
 {
-    /**
-     * @var string
-     */
-    protected static $END = ';';
-
-    /**
-     * Scalar value
-     *
-     * @var bool|int|float|string
-     */
-    protected $fixedSourceValue = null;
-
-    /**
-     * @var bool   true if fixedSourceValue is a PHP expression
-     */
-    protected $isExpression = false;
+    use ScalarTrait;
 
     /**
      * @var EntityMgr
      */
-    protected $source = null;
+    private $source = null;
 
     /**
      * @var ChainInvokeMgr
      */
-    protected $fcnInvoke = null;
+    private $fcnInvoke = null;
 
     /**
+     * Return rendered source: fixed (scalar) value, class property, constant, variable OR function invoke
+     *
      * @return array
      * @throws RuntimeException
      */
@@ -64,8 +62,8 @@ abstract class BaseR1 extends BaseA
         static $ERR = 'No source set';
         $code = [];
         switch( true ) {
-            case $this->isFixedSourceValueSet() :
-                $code[] = $this->getFixedSourceValue( false );
+            case $this->isScalarSet() :
+                $code[] = $this->getScalar( false );
                 break;
             case $this->isSourceSet() :
                 $code[] = rtrim( $this->getSource()->toString());
@@ -76,60 +74,8 @@ abstract class BaseR1 extends BaseA
             default :
                 throw new RuntimeException( $ERR );
                 break;
-        }
+        } // end switch
         return $code;
-    }
-    /**
-     * @param bool $strict  false returns fixedSourceValue as string
-     * @return bool|float|int|string
-     */
-    public function getFixedSourceValue( $strict = true )
-    {
-        if( $strict || $this->isExpression ) {
-            return $this->fixedSourceValue;
-        }
-        return Util::renderScalarValue( $this->fixedSourceValue );
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFixedSourceValueSet()
-    {
-        return ( null !== $this->fixedSourceValue );
-    }
-
-    /**
-     * @param bool|float|int|string $fixedSourceValue
-     * @return static
-     * @throws InvalidArgumentException
-     */
-    public function setFixedSourceValue( $fixedSourceValue )
-    {
-        if( ! is_scalar( $fixedSourceValue )) {
-            throw new InvalidArgumentException(
-                sprintf( self::$ERRx, var_export( $fixedSourceValue, true  ))
-            );
-        }
-        $this->fixedSourceValue = $fixedSourceValue;
-        $this->isExpression     = false;
-        return $this;
-    }
-
-    /**
-     * @param string $expression  any PHP expression
-     * @return static
-     */
-    public function setSourceExpression( $expression )
-    {
-        if( ! is_string( $expression )) {
-            throw new InvalidArgumentException(
-                sprintf( self::$ERRx, var_export( $expression, true  ))
-            );
-        }
-        $this->fixedSourceValue = rtrim( trim( $expression ), self::$END );
-        $this->isExpression     = true;
-        return $this;
     }
 
     /**
@@ -176,7 +122,7 @@ abstract class BaseR1 extends BaseA
                 break;
             case ( is_scalar( $variable ) && ! Util::isVarPrefixed( $variable )) :
                 // and empty class
-                $this->setFixedSourceValue( $variable );
+                $this->setScalar( $variable );
                 break;
             default :
                 $this->source = EntityMgr::init( $this );
@@ -190,7 +136,7 @@ abstract class BaseR1 extends BaseA
                     $this->source->setIndex( $index );
                 }
                 break;
-        }
+        } // end switch
         return $this;
     }
 

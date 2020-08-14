@@ -26,18 +26,18 @@ Inherited [Common methods]
   * variable will be $-prefixed
 * ```index```  _int_|_string_ opt array index
 * For eol and indents, defaults are used
-* Return static
-* Throws InvalidArgumentException
+* Return _static_
+* Throws _InvalidArgumentException_
 ---
 
 
 ```EntityMgr::toArray()```
 * Return _array_, result code rows (null-bytes removed) no trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 
 ```EntityMgr::toString()```
 * Return _string_ with code rows (extends toArray), each code row with trailing eol
-* Throws RuntimeException
+* Throws _RuntimeException_
 ---
 
 ```EntityMgr::getClass()```
@@ -47,7 +47,7 @@ Inherited [Common methods]
 * ```class``` _string_ one of null, self, this, 'otherClass', '$class'
   * convenient constants found in PcGenInterface
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```EntityMgr::getVariable()```
@@ -58,7 +58,7 @@ Inherited [Common methods]
   * for CONSTANT use ```EntityMgr::setIsConst()``` below
   * variable will be $-prefixed
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```EntityMgr::getIndex()```
@@ -67,7 +67,7 @@ Inherited [Common methods]
 ```EntityMgr::setIndex( index )```
 * ```index```  _int_|_string_ opt array index
 * Return _static_
-* Throws InvalidArgumentException
+* Throws _InvalidArgumentException_
 ---
 
 ```EntityMgr::setIsConst( const )```
