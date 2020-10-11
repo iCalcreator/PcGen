@@ -41,6 +41,16 @@ class ClassMgrTest extends TestCase
 
     private static $prop       = 'prop';
 
+    private static $useGroup   = [
+        [ 'fcnA',                 null,      ClassMgr::FUNC_ ],
+        [ 'fcnB',                 'bAlias',  ClassMgr::FUNC_ ],
+        [ 'fcnC',                 null,      ClassMgr::FUNC_ ],
+        [ 'fcnD',                 'dAlias',  ClassMgr::FUNC_ ],
+        [ 'E' . ClassMgr::CONST_, null,      ClassMgr::CONST_ ],
+        [ 'F' . ClassMgr::CONST_, 'FAlias',  ClassMgr::CONST_ ],
+        [ 'Acme\Aclass',          'AAclass', null ],
+    ];
+
     public function classMgrTest1DataProvider() {
         static $SUMMARY     = ' summary ';
         static $DESCRIPTION = ' description ';
@@ -491,7 +501,12 @@ class ClassMgrTest extends TestCase
                     ' /* body row 4 */',
                 ]
             );
+        foreach( self::$useGroup as $useGroup ) {
+            $cm->addUse( $useGroup[0], $useGroup[1], $useGroup[2] );
+        }
+
         $code = $cm->setProperties( $properties )->toString();
+
         $this->classMgrTest1Tester( $case, $code, $expected );
 
         if( $cm->isExtendsSet()) {
@@ -594,9 +609,10 @@ class ClassMgrTest extends TestCase
             'Error in case ' . 'A-' . $case . PHP_EOL . $code
         );
 
+        $expTxt = self::$use1 . ' as ' . self::$alias1 . ';';
         $this->assertTrue(
-            ( false !== strpos( $code, self::$use1 . ' as ' . self::$alias1 . ';' )),
-            'Error in case ' . 'B-' . $case . PHP_EOL . $code
+            ( false !== strpos( $code, $expTxt )),
+            'Error in case ' . 'B-' . $case . ' expected: ' . $expTxt . PHP_EOL . $code
         );
         $this->assertTrue(
             ( false !== strpos( $code, self::$use2 . ';' )),
@@ -648,7 +664,7 @@ class ClassMgrTest extends TestCase
         foreach( $expected[4] as $expNo ) {  // test all
             $this->assertTrue(
                 ( false !== stripos( $code, 'prop' . $expNo )),
-                'Error in case ' . 'M-' . $case . '-' . $expNo . PHP_EOL . $code
+                'Error in case ' . 'M-' . $case . '-' . $expNo . ' expected: ' . implode( ',', $expected[4] ) . PHP_EOL . $code
             );
         }
 
@@ -971,6 +987,34 @@ class ClassMgrTest extends TestCase
         }
     }
 
+    /**
+     * Test use-add-Exceptions
+     *
+     * @test
+     */
+    public function classMgrTest141() {
+        try {
+            $cm = classMgr::init()->addUse( false );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+        try {
+            $cm = classMgr::init()->addUse( 'Acme\Aclass', 123 );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+        try {
+            $cm = classMgr::init()->addUse( 'Acme\Aclass', 'AcmeAclass', 'grodan boll' );
+            $this->assertTrue( false );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( true );
+        }
+    }
     /**
      * @test
      */

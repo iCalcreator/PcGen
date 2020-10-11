@@ -145,7 +145,7 @@ final class EntityMgr extends BaseA
         $row = $this->getPrefixCode();
         $row = $this->getSubjectCode( $row );
         $row = $this->getIndexCode( $row );
-        return $row;
+        return Util::nullByteClean( $row );
     }
 
     /**

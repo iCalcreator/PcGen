@@ -1,4 +1,8 @@
 
+1.1.47 new : ternary/null coalescing operator mgr
+       (+AssignClauseMgr+ReturnClauseMgr)
+1.1.46 github.com #1 class use clause
+
 1.1.45 new : TryCatchMgr manages try/catch structures
 1.1.44 new : CtrlStructMgr manages
                  control structures if/elseif, switch (+case/default), while

@@ -29,7 +29,7 @@ Inherited [VariableMgr] methods
 
  * For the class property a get-method is produced, default true
  * ```makeGetter``` _bool_, true: produce, false no produce
-   * if true and single array class property, _Iterator_ is implemented
+    if true and single array class property, _Iterator_ is implemented
  * Note, not applicable where property is defind as constant or as (class) static property
 * Return _static_
 ---
@@ -40,6 +40,7 @@ Inherited [VariableMgr] methods
  * ```makeSetter``` _bool_, true: produce, false no produce
  * Note, not applicable where property is defind as constant or as (class) static property
  * Return _static_
+ 
 ---
 
 ```PropertyMgr::setArgInFactory( argInFactory )```
@@ -48,6 +49,7 @@ Inherited [VariableMgr] methods
  * ```argInFactory``` _bool_, true: argument, false no class::factory() argument
  * Note, not applicable where property is defind as constant or as (class) static property
  * Return _static_
+ 
 ---
 
 ```PropertyMgr::setStatic( [ static ] )```
@@ -56,6 +58,7 @@ Inherited [VariableMgr] methods
  * Note, if true, makeGetter/makeSetter alters to false, visibility to _PROTECTED_
  * if required, use the ```setVisibility()```-method after this one
  * Return _static_
+ 
 ---
 
 ```PropertyMgr::setIsConst( const )```
@@ -65,6 +68,7 @@ Inherited [VariableMgr] methods
  * Note, if true, makeGetter/makeSetter alters to false, visibility to _PUBLIC_
  * if required, use the ```setVisibility()```-method after this one
  * Return _static_
+ 
 ---
 
 <small>Return to PcGen [README], [Summary]</small> 

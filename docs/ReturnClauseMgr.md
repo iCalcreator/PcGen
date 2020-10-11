@@ -3,6 +3,7 @@
 #### ReturnClauseMgr
 
 The ```ReturnClauseMgr``` manages **return** code of 
+
 * source class property or variable (value), opt (int/variable) index
 * (scalar) fixedSourceValue
 * PHP expression
@@ -19,74 +20,97 @@ Inherited [Common methods]
 ---
 
 ```ReturnClauseMgr::factory( [ class [, variable, [, index]]] )```
+
 * ```class``` _string_ if string, one of null, self, $this, 'otherClass', '$class'
-  * convenient constants found in PcGenInterface 
+   convenient constants found in PcGenInterface 
 * ```variable``` _string_ variable/property name
-  * uppercase is autodetected as CONSTANT
-  * variable $-prefixed
+  uppercase is autodetected as CONSTANT
+  variable $-prefixed
 * ```index```  _int_|_string_ opt array index, if _string_, index will be $-prefixed 
 * For eol and indents, defaults are used
 * Return _static_
 * Throws InvalidException
 
+
 ```ReturnClauseMgr::factory( entity )```
+
 * ```entity``` [EntityMgr]
-  *  note ```EntityMgr``` below
+    note ```EntityMgr``` below
 * Return _static_
 * Throws InvalidException
+
 ---
 
 ```ReturnClauseMgr::toArray()```
+
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
+
 ```ReturnClauseMgr::toString()```
+
 * Return _string_ with code rows (extends toArray), each code row with trailing eol
 * Throws _RuntimeException_
+
 ---
 
 ```ReturnClauseMgr::getScalar()```
+
 * Return _bool_|_int_|_float_|_string_, scalar
 
 ```ReturnClauseMgr::isScalarSet()```
-* Return _bool_ true if not null
+
+* Return _bool_ true if set, false not
 
 ```ReturnClauseMgr::setScalar( fixedSourceValue )```
+
 * ```fixedSourceValue``` _bool_|_int_|_float_|_string_, scalar
 * Return _static_
 * Throws InvalidException
+
 ---
 
 ```ReturnClauseMgr::setSourceExpression( expression )```
+
 * Set a PHP expression
 * ```expression``` _string_
 * Return _static_
 * Throws InvalidException
+
 ---
 
 ```ReturnClauseMgr::getSource()```
+
 * Return [EntityMgr]
 
+
 ```ReturnClauseMgr::isSourceSet()```
-* Return _bool_ true if not null
+
+* Return _bool_ true if set, false not
+
 
 ```ReturnClauseMgr::setSource( class [, variable, [, index ]] )```
+
 * ```class``` _string_ one of null, self, $this, 'otherClass', '$class'
-  * convenient constants found in PcGenInterface 
+  convenient constants found in PcGenInterface 
 * ```variable``` _string_ class/variable/property name
-  * uppercase is autodetected as CONSTANT
-  * variable $-prefixed
+  uppercase is autodetected as CONSTANT
+  variable $-prefixed
 * ```index```  _int_|_string_ opt array index, if _string_, index will be $-prefixed 
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```ReturnClauseMgr::setSource( entity )```
+
 * ```entity``` [EntityMgr]
-  *  note ```EntityMgr``` below
+   note ```EntityMgr``` below
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```ReturnClauseMgr::setThisPropertySource( property [, index ] )```
+
 * convenient shortcut for ```ReturnClauseMgr::setSource()```
 * Give source result ```$this->property```
 * ```property``` _string_
@@ -95,6 +119,7 @@ Inherited [Common methods]
 * Throws _InvalidArgumentException_
 
 ```ReturnClauseMgr::setVariableSource( variable [, index ] )```
+
 * convenient shortcut for ```ReturnClauseMgr::setSource()```
 * Give source result ```$variable```
 * ```variable``` _string_
@@ -102,39 +127,73 @@ Inherited [Common methods]
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```ReturnClauseMgr::setSourceIsConst( isConst )```
+
  * Results in uppercase constant
 * ```isConst``` _bool_
-  * true : force ```$class::CONSTANT```
-  * false : NOT, (default) ```$class->$constant``` 
+  true : force ```$class::CONSTANT```
+  false : NOT, (default) ```$class->$constant``` 
 * Return _static_
 
 
 ```ReturnClauseMgr::setSourceIsStatic( isStatic )```
+
  * Results in uppercase constant
 * ```isConst``` _bool_
-  * true : force ```$class::variable```
-  * false : NOT, default, ```$class->$variable``` 
+  true : force ```$class::variable```
+  false : NOT, default, ```$class->$variable``` 
 * Return _static_
+
+---
+
+```ReturnClauseMgr::getTernaryNullCoalesceExpr()```
+
+* Return [TernaryNullCoalesceMgr]
+
+
+```ReturnClauseMgr::isTernaryNullCoalesceExprSet()```
+
+* Return _bool_ true if set, false not
+
+
+```ReturnClauseMgr::setTernaryNullCoalesceExpr( expr1 [, expr2 [, expr3 [, ternaryOperator ]]])```
+
+* ```expr1``` _string_|[EntityMgr]|[FcnInvokeMgr]|[TernaryNullCoalesceMgr]
+* ```expr2``` _string_|[EntityMgr]|[FcnInvokeMgr]
+* ```expr3``` _string_|[EntityMgr]|[FcnInvokeMgr]
+* ```ternaryOperator``` _bool_ true (default) : ternary expr, false : null coalesce expr
+* Return _static_
+* Throws _InvalidArgumentException_
+
 ---
 
 ```ReturnClauseMgr::getFcnInvoke()```
+
 * Return [ChainInvokeMgr] (manages single or chained [FcnInvokeMgr]s)
 
+
 ```ReturnClauseMgr::isFcnInvokeSet()```
-* Return _bool_ true if not null
+
+* Return _bool_ true if set, false not
+
 
 ```ReturnClauseMgr::appendInvoke( fcnInvoke )```
+
 * ```fcnInvoke``` [FcnInvokeMgr]
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```ReturnClauseMgr::setFcnInvoke( fcnInvoke )```
+
 * ```fcnInvoke``` [FcnInvokeMgr]\[]
 * Return _static_
 * Throws _InvalidArgumentException_
 
-Note on chained invokes
+
+Notes on chained invokes
+
 * The first must have a "class" : parent, self, $this, 'otherClass', '$class' when next is set
 * All but first must have $this, 'otherClass', '$class'
 
@@ -147,19 +206,22 @@ Ex on _ReturnClauseMgr::setFcnInvoke_ input
 ``` 
 results in 
 ```
-aClass::factory( $arg1, arg2 )
-    ->someMethod( $arg3, arg4 );
+aClass::factory( $arg1, $arg2 )
+    ->someMethod( $arg3, $arg4 );
 ```
 ---
 
 
 #### Misc
 
-_EntityMgr_ instance creation ([EntityMgr])<br><br>
+_EntityMgr_ instance creation ([EntityMgr])
+
 ```EntityMgr::factory( class , fcnName )```
+
 * ```class```, _string_, one of ```null```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
   * convenient constants found in PcGenInterface
 * ```fcnName``` _string_, the name
+
 ---
 
 #### Example 1
@@ -227,4 +289,5 @@ return SourceClass::factory( $arg11, $arg12 )
 [PropertyMgr]:PropertyMgr.md
 [README]:../README.md
 [Summary]:Summary.md
+[TernaryNullCoalesceMgr]:TernaryNullCoalesceMgr.md
 [VariableMgr]:VariableMgr.md

@@ -5,12 +5,12 @@
 The ```CtrlStructMgr``` manages control structure
 
 with
+
 * condition ( operand1 comparisonOperator operand2 )
-  * operand : scalar, variable, class property or (class-)function
-  * comparisonOperator : class constants exists
+   operand : scalar, variable, class property or (class-)function
+   comparisonOperator : class constants exists
 *  boolean condition :  variable/property, (class-)function
 *  scalar value
-
 * _if_/_elseif_/_else_  (else without condition), if default
 * _while_
 * _do-while_
@@ -27,12 +27,14 @@ Inherited [Common methods]
 
 ---
 ```CtrlStructMgr::factory( operand [, compOp [, operand2 [, $exprType ]]] ) ```
+
 * ```operand``` _string_ variable
 * ```compOp``` _string_       default '==', constant exists
 * ```operand2``` _string_ variable
 * ```exprType``` _int_  default 'if', constant exists
 * Return _static_
 * Throws _InvalidArgumentException_
+
 ---
 
 ```CtrlStructMgr::toArray() ```
@@ -40,56 +42,70 @@ Inherited [Common methods]
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
+
 ```CtrlStructMgr::toString() ```
+
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
 ---
 
 ```CtrlStructMgr::setExprType( exprType ) ```
+
 * Set expression type
 * ```exprType``` _int_  default 'if', constant exists
 * Return _static_
 
-```CtrlStructMgr::setIfExprType() ```<br>
-```CtrlStructMgr::setElseExprType() ```<br>
-```CtrlStructMgr::setElseIfExprType() ```<br>
-```CtrlStructMgr::setSwitchExprType() ```<br>
-```CtrlStructMgr::setCaseExprType() ```<br>
-```CtrlStructMgr::setDefaultExprType() ```<br>
-```CtrlStructMgr::setWhileExprType() ```<br>
-```CtrlStructMgr::setDoWhileExprType() ```<br>
+
+```CtrlStructMgr::setIfExprType() ```
+```CtrlStructMgr::setElseExprType() ```
+```CtrlStructMgr::setElseIfExprType() ```
+```CtrlStructMgr::setSwitchExprType() ```
+```CtrlStructMgr::setCaseExprType() ```
+```CtrlStructMgr::setDefaultExprType() ```
+```CtrlStructMgr::setWhileExprType() ```
+```CtrlStructMgr::setDoWhileExprType() ```
+
 * Convenient ```CtrlStructMgr::setExprType()``` aliases 
 * Return _static_
 
 ---
 
 ```CtrlStructMgr::setScalar( setScalar ) ```
+
 * Set single cond. (boolean) scalar
 * ```setScalar``` _bool_|_float_|_int_|_string_
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```CtrlStructMgr::setExpression( expression ) ```
+
 * Set single cond. (boolean) PHP expression
 * ```expression``` _string_
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```CtrlStructMgr::setSingleOp( singleOp ) ```
+
 * Set cond. (boolean) as single variable (string), classVariable or function invoke
 * ```singleOp``` _string_|[EntityMgr]|[FcnInvokeMgr]
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```CtrlStructMgr::setThisPropSingleOp( singleOp ) ```
+
 * Set single operand as this class property
 * Convenient CtrlStructMgr::setSingleOp() alias
 * ```singleOp``` _string_
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```CtrlStructMgr::setThisFcnSingleOP( singleOp ) ```
+
 * Set single operand as this class function call (no args)
 * Convenient CtrlStructMgr::setSingleOp() alias
 * ```singleOp``` _string_
@@ -99,6 +115,7 @@ Inherited [Common methods]
 ---
 
 ```CtrlStructMgr::setCompOP( compOP ) ```
+
 * Set operand1/operand2 comparison operator
 * ```compOP``` _string_ default '==', constants exists
 * Return _static_
@@ -107,12 +124,15 @@ Inherited [Common methods]
 ---
 
 ```CtrlStructMgr::setOperand1( operand ) ```
+
 * Set first operand
 * ```operand``` _bool_|_float_|_int_|_string_|[EntityMgr]|[FcnInvokeMgr]
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```CtrlStructMgr::setThisVarOperand1( operand ) ```
+
 * Set first operand as this class property
 * Convenient CtrlStructMgr::setOperand1() alias
 * ```operand``` _string_
@@ -122,12 +142,15 @@ Inherited [Common methods]
 ---
 
 ```CtrlStructMgr::setOperand2( operand ) ```
+
 * Set second operand
 * ```operand``` _bool_|_float_|_int_|_string_|[EntityMgr]|[FcnInvokeMgr]
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```CtrlStructMgr::setThisVarOperand2( operand ) ```
+
 * Set first operand as this class property
 * Convenient CtrlStructMgr::setOperand2() alias
 * ```operand``` _string_

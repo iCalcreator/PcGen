@@ -3,6 +3,7 @@
 #### FileMgr
 
 The ```FileMgr``` class manages file
+
 * docBlock and (class/interface/trait) body
 * Allows other body using FileMgr::setBody()
 
@@ -18,13 +19,16 @@ Inherited [Common methods]
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
+
 ```FileMgr::toString() ```
+
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
 ---
 
 ```FileMgr::setDocBlock( docBlocks ) ```
+
 *  Set one or more docBlocks
 * ```docBlocks``` [DocBlockMgr]|[DocBlockMgr]\[]
 * Throws _InvalidArgumentException_
@@ -33,16 +37,20 @@ Inherited [Common methods]
 ---
 
 ```FileMgr::setInfo( summary, description ) ```
+
 * Set file docBlock summary AND (one) description in FIRST docBlock
 * ```summary``` _string_
 * ```description``` _string_|_array_
 * Return _static_
 
 ---
+
 ```FileMgr::isFileBodySet() ```
-* Return _bool_ true if filebody is set
+
+* Return _bool_ true if set, false not
 
 ```FileMgr::setFileBody( fileBody ) ```
+
 * Set file body
 * ```fileBody``` [ClassMgr]
 * Return _static_

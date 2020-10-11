@@ -5,73 +5,79 @@
 
 The PHP Code Generation support package
 
-[FileMgr] manages file 
-* docBlock
-* (class/interface/trait) body
+* [FileMgr] manages file 
+   docBlock
+   (class/interface/trait) body
 
-[ClassMgr] generate PHP class, interface and trait code
-* with namespace, use, extends, implements 
-* with constuctor and factory methods 
-* with constants and properties with opt. getter(+iterator) and setter methods
-* allow insert of (pre-produced, logic) code
-* [ClassMgr example usage](#classmgr-example-usage) 
+* [ClassMgr] generate PHP class, interface and trait code
+  with namespace, use, extends, implements 
+  with constuctor and factory methods 
+  with constants and properties with opt. getter(+iterator) and setter methods
+  allow insert of (pre-produced, logic) code
+  [ClassMgr example usage](#classmgr-example-usage) 
 
-[DocBlockMgr] generates docBlocks
-* in compliance with [phpdoc]
-* [DocBlockMgr example usage](#docblockmgr-example-usage)
+* [DocBlockMgr] generates docBlocks
+  in compliance with [phpdoc]
+  [DocBlockMgr example usage](#docblockmgr-example-usage)
 
-[FcnFrameMgr] generate PHP function/method frame (shell) code
-* with arguments and closure use variables
-* with property(/variable) set code
-* with method return code
-* allow insert of (pre-produced, logic) code 
-* [FcnFrameMgr example usage](#fcnframemgr-example-usage)
+* [FcnFrameMgr] generate PHP function/method frame (shell) code
+  with arguments and closure use variables
+  with property(/variable) set code
+  with method return code
+  allow insert of (pre-produced, logic) code 
+  [FcnFrameMgr example usage](#fcnframemgr-example-usage)
 
-For function/method invoke, opt with argument
-* [FcnInvokeMgr] master single function/method invoke
-  * sets of chained invokes by [ChainInvokeMgr]
-* [FcnInvokeMgr example usage](#fcninvokemgr-example-usage)
+* For function/method invoke, opt with argument
+  [FcnInvokeMgr] master single function/method invoke 
+   sets of chained invokes by [ChainInvokeMgr]
+  [FcnInvokeMgr example usage](#fcninvokemgr-example-usage)
   
-[VariableMgr] generate PHP variable (and [PropertyMgr] property) code
-* supports property/variable/constant define with PHP primitive value, array, closure or callback 
-* allow insert of closure (pre-produced, logic) code 
+* [VariableMgr] generate PHP variable (and [PropertyMgr] property) code
+   supports property/variable/constant define with PHP primitive value, array, closure or callback
+   allow insert of closure (pre-produced, logic) code 
 
-Logic support
+###### Logic support
 * [AssignClauseMgr] assign target (variable/property) value from
-  * variable/property value
-  * (scalar) fixedSourceValue
-  * PHP expression
-  * constant
-  * function/method invoke(s)
+   variable/property value
+   (scalar) fixed source value
+   ternary or null coalesce operator expression
+   other PHP expression
+   constant
+   function/method invoke(s)
 * [CtrlStructMgr] manages control structures
-  * Simpler conditions only
-  * _if_, _elseif_ and _else_
-  * _switch_ with _case_ and _default_
-  * _while_
-  * _do-while_
-  * allow insert of (pre-produced, logic) code 
+   Simpler conditions only
+   _if_, _elseif_ and _else_
+   _switch_ with _case_ and _default_
+   _while_
+   _do-while_
+   allow insert of (pre-produced, logic) code 
 * [ForeachMgr] manages control structure _foreach_
-  * iterates variable, classProperty, class function
-  * allow insert of (pre-produced, logic) code
+   iterates variable, classProperty, class function
+   allow insert of (pre-produced, logic) code
+* [TernaryNullCoalesceMgr]  manages 
+   ternary operator expression
+   null coalescing operator expression
 * [TryCatchMgr]  manages _try_-_catch_ expressions
 * [ReturnClauseMgr] manages function/method return of
-  * variable/property value
-  * (scalar) fixedSourceValue
-  * PHP expression
-  * constant
-  * function/method invoke(s)
+   variable/property value
+   (scalar) fixedSourceValue
+   ternary or null coalesce operator expression
+   other PHP expression
+   constant
+   function/method invoke(s)
    
-[VarDto]
-* holds variable base data
-
-[ArgumentDto] extends [VarDto]
-* function/method base arguments.
-
-[EntityMgr]
-* entity : (opt) class, variable/property, (opt) index
+###### Misc
+* [VarDto]
+  holds variable base data
+  
+* [ArgumentDto] extends [VarDto]
+  function/method base arguments.
+  
+* [EntityMgr]
+   entity : (opt) class, variable/property, (opt) index
    
-[PcGenInterface]
-* provide convenient constants
+* [PcGenInterface]
+   provide convenient constants
  
 ---
 
@@ -267,7 +273,8 @@ class HalloWorld
 }
 ```
 Methods in details and more examples are found in [ClassMgr] 
-and for logic : [AssignClauseMgr], [CtrlStructMgr], [ForeachMgr], [TryCatchMgr] and [ReturnClauseMgr].
+and for logic : [AssignClauseMgr], [CtrlStructMgr], [ForeachMgr], [TernaryNullCoalesceMgr], 
+[TryCatchMgr] and [ReturnClauseMgr].
 ClassMgr uses [DocBlockMgr], [FcnFrameMgr] and ([VariableMgr]/)[PropertyMgr] and for data, [VarDto]/[ArgumentDto], below.
 You will find more examples in test/ClassMgrTest.php.
 
@@ -510,7 +517,8 @@ VarDto methods in details are found in [VarDto], ArgumentDto methods in [Argumen
 [phpdoc]:https://phpdoc.org
 [PropertyMgr]:PropertyMgr.md
 [README]:../README.md
-[ReturnClauseMgr]:ReturnClauseMgr.md  
+[ReturnClauseMgr]:ReturnClauseMgr.md
+[TernaryNullCoalesceMgr]:TernaryNullCoalesceMgr.md  
 [TryCatchMgr]:TryCatchMgr.md
 [VarDto]:VarDto.md
 [VariableMgr]:VariableMgr.md

@@ -24,6 +24,7 @@
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
+use Kigkonsult\PcGen\Dto\UseSubjectDto;
 use Kigkonsult\PcGen\Dto\VarDto;
 use Kigkonsult\PcGen\Traits\NameTrait;
 use RuntimeException;
@@ -37,6 +38,13 @@ use RuntimeException;
  */
 final class ClassMgr extends BaseB
 {
+    /**
+     * Class use-clause subject types, CLASS_ default
+     */
+    const CLASS_ = 'class';
+    const FUNC_  = 'function';
+//  const CONST_ = self::CONST_;
+
     use NameTrait;
 
     /**
@@ -175,11 +183,9 @@ final class ClassMgr extends BaseB
         }
         if( ! empty( $this->uses )) {
             $code[] = self::SP0;
-            asort( $this->uses, SORT_FLAG_CASE | SORT_STRING );
-            foreach( $this->uses as $alias => $fqcn ) {
-                $code[] = ctype_digit((string) $alias )
-                    ? sprintf( $TMPL2, $fqcn )
-                    : sprintf( $TMPL3, $fqcn, $alias );
+            ksort( $this->uses, SORT_FLAG_CASE | SORT_STRING );
+            foreach( $this->uses as $useSubject ) {
+                $code[] = $useSubject->toString();
             }
         }
         $code   = array_merge( $code, $this->docBlock->toArray());
@@ -335,38 +341,27 @@ final class ClassMgr extends BaseB
     }
 
     /**
-     * Add class use, fqcn [, alias ]
+     * Add class use, fqcn [, alias [, type ]]
      *
-     * @param string $fqcn
-     * @param string $alias
+     * @param string|UseSubjectDto $fqcn    a fqcn-Class/-constant/-function
+     * @param string               $alias   opt
+     * @param string               $type    one of ClassMgr::CLASS_, ClassMgr::CONST_, ClassMgr::FUNC_
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function addUse( $fqcn, $alias = null )
+    public function addUse( $fqcn, $alias = null, $type = null )
     {
-        if( is_array( $this->uses ) && in_array( $fqcn, $this->uses )) {
-            foreach( array_keys( $this->uses, $fqcn ) as $key ) {
-                if(( null === $alias ) && is_int( $key )) {
-                    return $this; // duplicate (on fqcn and no alias)
-                }
-                if( $key == $alias ) {
-                    return $this; // also duplicate (on fqcn and alias)
-                }
-            } // end foreach
-        } // end if
-        Assert::assertFqcn( $fqcn );
-        $key = ( null === $alias )
-            ? count( $this->uses )
-            : Assert::assertPhpVar( $alias );
-        if( ! is_array( $this->uses )) {
-            $this->uses = [];
-        }
-        $this->uses[$key] = $fqcn;
+        $useSubject = ( $fqcn instanceof UseSubjectDto )
+            ? $fqcn
+            : UseSubjectDto::factory( $fqcn, $alias, $type );
+        $this->uses[$useSubject->getSortKey()] = $useSubject;
         return $this;
     }
 
     /**
-     * Set array of class use set , each array element : array( fqcn [, alias ] )
+     * Set array of class use set , each array element : array( fqcn [, alias [, type ] ] )
+     *
+     * For array item content, se above
      *
      * @param array $uses
      * @return ClassMgr
@@ -383,9 +378,16 @@ final class ClassMgr extends BaseB
             if( empty( $useSet )) {
                 throw new InvalidArgumentException( sprintf( self::$ERR1, $USE ));
             }
+            if( $useSet[0] instanceof UseSubjectDto ) {
+                $this->addUse( $useSet[0] );
+                continue;
+            }
             $this->addUse(
-                $useSet[0],
-                ( isset( $useSet[1] ) ? $useSet[1] : null )
+                UseSubjectDto::factory(
+                    $useSet[0],
+                    ( isset( $useSet[1] ) ? $useSet[1] : null ),
+                    ( isset( $useSet[2] ) ? $useSet[2] : null )
+                )
             );
         } // end foreach
         return $this;

@@ -41,6 +41,7 @@
         <const name="DISPLAYfim"  value="1"/>  <!-- FcninvokeMgr tests -->
         <const name="DISPLAYrcm"  value="1"/>  <!-- ReturnClauseMgr tests -->
         <const name="DISPLAYrcm2" value="1"/>  <!-- ReturnClauseMgr2 tests -->
+        <const name="DISPLAYtcn"  value="1"/>  <!-- TernaryNullCoalesceMgr tests -->
         <const name="DISPLAYvm"   value="1"/>  <!-- VariableMgr tests -->
     </php>
     <testsuites>
@@ -68,6 +69,7 @@
             <file>./test/ReturnClauseMgrTest2.php</file>
             <file>./test/CtrlStructMgrTest.php</file>
             <file>./test/ForeachMgrTest.php</file>
+            <file>./test/TernaryNullCoalesceMgrTest.php</file>
             <file>./test/TryCatchMgrTest.php</file>
         </testsuite>
         <testsuite variable="VariableMgr Tests">
@@ -95,6 +97,7 @@
             <file>./src/CtrlStructMgr.php</file>
             <file>./src/DocBlockMgr.php</file>
             <file>./src/Dto/ArgumentDto.php</file>
+            <file>./src/Dto/UseSubjectDto.php</file>
             <file>./src/Dto/VarDto.php</file>
             <file>./src/EntityMgr.php</file>
             <file>./src/FcnFrameMgr.php</file>
@@ -111,6 +114,7 @@
             <file>./src/Traits/ScalarTrait.php</file>
             <file>./src/Traits/SourceTrait.php</file>
             <file>./src/TryCatchMgr.php</file>
+            <file>./src/TernaryNullCoalesceMgr.php</file>
             <file>./src/Util.php</file>
             <file>./src/VariableMgr.php</file>
         </whitelist>

@@ -3,11 +3,13 @@
 #### EntityMgr
 
 The ```EntityMgr``` class manages PHP Entity set
+
 * used by [AssignClauseMgr] and [ReturnClauseMgr]
+
 * the Entity set has
-  * ```class``` - one of null, self, $this, 'otherClass', '$class'
-  * ```variable``` - constant/variable/property name
-  * ```index``` - opt array index
+   ```class``` - one of null, self, $this, 'otherClass', '$class'
+   ```variable``` - constant/variable/property name
+   ```index``` - opt array index
 
 Note, invoke of function/method is managed by [FcnInvokeMgr]
 
@@ -19,67 +21,88 @@ Inherited [Common methods]
 ---
 
 ```EntityMgr::factory( class [, variable, [, index ]] )```
+
 * ```class``` _string_ one of null, self, $this, 'otherClass', '$class'
-  * convenient constants found in PcGenInterface 
+   convenient constants found in PcGenInterface 
 * ```variable``` _string_ constant/variable/property name
-  * for CONSTANT use ```EntityMgr::setIsConst()``` below
-  * variable will be $-prefixed
+   for CONSTANT use ```EntityMgr::setIsConst()``` below
+   variable will be $-prefixed
 * ```index```  _int_|_string_ opt array index
 * For eol and indents, defaults are used
 * Return _static_
 * Throws _InvalidArgumentException_
+
 ---
 
-
 ```EntityMgr::toArray()```
+
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
+
 ```EntityMgr::toString()```
+
 * Return _string_ with code rows (extends toArray), each code row with trailing eol
 * Throws _RuntimeException_
+
 ---
 
 ```EntityMgr::getClass()```
+
 * Return string
 
+
 ```EntityMgr::setClass( class )```
+
 * ```class``` _string_ one of null, self, this, 'otherClass', '$class'
-  * convenient constants found in PcGenInterface
+   convenient constants found in PcGenInterface
 * Return _static_
 * Throws _InvalidArgumentException_
+
 ---
 
 ```EntityMgr::getVariable()```
+
 * Return _string_
 
+
 ```EntityMgr::setVariable( variable )```
+
 * ```variable``` _string_ constant/variable/property name
-  * for CONSTANT use ```EntityMgr::setIsConst()``` below
-  * variable will be $-prefixed
+   for CONSTANT use ```EntityMgr::setIsConst()``` below
+   variable will be $-prefixed
 * Return _static_
 * Throws _InvalidArgumentException_
+
 ---
 
 ```EntityMgr::getIndex()```
+
 * Return _int|_string_
 
+
 ```EntityMgr::setIndex( index )```
+
 * ```index```  _int_|_string_ opt array index
 * Return _static_
 * Throws _InvalidArgumentException_
+
 ---
 
 ```EntityMgr::setIsConst( const )```
+
 * Results in uppercase constant
 * ```const``` _bool_, true : constant, false : NOT, default 
 * Return _static_
+
 ---
 
 ```EntityMgr::setIsStatic( isStatic )```
+
 * Applicable only when class matches '$class' (i.e. $-prefixed string)
 * ```isStatic``` _bool_, (false default) 
 * Return _static_
+
 
 Example : ```EntityMgr::factory( '$class', 'property' )->toString(); ```<br>
 Result : ``` $class->property ``` (+eol)

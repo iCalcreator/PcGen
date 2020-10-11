@@ -3,6 +3,7 @@
 #### FcnInvokeMgr
 
 The ```FcnInvokeMgr``` class manages (single) function/method invoke
+
 * opt with arguments
 * ex ```FcnInvokeMgr::factory( FcnInvokeMgr::THIS_KW, 'method, [ 'arg1', 'arg2' ] )->toString()``` 
   * give result ```$this->method( $arg1, $arg2 )``` (+eol)
@@ -18,25 +19,31 @@ Inherited [Common methods]
 ---
 
 ```FcnInvokeMgr::factory( class [, fcnName [, arguments ]] )```
+
 * ```class``` _string_ one of ```null```, ```parent```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
-  * convenient constants found in PcGenInterface
+   convenient constants found in PcGenInterface
 * ```fcnName```   _string_, function/method name
 * ```arguments``` _array_, note ```FcnInvokeMgr::setArguments()``` below
 * For eol and indents, defaults are used
 * Static
 * Return _static_
 
+
 ```FcnInvokeMgr::factory( entity [, null, arguments ]  )```
+
 * ```entity``` _EntityMgr_
-  * note ```EntityMgr``` below
+  note ```EntityMgr``` below
 * ```arguments``` _array_, note ```FcnInvokeMgr::setArguments()``` below
 * Static
 * Return _static_
+
 ---
 
 ```FcnInvokeMgr::toArray()```
+
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
+
 
 ```FcnInvokeMgr::toString()```
 * Return _string_ with code rows (extends toArray), each code row with trailing eol
@@ -44,49 +51,60 @@ Inherited [Common methods]
 ---
 
 ```FcnInvokeMgr::setName( class [, fcnName ] )```
+
 * The function/method name
 * ```class``` _string_
-  * one of ```null```, ```parent```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
-  * convenient constants found in PcGenInterface
+   one of ```null```, ```parent```, ```self```, ```this```, ```otherClass``` (fqcn), ```$class```
+  convenient constants found in PcGenInterface
 * ```fcnName```  _string_, function/method name
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```FcnInvokeMgr::setName( entity )```
+
 * The function/method name
 * ```entity``` _EntityMgr_
-  *  note ```EntityMgr``` below
+   note ```EntityMgr``` below
 * Return _static_
 * Throws _InvalidArgumentException_
+
 ---
 
 ```FcnInvokeMgr::addArgument( argument )```
+
 * ```argument``` _ArgumentDto_
-  * note ```ArgumentDto``` below
+   note ```ArgumentDto``` below
 * Return _static_
+
 
 ```FcnInvokeMgr::addArgument( varDto )```
+
 * ```varDto``` _VarDto_
-  * note ```VarDto``` below
+   note ```VarDto``` below
 * Return _static_
 
+
 ```FcnInvokeMgr::addArgument( name )```
+
 * ```name``` _string_, argument name
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```FcnInvokeMgr::setArguments( argumentSets )```
+
 * ```argumentSets``` _array_, elements any of below 
-  * name, _string_
-  * _ArgumentDto_
-    * note ```ArgumentDto``` below
-  * _VarDto_
-    * note ```VarDto``` below
+   name, _string_
+   _ArgumentDto_, note ```ArgumentDto``` below
+  _VarDto_, note ```VarDto``` below
 * Return _static_
 * Throws _InvalidArgumentException_
+
 ---
 
 ```FcnInvokeMgr::setIsStatic( isStatic )```
+
 * Only applicable for '$class', ignored by the others
 * ```isStatic``` _bool_, (default false)
 * Return _static_

@@ -27,6 +27,7 @@ use InvalidArgumentException;
 use Kigkonsult\PcGen\ChainInvokeMgr;
 use Kigkonsult\PcGen\EntityMgr;
 use Kigkonsult\PcGen\FcnInvokeMgr;
+use Kigkonsult\PcGen\TernaryNullCoalesceMgr;
 use Kigkonsult\PcGen\Util;
 use RuntimeException;
 
@@ -47,6 +48,11 @@ trait SourceTrait
     private $source = null;
 
     /**
+     * @var TernaryNullCoalesceMgr
+     */
+    private $ternaryNullCoalesceExpr = null;
+
+    /**
      * @var ChainInvokeMgr
      */
     private $fcnInvoke = null;
@@ -60,13 +66,15 @@ trait SourceTrait
     protected function getRenderedSource()
     {
         static $ERR = 'No source set';
-        $code = [];
         switch( true ) {
             case $this->isScalarSet() :
                 $code[] = $this->getScalar( false );
                 break;
             case $this->isSourceSet() :
                 $code[] = rtrim( $this->getSource()->toString());
+                break;
+            case $this->isTernaryNullCoalesceExprSet() :
+                $code = $this->getTernaryNullCoalesceExpr()->toArray();
                 break;
             case $this->isFcnInvokeSet() :
                 $code = $this->getFcnInvoke()->toArray();
@@ -218,6 +226,41 @@ trait SourceTrait
             $this->setSource();
         }
         $this->getSource()->setIsStatic((bool) $staticStatus );
+        return $this;
+    }
+
+    /**
+     * @return TernaryNullCoalesceMgr
+     */
+    public function getTernaryNullCoalesceExpr() {
+        return $this->ternaryNullCoalesceExpr;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTernaryNullCoalesceExprSet() {
+        return ( null !== $this->ternaryNullCoalesceExpr );
+    }
+
+    /**
+     * @param string|EntityMgr|FcnInvokeMgr|TernaryNullCoalesceMgr $expr1
+     * @param string|EntityMgr|FcnInvokeMgr $expr2
+     * @param string|EntityMgr|FcnInvokeMgr $expr3
+     * @param bool $ternaryOperator   true : ternary expr, false : null coalesce expr
+     * @param TernaryNullCoalesceMgr $ternaryNullCoalesceExpr
+     * @return static
+     */
+    public function setTernaryNullCoalesceExpr(
+        $expr1,
+        $expr2 = null,
+        $expr3 = null,
+        $ternaryOperator = true
+    ) {
+        $this->ternaryNullCoalesceExpr = ( $expr1 instanceof TernaryNullCoalesceMgr )
+            ? $expr1
+            : TernaryNullCoalesceMgr::factory( $expr1, $expr2, $expr3 )
+                ->setTernaryOperator( $ternaryOperator );
         return $this;
     }
 

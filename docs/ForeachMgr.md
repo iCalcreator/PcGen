@@ -3,6 +3,7 @@
 #### ForeachMgr
 
 The ```ForeachMgr``` manages control structure foreach
+
 * Accepts variable, classProperty and class function as array_expression
 * No reference iterValues 
 * The foreach logic body is set using ForeachMgr::setBody()
@@ -13,12 +14,15 @@ The ```ForeachMgr``` manages control structure foreach
 Inherited [Common methods]
 
 ---
+
 ```ForeachMgr::factory( iterator [, key [, iterValue ]] ) ```
+
 * ```iterator``` _string_|_EntityMgr_|_FcnInvokeMgr_
 * ```key``` _string_
 * ```iterValue``` _string_  default 'value'
 * Return _static_
 * Throws _InvalidArgumentException_
+
 ---
 
 ```ForeachMgr::toArray() ```
@@ -26,19 +30,26 @@ Inherited [Common methods]
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
+
 ```ForeachMgr::toString() ```
+
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
 ---
 
 ```ForeachMgr::getIterator() ```
+
 * Return _string_|_EntityMgr_|_FcnInvokeMgr_
 
+
 ```ForeachMgr::isIteratorSet() ```
-* Return _bool_ true if iterator is set
+
+* Return _bool_ true if set, false not
+
 
 ```ForeachMgr::setIterator( iterator ) ```
+
 * ```iterator``` _string_|_EntityMgr_|_FcnInvokeMgr_
 * Return _static_
 * Throws _InvalidArgumentException_
@@ -46,12 +57,17 @@ Inherited [Common methods]
 ---
 
 ```ForeachMgr::getKey() ```
+
 * Return _string_
 
+
 ```ForeachMgr::isKeySet() ```
-* Return _bool_ true if key is set
+
+* Return _bool_ true if set, false not
+
 
 ```ForeachMgr::setKey( key ) ```
+
 * ```key``` _string_
 * Return _static_
 * Throws _InvalidArgumentException_
@@ -59,9 +75,12 @@ Inherited [Common methods]
 ---
 
 ```ForeachMgr::getIterValue() ```
+
 * Return _string_
 
+
 ```ForeachMgr::setIterValue( iterValue ) ```
+
 * ```iterValue``` _string_
 * Return _static_
 * Throws _InvalidArgumentException_

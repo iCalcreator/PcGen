@@ -88,7 +88,7 @@ abstract class BaseA implements PcGenInterface
     /**
      * @var string
      */
-    protected static $COMMA       = ',';
+    public    static $COMMA       = ',';
     protected static $CLOSECLAUSE = ';';
     protected static $CRLFs       = [ "\r\n", "\n\r", "\n", "\r" ];
     protected static $ERR1        = 'Empty argument %s';

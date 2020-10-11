@@ -3,12 +3,14 @@
 #### TryCatchMgr
 
 The ```TryCatchMgr``` manages try-catch expression
+
 * try-body code is set using TryCatchMgr::setBody()
 * catch-bodies code are set using 
-  * (single) TryCatchMgr::appendCatch()
-  * (array) TryCatchMgr::setCatch()
+  (single) TryCatchMgr::appendCatch()
+  (array) TryCatchMgr::setCatch()
 
 Constants :
+
 * CatchMgr::EXCEPTION
 * CatchMgr::RUNTIMEEXCEPTION
 * CatchMgr::INVALIDARGUMENTEXCEPTION
@@ -18,15 +20,19 @@ But any string accepted...
 ###### TryCatchMgr Methods
 
 ---
+
 Inherited [Common methods]
 
 ---
+
 ```TryCatchMgr::factory( tryBody, catchBody ) ```
+
 * Set trybody with 'Exception'-catch and body
 * ```tryBody``` _string_|_string[]_   code
 * ```catchBody``` _string_|_string[]_ code
 * Return _static_
 * Throws _InvalidArgumentException_
+
 ---
 
 ```TryCatchMgr::toArray() ```
@@ -34,23 +40,30 @@ Inherited [Common methods]
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
+
 ```TryCatchMgr::toString() ```
+
 * Return _array_, result code rows (null-bytes removed) no trailing eol
 * Throws _RuntimeException_
 
 ---
 
 ```TryCatchMgr::isCatchSet() ```
-* Return _bool_ true if catch-body is set
+
+* Return _bool_ true if set, false not
+
 
 ```TryCatchMgr::appendCatch( [ exception [, catchBody ]] ) ```
+
 * Append single exception with code-body
 * ```exception``` _string_  or constant
 * ```catchBody``` _string_|_string[]_ code
 * Return _static_
 * Throws _InvalidArgumentException_
 
+
 ```TryCatchMgr::setCatch( catch ) ```
+
 * Append exceptions with code-body
 * ```catch``` _string[]_
   * _string_ (Exception)

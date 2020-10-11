@@ -459,7 +459,7 @@ class ClassMethodFactory implements PcGenInterface
     {
         if( $classMgr->isNamespaceSet()) {
             foreach( self::$USES as $use ) {
-                $classMgr->addUse( $use );
+                $classMgr->addUse( $use  );
             }
         }
         foreach( self::$IMPLEMENTS as $implement ) {
