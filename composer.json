@@ -19,15 +19,21 @@
     ],
     "minimum-stability": "stable",
     "license": "gpl-3.0",
-    "support": {
-        "issues": "https://github.com/iCalcreator/PcGen/issues"
-    },
     "authors": [
         {
             "name": "Kjell-Inge Gustafsson",
             "email": "ical@kigkonsult.se"
         }
     ],
+    "funding": [
+        {
+            "type": "other",
+            "url": "https://paypal.me/kigkonsult"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/iCalcreator/PcGen/issues"
+    },
     "autoload": {
         "files": ["autoload.php"],
         "psr-4": { "Kigkonsult\\PcGen\\": ["src/"] }
@@ -47,3 +53,4 @@
         "post-update-cmd" : "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
     }
 }
+
