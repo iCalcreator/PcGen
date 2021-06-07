@@ -1,4 +1,4 @@
-[comment]: # (This file is part of PcGen, PHP Code Generation support package. Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved, licence GPL 3.0)
+[comment]: # (This file is part of PcGen, PHP Code Generation support package. Copyright 2020-21 Kjell-Inge Gustafsson, kigkonsult, All rights reserved, licence GPL 3.0)
 # PcGen
 
 ###### the PHP Code Generation support package
@@ -70,7 +70,7 @@ For support use [github.com PcGen]. Non-emergence support issues are, unless spo
 
 ###### Sponsorship
 
-Donation using <a href="https://paypal.me/kigkonsult?locale.x=en_US" rel="nofollow">paypal.me/kigkonsult</a> are appreciated. 
+Donation using <a href="https://paypal.me/kigkonsult" rel="nofollow">paypal.me/kigkonsult</a> are appreciated. 
 For invoice, <a href="mailto:ical@kigkonsult.se">please e-mail</a>.
 
 ###### INSTALL
