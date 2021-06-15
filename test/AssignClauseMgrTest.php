@@ -2,29 +2,31 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 if( ! in_array( __DIR__ . '/AcmDataProviderTrait.php', get_included_files())) {
     include( __DIR__ . '/AcmDataProviderTrait.php' );
@@ -39,7 +41,8 @@ class AssignClauseMgrTest extends TestCase
      * @see AssignClauseMgr::returnClauseMgrTest1DataProvider
      *
      */
-    public function getSourceArr1() {
+    public function getSourceArr1() : array
+    {
         $testData = [];
 
         $testData[] = [
@@ -307,7 +310,8 @@ class AssignClauseMgrTest extends TestCase
         return $testData;
     }
 
-    public function AssignClauseMgrTest1DataProvider() {
+    public function AssignClauseMgrTest1DataProvider() : array
+    {
         $testData = [];
         $operands = array_flip( AssignClauseMgr::getOperators());
         foreach( $this->getTargetArr1() as $targetArgSet ) {
@@ -332,13 +336,13 @@ class AssignClauseMgrTest extends TestCase
      * @test
      * @dataProvider AssignClauseMgrTest1DataProvider
      *
-     * @param string  $case
-     * @param array   $targetArgSet
-     * @param array   $sourceArgSet
-     * @param string  $operator
-     * @param string  $expected
+     * @param string $case
+     * @param array  $targetArgSet
+     * @param array  $sourceArgSet
+     * @param string $operator
+     * @param string $expected
      */
-    public function AssignClauseMgrTest1( $case, array $targetArgSet, array $sourceArgSet, $operator, $expected ) {
+    public function AssignClauseMgrTest1( string $case, array $targetArgSet, array $sourceArgSet, string $operator, string $expected ) {
 /*
         echo $case .
             ' target : ' . $targetArgSet[0] . ' - ' . $targetArgSet[1] . ' - ' . $targetArgSet[2] .
@@ -407,7 +411,8 @@ class AssignClauseMgrTest extends TestCase
 
     }
 
-    public function getTargetArr2() {
+    public function getTargetArr2() : array
+    {
         $testData = [];
 
         $testData[] = [
@@ -454,7 +459,8 @@ class AssignClauseMgrTest extends TestCase
      * @return array
      *
      */
-    public function getSourceArr2() {
+    public function getSourceArr2() : array
+    {
         $testData = [];
 
         $testData[] = [
@@ -487,7 +493,8 @@ class AssignClauseMgrTest extends TestCase
         return $testData;
     }
 
-    public function AssignClauseMgrTest2DataProvider() {
+    public function AssignClauseMgrTest2DataProvider() : array
+    {
         $testData = [];
         $operands = array_flip( AssignClauseMgr::getOperators());
         foreach( $this->getTargetArr2() as $targetArgSet ) {
@@ -512,13 +519,20 @@ class AssignClauseMgrTest extends TestCase
      * @test
      * @dataProvider AssignClauseMgrTest2DataProvider
      *
-     * @param string  $case
-     * @param array   $targetArgSet
-     * @param array   $sourceArgSet
-     * @param string  $operator
-     * @param string  $expected
+     * @param string $case
+     * @param array  $targetArgSet
+     * @param array  $sourceArgSet
+     * @param string $operator
+     * @param string $expected
      */
-    public function AssignClauseMgrTest2( $case, array $targetArgSet, array $sourceArgSet, $operator, $expected ) {
+    public function AssignClauseMgrTest2(
+        string $case,
+        array $targetArgSet,
+        array $sourceArgSet,
+        string $operator,
+        string $expected
+    )
+    {
 /*
         echo $case .
             ' target : ' . $targetArgSet[0] . ' - ' . $targetArgSet[1] . ' - ' . $targetArgSet[2] .
@@ -608,7 +622,7 @@ class AssignClauseMgrTest extends TestCase
             $acm->setExpression( 123 );
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
 

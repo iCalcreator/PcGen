@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use Exception;
@@ -55,7 +56,8 @@ class TernaryNullCoalesceMgrTest extends TestCase
      * $class              ->       string (opt with sourceIndex), NOT accepted here (class with public property)
      * @return array
      */
-    public static function getExprVarArr() {
+    public static function getExprVarArr() : array
+    {
         $testData = [];
 
         $testData[] = [
@@ -135,8 +137,8 @@ class TernaryNullCoalesceMgrTest extends TestCase
             225,
             AssignClauseMgr::SELF_KW,
             '$var225',
-            '[]',
-            'self::$var225[]'
+            '225',
+            'self::$var225[225]'
         ];
 
         $testData[] = [
@@ -171,8 +173,8 @@ class TernaryNullCoalesceMgrTest extends TestCase
             235,
             AssignClauseMgr::THIS_KW,
             'string235',
-            '[]',
-            '$this->string235[]'
+            '235',
+            '$this->string235[235]'
         ];
 
         $testData[] = [
@@ -198,8 +200,8 @@ class TernaryNullCoalesceMgrTest extends TestCase
             277,
             '$class277',
             '$property277',
-            'twosevenSeven',
-            '$class277->property277[$twosevenSeven]'
+            'twoSevenSeven',
+            '$class277->property277[$twoSevenSeven]'
         ];
 
         return $testData;
@@ -209,15 +211,21 @@ class TernaryNullCoalesceMgrTest extends TestCase
     {
         return str_replace( PHP_EOL, '', var_export( $variable, true ));
     }
+
     /**
      * TernaryNullCoalesceMgrTest21 dataprovider
      *
      * @return array
      */
-    public function TernaryNullCoalesceMgrTest21DataProvider() {
+    public function TernaryNullCoalesceMgrTest21DataProvider() : array
+    {
         $testData = [];
 
         $exprAs        = $this->getTargetArr1();
+        $exprAs[2525][3] = 25;
+        $exprAs[3232][3] = 32;
+        $exprAs[3535][3] = 35;
+        $exprAs[7878][3] = 78;
         $exprAKeys     = array_flip( array_keys( $exprAs ));
         $exprBargs     = self::FcnInvokeMgrTest3ArgumentProvider();
         $exprBargsKeys = array_flip( array_keys( $exprBargs ));
@@ -342,9 +350,17 @@ class TernaryNullCoalesceMgrTest extends TestCase
      * @param mixed  $expr3
      * @param bool   $ternaryOperator
      * @param array  $expected
+     * @todo if expr1/2/3 is array, always use index !!
      */
-    public function TernaryNullCoalesceMgrTest21( $case, $expr1, $expr2, $expr3, $ternaryOperator, $expected ) {
-
+    public function TernaryNullCoalesceMgrTest21(
+        string $case,
+        $expr1,
+        $expr2,
+        $expr3,
+        bool $ternaryOperator,
+        array $expected
+    )
+    {
         $tncMgr = TernaryNullCoalesceMgr::factory( $expr1, $expr2, $expr3 )
             ->setTernaryOperator( $ternaryOperator );
         $code = $tncMgr->toString();

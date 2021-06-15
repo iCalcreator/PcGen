@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen\Traits;
 
 use InvalidArgumentException;
@@ -30,6 +31,11 @@ use Kigkonsult\PcGen\FcnInvokeMgr;
 use Kigkonsult\PcGen\TernaryNullCoalesceMgr;
 use Kigkonsult\PcGen\Util;
 use RuntimeException;
+
+use function is_scalar;
+use function is_string;
+use function sprintf;
+use function var_export;
 
 /**
  * Trait SourceTrait
@@ -63,7 +69,7 @@ trait SourceTrait
      * @return array
      * @throws RuntimeException
      */
-    protected function getRenderedSource()
+    protected function getRenderedSource() : array
     {
         static $ERR = 'No source set';
         switch( true ) {
@@ -81,13 +87,12 @@ trait SourceTrait
                 break;
             default :
                 throw new RuntimeException( $ERR );
-                break;
         } // end switch
         return $code;
     }
 
     /**
-     * @return EntityMgr
+     * @return null|EntityMgr
      */
     public function getSource()
     {
@@ -97,7 +102,7 @@ trait SourceTrait
     /**
      * @return bool
      */
-    public function isSourceSet()
+    public function isSourceSet() : bool
     {
         return ( null !==  $this->source );
     }
@@ -105,13 +110,13 @@ trait SourceTrait
     /**
      * Set (EntityMgr) source
      *
-     * @param string|EntityMgr $class one of null, self, this, otherClass (fqcn), $class
-     * @param mixed            $variable
-     * @param int|string       $index
+     * @param null|string|EntityMgr $class one of null, self, this, otherClass (fqcn), $class
+     * @param null|mixed            $variable
+     * @param null|int|string       $index
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setSource( $class = null, $variable = null, $index = null )
+    public function setSource( $class = null, $variable = null, $index = null ) : self
     {
         switch( true ) {
             case ( $class instanceof EntityMgr ) :
@@ -156,7 +161,7 @@ trait SourceTrait
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisPropertySource( $property, $index = null )
+    public function setThisPropertySource( $property, $index = null ) : self
     {
         if( ! is_string( $property )) {
             throw new InvalidArgumentException(
@@ -180,7 +185,7 @@ trait SourceTrait
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVariableSource( $variable, $index = null )
+    public function setVariableSource( $variable, $index = null ) : self
     {
         if( ! is_string( $variable )) {
             throw new InvalidArgumentException(
@@ -199,19 +204,19 @@ trait SourceTrait
      * @param bool $isConst
      * @return static
      */
-    public function setSourceIsConst( $isConst = true )
+    public function setSourceIsConst( $isConst = true ) : self
     {
         if( null === $this->source ) {
             $this->setSource();
         }
-        $this->getSource()->setIsConst((bool) $isConst );
+        $this->getSource()->setIsConst( $isConst ?? true );
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function isSourceStatic()
+    public function isSourceStatic() : bool
     {
         return $this->isSourceSet() && $this->getSource()->isStatic();
     }
@@ -220,35 +225,36 @@ trait SourceTrait
      * @param bool $staticStatus
      * @return static
      */
-    public function setSourceIsStatic( $staticStatus = true )
+    public function setSourceIsStatic( $staticStatus = true ) : self
     {
         if( null === $this->source ) {
             $this->setSource();
         }
-        $this->getSource()->setIsStatic((bool) $staticStatus );
+        $this->getSource()->setIsStatic( $staticStatus ?? true );
         return $this;
     }
 
     /**
-     * @return TernaryNullCoalesceMgr
+     * @return null|TernaryNullCoalesceMgr
      */
-    public function getTernaryNullCoalesceExpr() {
+    public function getTernaryNullCoalesceExpr()
+    {
         return $this->ternaryNullCoalesceExpr;
     }
 
     /**
      * @return bool
      */
-    public function isTernaryNullCoalesceExprSet() {
+    public function isTernaryNullCoalesceExprSet() : bool
+    {
         return ( null !== $this->ternaryNullCoalesceExpr );
     }
 
     /**
      * @param string|EntityMgr|FcnInvokeMgr|TernaryNullCoalesceMgr $expr1
-     * @param string|EntityMgr|FcnInvokeMgr $expr2
-     * @param string|EntityMgr|FcnInvokeMgr $expr3
-     * @param bool $ternaryOperator   true : ternary expr, false : null coalesce expr
-     * @param TernaryNullCoalesceMgr $ternaryNullCoalesceExpr
+     * @param null|string|EntityMgr|FcnInvokeMgr $expr2
+     * @param null|string|EntityMgr|FcnInvokeMgr $expr3
+     * @param null|bool $ternaryOperator   true : ternary expr, false : null coalesce expr
      * @return static
      */
     public function setTernaryNullCoalesceExpr(
@@ -256,16 +262,17 @@ trait SourceTrait
         $expr2 = null,
         $expr3 = null,
         $ternaryOperator = true
-    ) {
+    ) : self
+    {
         $this->ternaryNullCoalesceExpr = ( $expr1 instanceof TernaryNullCoalesceMgr )
             ? $expr1
             : TernaryNullCoalesceMgr::factory( $expr1, $expr2, $expr3 )
-                ->setTernaryOperator( $ternaryOperator );
+                ->setTernaryOperator( $ternaryOperator ?? true );
         return $this;
     }
 
     /**
-     * @return ChainInvokeMgr
+     * @return null|ChainInvokeMgr
      */
     public function getFcnInvoke()
     {
@@ -275,7 +282,7 @@ trait SourceTrait
     /**
      * @return bool
      */
-    public function isFcnInvokeSet()
+    public function isFcnInvokeSet() : bool
     {
         return ( null !== $this->fcnInvoke );
     }
@@ -285,12 +292,12 @@ trait SourceTrait
      * @return static
      * @throws InvalidArgumentException
      */
-    public function appendInvoke( FcnInvokeMgr $invoke )
+    public function appendInvoke( FcnInvokeMgr $invoke ) : self
     {
         if( empty( $this->fcnInvoke )) {
             $this->fcnInvoke = ChainInvokeMgr::init( $this );
         }
-        $this->fcnInvoke->appendInvoke( $invoke->rig( $this));
+        $this->fcnInvoke->appendInvoke( $invoke->rig( $this ));
         return $this;
     }
 
@@ -299,7 +306,7 @@ trait SourceTrait
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setFcnInvoke( array $fcnInvokes )
+    public function setFcnInvoke( array $fcnInvokes ) : self
     {
         $this->fcnInvoke = ChainInvokeMgr::init( $this )->setInvokes( $fcnInvokes );
         return $this;

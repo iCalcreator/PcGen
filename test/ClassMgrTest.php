@@ -2,30 +2,32 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use Exception;
 use Kigkonsult\PcGen\Dto\VarDto;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 class ClassMgrTest extends TestCase
 {
@@ -51,7 +53,8 @@ class ClassMgrTest extends TestCase
         [ 'Acme\Aclass',          'AAclass', null ],
     ];
 
-    public function classMgrTest1DataProvider() {
+    public function classMgrTest1DataProvider() : array
+    {
         static $SUMMARY     = ' summary ';
         static $DESCRIPTION = ' description ';
         $testData = [];
@@ -439,7 +442,7 @@ class ClassMgrTest extends TestCase
      * @param array $properties
      * @param array $expected
      */
-    public function classMgrTest1( $case, array $properties, array $expected ) {
+    public function classMgrTest1( int $case, array $properties, array $expected ) {
         $case += 10;
         foreach( $properties as $pIx => $propArg ) {
             if( ! in_array( $pIx, $expected[2] )) // force private property and public methods
@@ -529,7 +532,7 @@ class ClassMgrTest extends TestCase
      * @param array $properties
      * @param array $expected
      */
-    public function classMgrTest2( $case, array $properties, array $expected ) {
+    public function classMgrTest2( int $case, array $properties, array $expected ) {
         $case += 20;
         $cm = ClassMgr::init()
             ->setInterface()
@@ -556,7 +559,7 @@ class ClassMgrTest extends TestCase
             );
         $cm->addUse( self::$use1, self::$alias1 );
         $cm->addUse( self::$use1, self::$alias1 ); // dupls on fcqn+alias
-        $cm->AddUse( self::$use2 );
+        $cm->addUse( self::$use2 );
         $cm->addUse( self::$use2 );             // no dupls
         $cm->addImplement( self::$interface2 ); // no dupls
 
@@ -600,7 +603,7 @@ class ClassMgrTest extends TestCase
      * @param string $code
      * @param array  $expected
      */
-    public function classMgrTest1Tester( $case, $code, $expected ) {
+    public function classMgrTest1Tester( int $case, string $code, array $expected ) {
         $this->assertTrue(
             is_string( $code )
         );
@@ -876,7 +879,7 @@ class ClassMgrTest extends TestCase
      * @param string $code
      * @param int    $case
      */
-    public function classMgrTest30x( $code, $case ) {
+    public function classMgrTest30x( string $code, int $case ) {
         foreach( ClassMethodFactory::$USES as $use ) {
             $this->assertTrue(
                 ( false !== strpos( $code, 'use ' . $use . ';' ) ),
@@ -941,7 +944,7 @@ class ClassMgrTest extends TestCase
      */
     public function classMgrTest101() {
         try {
-            $cm = classMgr::init()->toArray();
+            $cm = ClassMgr::init()->toArray();
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
@@ -953,16 +956,16 @@ class ClassMgrTest extends TestCase
      * @test
      */
     public function classMgrTest130() {
-        $this->assertTrue( classMgr::init()->setAbstract( true )->isAbstract());
+        $this->assertTrue( ClassMgr::init()->setAbstract( true )->isAbstract());
 
         $this->assertTrue(
-            classMgr::init()->setDocBlock( DocBlockMgr::init())->getDocBlock()
+            ClassMgr::init()->setDocBlock( DocBlockMgr::init())->getDocBlock()
             instanceof
             DocBlockMgr
         );
 
         $extends = __CLASS__;
-        $cm      = classMgr::init()->setExtend( $extends );
+        $cm      = ClassMgr::init()->setExtend( $extends );
         $this->assertTrue( $cm->isExtendsSet());
         $this->assertEquals( $extends, $cm->getExtend());
     }
@@ -972,14 +975,14 @@ class ClassMgrTest extends TestCase
      */
     public function classMgrTest132() {
         try {
-            $cm = classMgr::init()->setImplements( [] );
+            $cm = ClassMgr::init()->setImplements( [] );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
             $this->assertTrue( true );
         }
         try {
-            $cm = classMgr::init()->setImplements( [ false ] );
+            $cm = ClassMgr::init()->setImplements( [ false ] );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
@@ -994,24 +997,24 @@ class ClassMgrTest extends TestCase
      */
     public function classMgrTest141() {
         try {
-            $cm = classMgr::init()->addUse( false );
+            $cm = ClassMgr::init()->addUse( false );
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
         try {
-            $cm = classMgr::init()->addUse( 'Acme\Aclass', 123 );
+            $cm = ClassMgr::init()->addUse( 'Acme\Aclass', 123 );
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
         try {
-            $cm = classMgr::init()->addUse( 'Acme\Aclass', 'AcmeAclass', 'grodan boll' );
+            $cm = ClassMgr::init()->addUse( 'Acme\Aclass', 'AcmeAclass', 'grodan boll' );
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
     }
@@ -1020,7 +1023,7 @@ class ClassMgrTest extends TestCase
      */
     public function classMgrTest151() {
         try {
-            $cm = classMgr::init()->addProperty( false );
+            $cm = ClassMgr::init()->addProperty( false );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
@@ -1033,14 +1036,14 @@ class ClassMgrTest extends TestCase
      */
     public function classMgrTest156() {
         try {
-            $cm = classMgr::init()->setProperties( false );
+            $cm = ClassMgr::init()->setProperties( false );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
             $this->assertTrue( true );
         }
         try {
-            $cm = classMgr::init()->setProperties( true );
+            $cm = ClassMgr::init()->setProperties( true );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
@@ -1053,10 +1056,10 @@ class ClassMgrTest extends TestCase
      */
     public function classMgrTest171() {
         try {
-            $cm = classMgr::init()->setUses( false );
+            $cm = ClassMgr::init()->setUses( false );
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
     }
@@ -1066,7 +1069,7 @@ class ClassMgrTest extends TestCase
      */
     public function classMgrTest172() {
         try {
-            $cm = classMgr::init()->setUses( [ false ] );
+            $cm = ClassMgr::init()->setUses( [ false ] );
             $this->assertTrue( false );
         }
         catch( Exception $e ) {
@@ -1082,7 +1085,7 @@ class ClassMgrTest extends TestCase
             $pm = PropertyMgr::factory( true );
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
     }

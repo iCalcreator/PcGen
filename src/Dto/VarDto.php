@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen\Dto;
 
 use InvalidArgumentException;
@@ -28,6 +29,18 @@ use Kigkonsult\PcGen\Assert;
 use Kigkonsult\PcGen\BaseA;
 use Kigkonsult\PcGen\PcGenInterface;
 use Kigkonsult\PcGen\Util;
+
+use function in_array;
+use function is_array;
+use function is_bool;
+use function is_scalar;
+use function is_string;
+use function sprintf;
+use function str_replace;
+use function strcasecmp;
+use function substr;
+use function trim;
+use function var_export;
 
 /**
  * Class VarDto
@@ -49,7 +62,7 @@ class VarDto implements PcGenInterface
     private $name = null;
 
     /**
-     * @var string  one of the VARTYPELIST members or fqcn
+     * @var string|array  one of the VARTYPELIST members or fqcn
      */
     private $varType = null;
 
@@ -71,11 +84,11 @@ class VarDto implements PcGenInterface
     /**
      * Class constructor
      *
-     * @param string       $name
-     * @param string       $type
-     * @param mixed        $default
-     * @param string       $summary
-     * @param string|array $description
+     * @param null|string       $name
+     * @param null|string       $type
+     * @param null|mixed        $default
+     * @param null|string       $summary
+     * @param null|string|array $description
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -84,20 +97,31 @@ class VarDto implements PcGenInterface
         $default = null,
         $summary = null,
         $description = null
-    ) {
-        $this->setName( $name );
-        $this->setVarType( $type );
-        $this->setDefault( $default );
-        $this->setSummary( $summary );
-        $this->setDescription( $description );
+    )
+    {
+        if( ! empty( $name )) {
+            $this->setName( $name );
+            if( ! empty( $type ) || is_array( $type )) {
+                $this->setVarType( $type );
+                if( is_bool( $default ) || ( null !== $default )) {
+                    $this->setDefault( $default );
+                }
+            }
+            if( ! empty( $summary )) {
+                $this->setSummary( $summary );
+            }
+            if( ! empty( $description )) {
+                $this->setDescription( $description );
+            }
+        } // end if
     }
 
     /**
-     * @param string $name
-     * @param string $type
-     * @param mixed $default
-     * @param string $summary
-     * @param string|array $description
+     * @param null|string $name
+     * @param null|string $type
+     * @param null|mixed $default
+     * @param null|string $summary
+     * @param null|string|array $description
      * @return static
      * @throws InvalidArgumentException
      */
@@ -107,14 +131,15 @@ class VarDto implements PcGenInterface
         $default = null,
         $summary = null,
         $description = null
-    ) {
+    ) : self
+    {
         return new static( $name, $type, $default, $summary, $description );
     }
 
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
         static $SEARCH = [ PHP_EOL, ' ' ];
         static $REPL   = '';
@@ -128,7 +153,7 @@ class VarDto implements PcGenInterface
     }
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getName()
     {
@@ -138,7 +163,7 @@ class VarDto implements PcGenInterface
     /**
      * @return bool
      */
-    public function isNameSet()
+    public function isNameSet() : bool
     {
         return ( null !== $this->name );
     }
@@ -148,7 +173,7 @@ class VarDto implements PcGenInterface
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setName( $name )
+    public function setName( string $name ) : self
     {
         if( self::SP0 != trim( $name )) {
             $this->name = Assert::assertPhpVar( Util::unSetVarPrefix( $name ));
@@ -157,7 +182,7 @@ class VarDto implements PcGenInterface
     }
 
     /**
-     * @return string
+     * @return null|string|array
      */
     public function getVarType()
     {
@@ -167,7 +192,7 @@ class VarDto implements PcGenInterface
     /**
      * @return string
      */
-    public function getParamTagVarType()
+    public function getParamTagVarType() : string
     {
         return $this->isVarTypeSet() ? $this->getVarType() : self::MIXED_KW;
     }
@@ -175,9 +200,12 @@ class VarDto implements PcGenInterface
     /**
      * @return bool
      */
-    public function isTypedArray()
+    public function isTypedArray() : bool
     {
         if( is_array( $this->varType )) { // mixed types
+            return false;
+        }
+        if( ! is_string( $this->varType )) {
             return false;
         }
         if( in_array( $this->varType, self::$ARRAYs, true )) {
@@ -192,11 +220,11 @@ class VarDto implements PcGenInterface
     /**
      * Return true if array element typeHint found (ex string[]), false on array(multi|Types)
      *
-     * @param string $phpVersion  expected PHP version, default PHP_MAJOR_VERSION
-     * @param string $typeHint
+     * @param null|string $phpVersion  expected PHP version, default PHP_MAJOR_VERSION
+     * @param null|string $typeHint
      * @return bool
      */
-    public function hasTypeHintArraySpec( $phpVersion = null, & $typeHint = null )
+    public function hasTypeHintArraySpec( $phpVersion = null, & $typeHint = null ) : bool
     {
         if( empty( $this->varType ) ||
 //          ! is_string( $this->varType ) ||
@@ -215,11 +243,11 @@ class VarDto implements PcGenInterface
     /**
      * Return true if typeHint found, false on array(multi|Types)
      *
-     * @param string $phpVersion  expected PHP version, default PHP_MAJOR_VERSION
-     * @param string $typeHint
+     * @param null|string $phpVersion  expected PHP version, default PHP_MAJOR_VERSION
+     * @param null|string $typeHint
      * @return bool
      */
-    public function isTypeHint( $phpVersion = null, & $typeHint = null )
+    public function isTypeHint( $phpVersion = null, & $typeHint = null ) : bool
     {
         if( empty( $this->varType ) || ! is_string( $this->varType )) {
             return false;
@@ -236,26 +264,29 @@ class VarDto implements PcGenInterface
     /**
      * @return bool
      */
-    public function isVarTypeSet()
+    public function isVarTypeSet() : bool
     {
         return ( null !== $this->varType );
     }
 
     /**
-     * @param string $varType
+     * @param null|string|array $varType
      * @return static
      * @todo move to assert::varType? const/fqcn, also in DocBlockMgr
      */
-    public function setVarType( $varType = null )
+    public function setVarType( $varType = null ) : self
     {
         switch( true ) {
             case is_array( $varType ) :
                 $this->varType = $varType;
                 break;
-            case ( 0 == strcasecmp( self::BOOLEAN_T , $varType )) :
+            case ( ! is_string( $varType )) :
+                $this->varType = $varType;
+                break;
+            case ( 0 == strcasecmp( self::BOOLEAN_T, $varType )) :
                 $this->varType = self::BOOL_T;
                 break;
-            case ( 0 == strcasecmp( self::BOOLEANARRAY_T , $varType )) :
+            case ( 0 == strcasecmp( self::BOOLEANARRAY_T, $varType )) :
                 $this->varType = self::BOOLARRAY_T;
                 break;
             default :
@@ -278,7 +309,7 @@ class VarDto implements PcGenInterface
      *
      * @return bool
      */
-    public function isDefaultArray()
+    public function isDefaultArray() : bool
     {
         return is_array( $this->default );
     }
@@ -288,7 +319,7 @@ class VarDto implements PcGenInterface
      *
      * @return bool
      */
-    public function isDefaultSet()
+    public function isDefaultSet() : bool
     {
         return ( null !== $this->default );
     }
@@ -298,9 +329,12 @@ class VarDto implements PcGenInterface
      *
      * @return bool
      */
-    public function isDefaultTypedArray()
+    public function isDefaultTypedArray() : bool
     {
-        if( ! is_scalar( $this->default )) {
+        if( is_array( $this->default )) {
+            return true;
+        }
+        if( ! is_string( $this->default )) {
             return false;
         }
         if( in_array( $this->default, self::$ARRAYs, true )) {
@@ -315,18 +349,19 @@ class VarDto implements PcGenInterface
     /**
      * @return bool
      */
-    public function isDefaultTypedNull()
+    public function isDefaultTypedNull() : bool
     {
         return ( self::NULL_T === $this->default );
     }
 
     /**
      * Set default (initValue), only null, scalar or array allowed
-     * @param mixed $default
+     *
+     * @param null|mixed $default
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setDefault( $default = null )
+    public function setDefault( $default = null ) : self
     {
         if(( null !== $default ) &&
             ! is_scalar( $default ) &&
@@ -340,7 +375,7 @@ class VarDto implements PcGenInterface
     }
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getSummary()
     {
@@ -350,23 +385,23 @@ class VarDto implements PcGenInterface
     /**
      * @return bool
      */
-    public function isSummarySet()
+    public function isSummarySet() : bool
     {
         return ( null !==  $this->summary );
     }
 
     /**
-     * @param string $summary
+     * @param null|string $summary
      * @return static
      */
-    public function setSummary( $summary = null )
+    public function setSummary( $summary = null ) : self
     {
         $this->summary = $summary;
         return $this;
     }
 
     /**
-     * @return array
+     * @return null|array
      */
     public function getDescription()
     {
@@ -376,7 +411,7 @@ class VarDto implements PcGenInterface
     /**
      * @return bool
      */
-    public function isDescriptionSet()
+    public function isDescriptionSet() : bool
     {
         return ( ! empty( $this->description ));
     }
@@ -385,7 +420,7 @@ class VarDto implements PcGenInterface
      * @param string|array $description
      * @return static
      */
-    public function setDescription( $description = null )
+    public function setDescription( $description = null ) : self
     {
         $this->description = ( null === $description ) ? null : (array) $description;
         return $this;

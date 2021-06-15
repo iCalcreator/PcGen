@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
@@ -28,6 +29,15 @@ use Kigkonsult\PcGen\Dto\UseSubjectDto;
 use Kigkonsult\PcGen\Dto\VarDto;
 use Kigkonsult\PcGen\Traits\NameTrait;
 use RuntimeException;
+
+use function array_merge;
+use function implode;
+use function in_array;
+use function is_array;
+use function ksort;
+use function sprintf;
+use function ucfirst;
+use function var_export;
 
 /**
  * Class ClassMgr
@@ -121,9 +131,9 @@ final class ClassMgr extends BaseB
     /**
      * ClassMgr constructor
      *
-     * @param string $eol
-     * @param string $indent
-     * @param string $baseIndent
+     * @param null|string $eol
+     * @param null|string $indent
+     * @param null|string $baseIndent
      */
     public function __construct( $eol = null, $indent = null, $baseIndent = null )
     {
@@ -138,7 +148,7 @@ final class ClassMgr extends BaseB
      * @return array
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         static $NAME = 'name';
         if( ! $this->isNameSet()) {
@@ -150,17 +160,15 @@ final class ClassMgr extends BaseB
             $this->bodyCode(),
             [ self::$CODEBLOCKEND ]
         );
-        return Util::nullByteClean( $code );
+        return Util::nullByteCleanArray( $code );
     }
 
     /**
      * @return array
      */
-    private function initCode()
+    private function initCode() : array
     {
         $TMPL1 = 'namespace %s;';
-        $TMPL2 = 'use %s;';
-        $TMPL3 = 'use %s as %s;';
         $TMPL4 = 'abstract ';
         $TMPL5 = ' extends ';
         $TMPL6 = ' implements ';
@@ -203,7 +211,7 @@ final class ClassMgr extends BaseB
     /**
      * @return array
      */
-    private function bodyCode()
+    private function bodyCode() : array
     {
         $hasProperties = ! empty( $this->getPropertyCount());
         $body = array_merge(
@@ -221,7 +229,7 @@ final class ClassMgr extends BaseB
     /**
      * @return array
      */
-    private function defineProperties()
+    private function defineProperties() : array
     {
         $code  = [];
         $props = [ [], [] ];
@@ -256,7 +264,7 @@ final class ClassMgr extends BaseB
     /**
      * @return array
      */
-    private function produceMethodsForProperties()
+    private function produceMethodsForProperties() : array
     {
         $code    = [];
         $oneOnly = $this->hasOneArrayProperty( $propIx );
@@ -288,7 +296,7 @@ final class ClassMgr extends BaseB
 
 
     /**
-     * @return string
+     * @return null|string
      */
     private function getTargetType()
     {
@@ -298,7 +306,7 @@ final class ClassMgr extends BaseB
     /**
      * @return ClassMgr
      */
-    public function setClass()
+    public function setClass() : self
     {
         $this->targetType = self::$class;
         return $this;
@@ -306,7 +314,7 @@ final class ClassMgr extends BaseB
     /**
      * @return ClassMgr
      */
-    public function setInterface()
+    public function setInterface() : self
     {
         $this->targetType = self::$interface;
         return $this;
@@ -314,7 +322,7 @@ final class ClassMgr extends BaseB
     /**
      * @return ClassMgr
      */
-    public function setTrait()
+    public function setTrait() : self
     {
         $this->targetType = self::$trait;
         return $this;
@@ -323,7 +331,7 @@ final class ClassMgr extends BaseB
     /**
      * @return bool
      */
-    public function isNamespaceSet()
+    public function isNamespaceSet() : bool
     {
         return ( null !== $this->namespace );
     }
@@ -333,7 +341,7 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setNamespace( $namespace )
+    public function setNamespace( string $namespace ) : self
     {
         Assert::assertFqcn( $namespace );
         $this->namespace = $namespace;
@@ -344,12 +352,12 @@ final class ClassMgr extends BaseB
      * Add class use, fqcn [, alias [, type ]]
      *
      * @param string|UseSubjectDto $fqcn    a fqcn-Class/-constant/-function
-     * @param string               $alias   opt
-     * @param string               $type    one of ClassMgr::CLASS_, ClassMgr::CONST_, ClassMgr::FUNC_
+     * @param null|string          $alias   opt
+     * @param null|string          $type    one of ClassMgr::CLASS_, ClassMgr::CONST_, ClassMgr::FUNC_
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function addUse( $fqcn, $alias = null, $type = null )
+    public function addUse( $fqcn, $alias = null, $type = null ) : self
     {
         $useSubject = ( $fqcn instanceof UseSubjectDto )
             ? $fqcn
@@ -367,7 +375,7 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setUses( $uses )
+    public function setUses( array $uses ) : self
     {
         static $USE = 'use';
         if( empty( $uses )) {
@@ -385,8 +393,8 @@ final class ClassMgr extends BaseB
             $this->addUse(
                 UseSubjectDto::factory(
                     $useSet[0],
-                    ( isset( $useSet[1] ) ? $useSet[1] : null ),
-                    ( isset( $useSet[2] ) ? $useSet[2] : null )
+                    ( $useSet[1] ?? null ),
+                    ( $useSet[2] ?? null )
                 )
             );
         } // end foreach
@@ -394,7 +402,7 @@ final class ClassMgr extends BaseB
     }
 
     /**
-     * @return DocBlockMgr
+     * @return null|DocBlockMgr
      */
     public function getDocBlock()
     {
@@ -405,7 +413,7 @@ final class ClassMgr extends BaseB
      * @param DocBlockMgr $docBlock
      * @return ClassMgr
      */
-    public function setDocBlock( $docBlock )
+    public function setDocBlock( DocBlockMgr $docBlock ) : self
     {
         $this->docBlock = $docBlock;
         return $this;
@@ -414,7 +422,7 @@ final class ClassMgr extends BaseB
     /**
      * @return bool
      */
-    public function isAbstract()
+    public function isAbstract() : bool
     {
         return $this->abstract;
     }
@@ -425,14 +433,14 @@ final class ClassMgr extends BaseB
      * @param bool $abstract
      * @return ClassMgr
      */
-    public function setAbstract( $abstract )
+    public function setAbstract( bool $abstract ) : self
     {
-        $this->abstract = (bool) $abstract;
+        $this->abstract = $abstract;
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      * @throws InvalidArgumentException
      */
     public function getExtend()
@@ -443,7 +451,7 @@ final class ClassMgr extends BaseB
     /**
      * @return bool
      */
-    public function isExtendsSet()
+    public function isExtendsSet() : bool
     {
         return ( null !== $this->extend );
     }
@@ -453,7 +461,7 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setExtend( $extend )
+    public function setExtend( string $extend ) : self
     {
         Assert::assertFqcn( $extend );
         $this->extend = $extend;
@@ -465,7 +473,7 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function addImplement( $implement )
+    public function addImplement( string $implement ) : self
     {
         if( is_array( $this->implements ) &&
             in_array( $implement, $this->implements )) {
@@ -486,7 +494,7 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setImplements( array $implements )
+    public function setImplements( array $implements ) : self
     {
         static $IMPLEMENTS = 'implements';
         if( empty( $implements )) {
@@ -506,9 +514,9 @@ final class ClassMgr extends BaseB
      * @param bool $construct
      * @return ClassMgr
      */
-    public function setConstruct( $construct = true )
+    public function setConstruct( $construct = true ) : self
     {
-        $this->construct = (bool) $construct;
+        $this->construct = $construct ?? true;
         return $this;
     }
 
@@ -516,9 +524,9 @@ final class ClassMgr extends BaseB
      * @param bool $factory
      * @return ClassMgr
      */
-    public function setFactory( $factory = true )
+    public function setFactory( $factory = true ) : self
     {
-        $this->factory = (bool) $factory;
+        $this->factory = $factory ?? true;
         return $this;
     }
 
@@ -531,14 +539,14 @@ final class ClassMgr extends BaseB
      *     ( array, to conform to setProperty)
      *     variable, varType, default, summary, description, getter, setter, argInFactory
      *
-     * @param string|PropertyMgr|VariableMgr|VarDto $name
-     * @param string  $type
-     * @param mixed   $default
-     * @param string  $summary
-     * @param string  $description
-     * @param bool    $getter
-     * @param bool    $setter
-     * @param bool    $argInFactory
+     * @param string|array|PropertyMgr|VariableMgr|VarDto $name
+     * @param null|string  $type
+     * @param null|mixed   $default
+     * @param null|string  $summary
+     * @param null|string  $description
+     * @param null|bool    $getter
+     * @param null|bool    $setter
+     * @param null|bool    $argInFactory
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
@@ -551,7 +559,8 @@ final class ClassMgr extends BaseB
         $getter = false,
         $setter = false,
         $argInFactory = false
-    ) {
+    ) : self
+    {
         if( is_array( $name )) {
             $name = array_values( $name );
             list( $name, $type, $default, $summary, $description, $getter, $setter, $argInFactory ) =
@@ -565,29 +574,28 @@ final class ClassMgr extends BaseB
             case ( $name instanceof VariableMgr ) :
                 $property = PropertyMgr::init( $this )
                     ->cloneFromParent( $name )
-                    ->setMakeGetter( Util::getIfSet( $type, null, self::BOOL_T, false ))
-                    ->setMakeSetter( Util::getIfSet( $default, null, self::BOOL_T, false ))
-                    ->setArgInFactory( Util::getIfSet( $summary, null, self::BOOL_T, false ));
+                    ->setMakeGetter( $type ?? false )
+                    ->setMakeSetter( $default ?? false )
+                    ->setArgInFactory( $summary ?? false );
                 break;
             case ( $name instanceof VarDto ) :
                 $property = PropertyMgr::init( $this )
                     ->setVarDto( $name )
-                    ->setMakeGetter( Util::getIfSet( $type, null, self::BOOL_T, false ))
-                    ->setMakeSetter( Util::getIfSet( $default, null, self::BOOL_T, false ))
-                    ->setArgInFactory( Util::getIfSet( $summary, null, self::BOOL_T, false ));
+                    ->setMakeGetter( $type ?? false )
+                    ->setMakeSetter( $default ?? false )
+                    ->setArgInFactory( $summary ?? false );
                 break;
             case is_string( $name ) :
                 $property = PropertyMgr::init( $this )
                     ->setVarDto( VarDto::factory( $name, $type, $default, $summary, $description ))
-                    ->setMakeGetter( Util::getIfSet( $getter, null, self::BOOL_T, false ))
-                    ->setMakeSetter( Util::getIfSet( $setter, null, self::BOOL_T, false ))
-                    ->setArgInFactory( Util::getIfSet( $argInFactory, null, self::BOOL_T, false ));
+                    ->setMakeGetter( $getter ?? false )
+                    ->setMakeSetter( $setter ?? false )
+                    ->setArgInFactory( $argInFactory ?? false );
                 break;
             default :
                 throw new InvalidArgumentException(
                     sprintf( self::$ERRx, var_export( $name, true ))
                 );
-                break;
 
         } // end switch
         $this->properties[] = $property;
@@ -595,10 +603,10 @@ final class ClassMgr extends BaseB
     }
 
     /**
-     * @param $pIx
+     * @param int $pIx
      * @return PropertyMgr
      */
-    public function getProperty( $pIx )
+    public function getProperty( int $pIx ) : PropertyMgr
     {
         return $this->properties[$pIx];
     }
@@ -606,7 +614,7 @@ final class ClassMgr extends BaseB
     /**
      * @return int
      */
-    public function getPropertyCount()
+    public function getPropertyCount() : int
     {
         return count( $this->properties );
     }
@@ -614,7 +622,7 @@ final class ClassMgr extends BaseB
     /**
      * @return array
      */
-    public function getPropertyIndex()
+    public function getPropertyIndex() : array
     {
         return array_keys( $this->properties );
     }
@@ -623,7 +631,7 @@ final class ClassMgr extends BaseB
      * @param int $propIx
      * @return bool
      */
-    private function hasOneArrayProperty( & $propIx = null )
+    private function hasOneArrayProperty( & $propIx = null ) : bool
     {
         $cntProps = 0;
         $arrayPropIx = null;
@@ -668,7 +676,7 @@ final class ClassMgr extends BaseB
      * @return ClassMgr
      * @throws InvalidArgumentException
      */
-    public function setProperties( $properties )
+    public function setProperties( $properties ) : self
     {
         static $ERRx1 = 'Invalid property (#%d) %s';
         $this->properties = [];
@@ -679,7 +687,6 @@ final class ClassMgr extends BaseB
             switch( true ) {
                 case empty( $property ) :
                     throw new InvalidArgumentException( sprintf( $ERRx1, $pIx, var_export( $property, true )));
-                    break;
                 case ( $property instanceof PropertyMgr ) :
                     $this->addProperty( $property );
                     break;
@@ -687,9 +694,9 @@ final class ClassMgr extends BaseB
                     $this->addProperty(
                         PropertyMgr::init( $this )
                             ->cloneFromParent( $property )
-                            ->setMakeGetter( Util::getIfSet( $property, 1, self::BOOL_T, false ))
-                            ->setMakeSetter( Util::getIfSet( $property, 2, self::BOOL_T, false ))
-                            ->setArgInFactory( Util::getIfSet( $property, 3, self::BOOL_T, false ))
+                            ->setMakeGetter( false )
+                            ->setMakeSetter( false )
+                            ->setArgInFactory( false )
                     );
                     break;
                 case (( $property instanceof VarDto ) || is_string( $property )) :
@@ -704,36 +711,35 @@ final class ClassMgr extends BaseB
                     throw new InvalidArgumentException(
                         sprintf( $ERRx1, $pIx, var_export( $property, true ))
                     );
-                    break;
                 case ( $property[0] instanceof VariableMgr ) :
                     $this->addProperty(
                         PropertyMgr::init( $this )
                             ->cloneFromParent( $property[0] )
-                            ->setMakeGetter( Util::getIfSet( $property, 1, self::BOOL_T, false ))
-                            ->setMakeSetter( Util::getIfSet( $property, 2, self::BOOL_T, false ))
-                            ->setArgInFactory( Util::getIfSet( $property, 3, self::BOOL_T, false ))
+                            ->setMakeGetter( $property[1] ?? false )
+                            ->setMakeSetter( $property[2] ?? false )
+                            ->setArgInFactory( $property[3] ?? false )
                     );
                     break;
                 case ( $property[0] instanceof VarDto ) :
                     $this->addProperty(
                         PropertyMgr::factory( $property[0] )
-                            ->setMakeGetter( Util::getIfSet( $property, 1, self::BOOL_T, false ))
-                            ->setMakeSetter( Util::getIfSet( $property, 2, self::BOOL_T, false ))
-                            ->setArgInFactory( Util::getIfSet( $property, 3, self::BOOL_T, false ))
+                            ->setMakeGetter( $property[1] ?? false )
+                            ->setMakeSetter( $property[2] ?? false )
+                            ->setArgInFactory( $property[3] ?? false )
                     );
                     break;
                 default :
                     $this->addProperty(
                         PropertyMgr::factory(
-                            Util::getIfSet( $property, 0 ),                 // variable,
-                            Util::getIfSet( $property, 1 ),                 // varType,
-                            Util::getIfSet( $property, 2 ),                 // default
-                            Util::getIfSet( $property, 3, self::STRING_T ), // summary
-                            Util::getIfSet( $property, 4, self::ARRAY_T )   // description
+                            ( $property[0] ?? null ),  // variable,
+                            ( $property[1] ?? null ),  // varType,
+                            ( $property[2] ?? null ),  // default
+                            ( $property[3] ?? null ),  // summary
+                            ( $property[4] ?? null )   // description
                         )
-                            ->setMakeGetter( Util::getIfSet( $property, 5, self::BOOL_T, false ))
-                            ->setMakeSetter( Util::getIfSet( $property, 6, self::BOOL_T, false ))
-                            ->setArgInFactory( Util::getIfSet( $property, 7, self::BOOL_T, false ))
+                            ->setMakeGetter( $property[5] ?? false )
+                            ->setMakeSetter( $property[6] ?? false )
+                            ->setArgInFactory( $property[7] ?? false )
                     );
                     break;
             } // end switch

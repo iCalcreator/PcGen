@@ -2,28 +2,36 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
+
+use function in_array;
+use function is_string;
+use function sprintf;
+use function strcmp;
+use function strtoupper;
+use function var_export;
 
 /**
  * Class EntityMgr
@@ -58,7 +66,7 @@ final class EntityMgr extends BaseA
     /**
      * Opt. array index
      *
-     * @var int|string
+     * @var null|int|string
      */
     private $index = null;
 
@@ -80,10 +88,10 @@ final class EntityMgr extends BaseA
     private $forceVarPrefix = true;
 
     /**
-     * @param string     $class
-     * @param string     $variable
-     * @param int|string $index
-     * @param bool       $forceVarPrefix
+     * @param null|string     $class
+     * @param null|string     $variable
+     * @param null|int|string $index
+     * @param null|bool       $forceVarPrefix
      * @return static
      * @throws InvalidArgumentException
      */
@@ -92,7 +100,8 @@ final class EntityMgr extends BaseA
         $variable = null,
         $index = null,
         $forceVarPrefix = true
-    ) {
+    ) : self
+    {
         $instance = self::init();
         $instance->setClass( $class );
         if( null !== $variable ) {
@@ -101,14 +110,14 @@ final class EntityMgr extends BaseA
         if( null !== $index ) {
             $instance->setIndex( $index );
         }
-        $instance->setForceVarPrefix( $forceVarPrefix );
+        $instance->setForceVarPrefix( $forceVarPrefix ?? true );
         return $instance;
     }
 
     /**
      * @return string  testing
      */
-    public function __toString()
+    public function __toString() : string
     {
         static $D  = ' - ';
         static $P1 = '[';
@@ -116,8 +125,8 @@ final class EntityMgr extends BaseA
         static $isStatic = ', isStatic : ';
         static $ixConst  = ', isConst : ';
         static $varForce = ', $-force : ';
-        return (( null === $this->class ) ? self::SP1 : $this->class ) . $D .
-            (( null === $this->variable ) ? self::SP1 : $this->variable ) . $D .
+        return ( $this->class ?? self::SP1 ) . $D .
+            ( $this->variable ?? self::SP1  ) . $D .
             (( null === $this->index ) ? self::SP1 : $P1 . $this->index . $P2 ) .
             $isStatic . var_export( $this->isStatic, true ) .
             $ixConst . var_export( $this->isConst, true ) .
@@ -127,7 +136,7 @@ final class EntityMgr extends BaseA
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray() : array
     {
         return [ $this->toString() ];
     }
@@ -137,7 +146,7 @@ final class EntityMgr extends BaseA
      *
      * @return string
      */
-    public function toString()
+    public function toString() : string
     {
         if(( null === $this->class ) && ( null === $this->variable )) { // empty ??
             return self::SP0;
@@ -145,13 +154,13 @@ final class EntityMgr extends BaseA
         $row = $this->getPrefixCode();
         $row = $this->getSubjectCode( $row );
         $row = $this->getIndexCode( $row );
-        return Util::nullByteClean( $row );
+        return Util::nullByteCleanString( $row );
     }
 
     /**
      * @return string
      */
-    private function getPrefixCode()
+    private function getPrefixCode() : string
     {
         $row = self::SP0;
         switch( true ) {
@@ -171,7 +180,7 @@ final class EntityMgr extends BaseA
      * @param string $row
      * @return string
      */
-    private function getSubjectCode( $row )
+    private function getSubjectCode( string $row ) : string
     {
         static $COLONCOLON = '::';
         static $DASHARROW  = '->';
@@ -218,7 +227,7 @@ final class EntityMgr extends BaseA
      * @param bool $expectVarPrefixed
      * @return string
      */
-    private function fixVariablePrefix( $expectVarPrefixed )
+    private function fixVariablePrefix( bool $expectVarPrefixed ) : string
     {
         if( $expectVarPrefixed ) {
             return Util::setVarPrefix( $this->variable );
@@ -230,7 +239,7 @@ final class EntityMgr extends BaseA
      * @param string $row
      * @return string
      */
-    private function getIndexCode( $row )
+    private function getIndexCode( string $row ) : string
     {
         static $ARR = '[%s]';
         switch( true ) {
@@ -250,11 +259,19 @@ final class EntityMgr extends BaseA
     }
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getClass()
     {
         return $this->class;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClassSet() : bool
+    {
+        return ( null !== $this->class );
     }
 
     /**
@@ -264,7 +281,7 @@ final class EntityMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setClass( $class = null )
+    public function setClass( $class = null ) : self
     {
         switch( true ) {
             case ( empty( $class ) || in_array( $class, self::$CLASSPREFIXes )) :
@@ -281,7 +298,7 @@ final class EntityMgr extends BaseA
     }
 
     /**
-     * @return bool|string
+     * @return null|bool|string
      */
     public function getVariable()
     {
@@ -295,7 +312,7 @@ final class EntityMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVariable( $variable )
+    public function setVariable( string $variable ) : self
     {
         if( ! is_string( $variable ) || empty( $variable )) {
             throw new InvalidArgumentException( sprintf( self::$ERRx, var_export( $variable, true )));
@@ -316,11 +333,11 @@ final class EntityMgr extends BaseA
     /**
      * Set variable/property index
      *
-     * @param int|string $index
+     * @param null|int|string $index
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setIndex( $index )
+    public function setIndex( $index ) : self
     {
         switch( true ) {
             case Util::isInt( $index ) :
@@ -331,7 +348,6 @@ final class EntityMgr extends BaseA
                 throw new InvalidArgumentException(
                     sprintf( self::$ERRx, var_export( $index, true ))
                 );
-                break;
             case ( self::ARRAY2_T == $index ) :
                 break;
             default :
@@ -346,25 +362,25 @@ final class EntityMgr extends BaseA
     /**
      * @return bool
      */
-    public function isConst()
+    public function isConst() : bool
     {
         return $this->isConst;
     }
 
     /**
-     * @param bool $isConst
+     * @param null|bool $isConst
      * @return static
      */
-    public function setIsConst( $isConst = true )
+    public function setIsConst( $isConst = true ) : self
     {
-        $this->isConst = (bool) $isConst;
+        $this->isConst = $isConst ?? true;
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function isStatic()
+    public function isStatic() : bool
     {
         return $this->isStatic;
     }
@@ -372,12 +388,12 @@ final class EntityMgr extends BaseA
     /**
      * Set isStatic, only for class '$class', ignored by the others
      *
-     * @param bool $isStatic
+     * @param null|bool $isStatic
      * @return static
      */
-    public function setIsStatic( $isStatic = true )
+    public function setIsStatic( $isStatic = true ) : self
     {
-        $this->isStatic = (bool) $isStatic;
+        $this->isStatic = $isStatic ?? true;
         return $this;
     }
 
@@ -385,9 +401,9 @@ final class EntityMgr extends BaseA
      * @param bool $forceVarPrefix
      * @return EntityMgr
      */
-    public function setForceVarPrefix( $forceVarPrefix = true )
+    public function setForceVarPrefix( $forceVarPrefix = true ) : self
     {
-        $this->forceVarPrefix = (bool) $forceVarPrefix;
+        $this->forceVarPrefix = $forceVarPrefix ?? true;
         return $this;
     }
 }

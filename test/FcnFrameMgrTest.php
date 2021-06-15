@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use Exception;
@@ -33,7 +34,8 @@ class FcnFrameMgrTest extends TestCase
 
     private static $dblVarPrefix = '$$';
 
-    public static function fcnFrameMgrTest1DataProvider() {
+    public static function fcnFrameMgrTest1DataProvider() : array
+    {
         $testData = [];
 
         $testData[] = [
@@ -454,7 +456,7 @@ class FcnFrameMgrTest extends TestCase
      * @param mixed  $default
      * @param string $expected
      */
-    public function fcnFrameMgrTest1( $case, $argName, $varType, $default, $expected ) {
+    public function fcnFrameMgrTest1( int $case, string $argName, $varType, $default, string $expected ) {
         static $tmpl = '    public function %1$s( %2$s%3$s )%4$s    {%4$s    }%4$s';
         $fcnName  = __FUNCTION__ . '_' . $case;
         $varDto   = VarDto::factory( $argName, $varType, $default );
@@ -480,7 +482,8 @@ class FcnFrameMgrTest extends TestCase
         }
     }
 
-    public static function fcnFrameMgrTest2DataProvider() {
+    public static function fcnFrameMgrTest2DataProvider() : array
+    {
             $testData = [];
 
         $testData[] = [
@@ -657,7 +660,7 @@ class FcnFrameMgrTest extends TestCase
      * @param int $case
      * @param string|array $args
      */
-    public function fcnFrameMgrTest2( $case, $args = null ) {
+    public function fcnFrameMgrTest2( int $case, $args = null ) {
         $case += 200;
         if( empty( $args )) {
             $args = null;
@@ -700,7 +703,7 @@ class FcnFrameMgrTest extends TestCase
      * @param int $case
      * @param string|array $args
      */
-    public function fcnFrameMgrTest3( $case, $args = null ) {
+    public function fcnFrameMgrTest3( int $case, $args = null ) {
         $case += 300;
         if( is_array( $args )) {
             foreach( $args as & $argSet ) {
@@ -742,7 +745,7 @@ class FcnFrameMgrTest extends TestCase
      * @param int $case
      * @param string|array $args
      */
-    public function fcnFrameMgrTest4( $case, $args = null ) {
+    public function fcnFrameMgrTest4( int $case, $args = null ) {
         $case += 400;
         if( ! is_array( $args )) {
             $this->assertTrue( true );
@@ -785,7 +788,7 @@ class FcnFrameMgrTest extends TestCase
      * @param int $case
      * @param string|array $args
      */
-    public function fcnFrameMgrTest5( $case, $args = null ) {
+    public function fcnFrameMgrTest5( int $case, $args = null ) {
         $case += 500;
         if( is_array( $args )) {
             foreach( $args as & $argSet ) {
@@ -847,7 +850,7 @@ class FcnFrameMgrTest extends TestCase
      * @param string      $case
      * @param FcnFrameMgr $ffg
      */
-    public function classReturnTester( $case, FcnFrameMgr $ffg ) {
+    public function classReturnTester( string $case, FcnFrameMgr $ffg ) {
 
         $casex = $case . '-A';
         $code = $ffg->toString();
@@ -891,7 +894,7 @@ class FcnFrameMgrTest extends TestCase
      * @param string      $case
      * @param FcnFrameMgr $ffg
      */
-    public function fcnReturnTester( $case, FcnFrameMgr $ffg ) {
+    public function fcnReturnTester( string $case, FcnFrameMgr $ffg ) {
 
         $casex = $case . '-A';
         $code = $ffg->toString();
@@ -937,7 +940,7 @@ class FcnFrameMgrTest extends TestCase
      * @param int $case
      * @param string|array $args
      */
-    public function fcnFrameMgrTest7( $case, $args = null ) {
+    public function fcnFrameMgrTest7( int $case, $args = null ) {
         $case += 900;
         if( empty( $args )) {
             $args = null;
@@ -966,7 +969,7 @@ class FcnFrameMgrTest extends TestCase
             $ffg->setVarUse( $args );
             $code = $ffg->toString();
             $this->assertFalse( strpos( $code, self::$dblVarPrefix ));
-            $this->assertNOTFalse( strpos( $code, 'use (' ), $casex . PHP_EOL . $code );
+            $this->assertNotFalse( strpos( $code, 'use (' ), $casex . PHP_EOL . $code );
             $ffg->setVarUse();
 
             if( DISPLAYffm ) {
@@ -991,7 +994,7 @@ class FcnFrameMgrTest extends TestCase
         $ffg->setVarUse( $args2 );
         $code = $ffg->toString();
         $this->assertFalse( strpos( $code, self::$dblVarPrefix ));
-        $this->assertNOTFalse( strpos( $code, 'use (' ), $casex . PHP_EOL . $code );
+        $this->assertNotFalse( strpos( $code, 'use (' ), $casex . PHP_EOL . $code );
         $ffg->setVarUse();
 
         if( DISPLAYffm ) {
@@ -1021,7 +1024,7 @@ class FcnFrameMgrTest extends TestCase
         $ffg->setVarUse( $args2 );
         $code = $ffg->toString();
         $this->assertFalse( strpos( $code, self::$dblVarPrefix ));
-        $this->assertNOTFalse( strpos( $code, 'use (' ), $casex . PHP_EOL . $code );
+        $this->assertNotFalse( strpos( $code, 'use (' ), $casex . PHP_EOL . $code );
         $ffg->setVarUse();
 
         $casex   = $case . '-G5';
@@ -1033,13 +1036,14 @@ class FcnFrameMgrTest extends TestCase
         }
         $code = $ffg->toString();
         $this->assertFalse( strpos( $code, self::$dblVarPrefix ));
-        $this->assertNOTFalse( strpos( $code, 'use (' ), $casex . PHP_EOL . $code );
+        $this->assertNotFalse( strpos( $code, 'use (' ), $casex . PHP_EOL . $code );
         $ffg->setVarUse();
 
         echo __FUNCTION__ . ' : case ' . $casex . ' ok !' . PHP_EOL;
     }
 
-    public static function argumentDtoTest9DataProvider() {
+    public static function argumentDtoTest9DataProvider() : array
+    {
         $testData = [];
 
         $testData[] = [
@@ -1091,7 +1095,7 @@ class FcnFrameMgrTest extends TestCase
      * @param mixed $arg
      * @param int   $expected
      */
-    public function argumentDtoTest9( $case, $arg, $expected  ) {
+    public function argumentDtoTest9( int $case, $arg, int $expected  ) {
         $result = FcnFrameMgr::factory( 'test', [  [ 'arg', null, null, null, $arg ] ] )
             ->getArgument( 0 )->getUpdClassProp();
         $this->assertEquals(
@@ -1253,28 +1257,6 @@ class FcnFrameMgrTest extends TestCase
     }
 
     /**
-     * Testing invalid argument
-     *
-     * @test
-     */
-    public function fcnFrameMgrTest30() {
-        $ffm = FcnFrameMgr::init();
-
-        FcnFrameMgr::setTargetPhpVersion( '5.6.0' );
-        $ffm->setReturnType( $ffm );
-        $this->assertFalse( $ffm->isReturnTypeSet());
-
-        FcnFrameMgr::setTargetPhpVersion( PHP_VERSION );
-        try {
-            $ffm->setReturnType( $ffm );
-            $this->assertTrue( false );
-        }
-        catch( Exception $e ) {
-            $this->assertTrue( true );
-        }
-    }
-
-    /**
      * Testing returnValue
      *
      * @test
@@ -1320,7 +1302,8 @@ class FcnFrameMgrTest extends TestCase
      * @param $args
      * @return array
      */
-    public static function compressArgs( $args ) {
+    public static function compressArgs( $args ) : array
+    {
         if( empty( $args )) {
             $row  = '/*' . PHP_EOL . ' * function body ' . PHP_EOL . ' *' . PHP_EOL;
         }

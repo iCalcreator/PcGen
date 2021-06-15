@@ -2,29 +2,37 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use RuntimeException;
+
+use function array_keys;
+use function count;
+use function rtrim;
+use function str_replace;
+use function trim;
+use function sprintf;
 
 final class ChainInvokeMgr extends BaseA
 {
@@ -34,7 +42,7 @@ final class ChainInvokeMgr extends BaseA
     private $invokes = [];
 
     /**
-     * @var null
+     * @var string
      */
     private $invokeClass = null;
 
@@ -42,7 +50,7 @@ final class ChainInvokeMgr extends BaseA
      * @param FcnInvokeMgr ...$args
      * @return static
      */
-    public static function factory( ...$args )
+    public static function factory( ...$args ) : self
     {
         return self::init()->setInvokes( $args );
     }
@@ -51,7 +59,7 @@ final class ChainInvokeMgr extends BaseA
      * @inheritDoc
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         static $ERR = 'No function directives';
         if( ! $this->isInvokesSet()) {
@@ -84,7 +92,7 @@ final class ChainInvokeMgr extends BaseA
     /**
      * @return FcnInvokeMgr[]
      */
-    public function getInvokes()
+    public function getInvokes() : array
     {
         return $this->invokes;
     }
@@ -92,7 +100,7 @@ final class ChainInvokeMgr extends BaseA
     /**
      * @return bool
      */
-    public function isInvokesSet()
+    public function isInvokesSet() : bool
     {
         return ( ! empty( $this->invokes ));
     }
@@ -108,10 +116,10 @@ final class ChainInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function appendInvoke( FcnInvokeMgr $invoke )
+    public function appendInvoke( FcnInvokeMgr $invoke ) : self
     {
-        static $ERR1 = 'Invalid first \'%s\' for next \'%s\'';
-        static $ERR2 = 'First \'%s\', invalid next \'%s\'';
+        static $ERR1 = 'No invoke class, first invoke \'%s\', next (#%d) \'%s\'';
+        static $ERR2 = 'First invoke \'%s\', invalid next (#%d) \'%s\'';
         switch( true ) {
             case empty( $this->invokes ) : // first invoke, accepts all
                 $this->invokeClass = $invoke->getName()->getClass();
@@ -120,18 +128,21 @@ final class ChainInvokeMgr extends BaseA
                 throw new InvalidArgumentException(
                     sprintf( $ERR1,
                         trim( $this->invokes[0]->toString()),
+                        ( count( $this->invokes ) + 1 ),
                         trim( $invoke->toString())
                     )
                 );
+            case ( ! $invoke->getName()->isClassSet()) : // force same class as first
+                $invoke->getName()->setClass( Util::setVarPrefix( $this->invokeClass ));
                 break;
             case ( ! self::evaluateClass( $invoke->getName()->getClass())) :
                 throw new InvalidArgumentException(
                     sprintf( $ERR2,
                         trim( $this->invokes[0]->toString()),
+                        ( count( $this->invokes ) + 1 ),
                         trim( $invoke->toString())
                     )
                 );
-                break;
             default : // next invoke, force same class as first
                 $invoke->getName()->setClass( Util::setVarPrefix( $this->invokeClass ));
                 break;
@@ -146,7 +157,7 @@ final class ChainInvokeMgr extends BaseA
      * @param string $invokeClass
      * @return bool
      */
-    private static function evaluateClass( $invokeClass )
+    private static function evaluateClass( string $invokeClass ) : bool
     {
         if( empty( $invokeClass )) {
             return false;
@@ -168,7 +179,7 @@ final class ChainInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setInvokes( array $invokes )
+    public function setInvokes( array $invokes ) : self
     {
         $this->invokes     = [];
         $this->invokeClass = null;

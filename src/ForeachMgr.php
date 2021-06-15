@@ -2,29 +2,37 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use RuntimeException;
+
+use function array_merge;
+use function get_class;
+use function is_object;
+use function is_string;
+use function sprintf;
+use function trim;
 
 /**
  * Class ForeachMgr
@@ -63,9 +71,9 @@ final class ForeachMgr extends BaseB
     /**
      * ForeachMgr class factory method
      *
-     * @param string|EntityMgr|FcnInvokeMgr $iterator
-     * @param string $key
-     * @param string $iterValue
+     * @param null|string|EntityMgr|FcnInvokeMgr $iterator
+     * @param null|string $key
+     * @param null|string $iterValue
      * @return static
      * @throws InvalidArgumentException
      */
@@ -73,15 +81,16 @@ final class ForeachMgr extends BaseB
         $iterator = null,
         $key = null,
         $iterValue = null
-    ) {
+    ) : self
+    {
         $instance = self::init();
-        if( null != $iterator ) {
+        if( null !== $iterator ) {
             $instance->setIterator( $iterator );
         }
-        if( null != $key ) {
+        if( null !== $key ) {
             $instance->setKey( $key );
         }
-        if( null != $iterValue ) {
+        if( null !== $iterValue ) {
             $instance->setIterValue( $iterValue );
         }
         return $instance;
@@ -93,7 +102,7 @@ final class ForeachMgr extends BaseB
      * @return array
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         static $ERR1  = 'Missing foreach array|Traversable';
         static $FMT1  = '%sforeach( ';
@@ -126,7 +135,7 @@ final class ForeachMgr extends BaseB
     }
 
     /**
-     * @return string|EntityMgr|FcnInvokeMgr
+     * @return null|string|EntityMgr|FcnInvokeMgr
      */
     public function getIterator()
     {
@@ -136,7 +145,7 @@ final class ForeachMgr extends BaseB
     /**
      * @return bool
      */
-    public function isIteratorSet()
+    public function isIteratorSet() : bool
     {
         return ( null !== $this->iterator );
     }
@@ -146,7 +155,7 @@ final class ForeachMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setIterator( $iterator )
+    public function setIterator( $iterator ) : self
     {
         switch( true ) {
             case ( $iterator instanceof EntityMgr ) :
@@ -172,7 +181,7 @@ final class ForeachMgr extends BaseB
     }
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getKey()
     {
@@ -182,7 +191,7 @@ final class ForeachMgr extends BaseB
     /**
      * @return bool
      */
-    public function isKeySet()
+    public function isKeySet() : bool
     {
         return ( null !== $this->key );
     }
@@ -192,16 +201,17 @@ final class ForeachMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setKey( $key )
+    public function setKey( string $key ) : self
     {
         $this->key = Assert::assertPhpVar( $key );
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getIterValue() {
+    public function getIterValue()
+    {
         return $this->iterValue;
     }
 
@@ -210,7 +220,7 @@ final class ForeachMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setIterValue( $iterValue )
+    public function setIterValue( string $iterValue ) : self
     {
         $this->iterValue = Assert::assertPhpVar( $iterValue );
         return $this;

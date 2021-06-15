@@ -1,4 +1,4 @@
-[comment]: # (This file is part of PcGen, PHP Code Generation support package. Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved, licence GPL 3.0)
+[comment]: # (This file is part of PcGen, PHP Code Generation support package. Copyright 2020-21 Kjell-Inge Gustafsson, kigkonsult, All rights reserved, licence GPL 3.0)
 
 #### FileMgr
 

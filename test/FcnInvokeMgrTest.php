@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use Exception;
@@ -37,78 +38,89 @@ class FcnInvokeMgrTest extends TestCase
      * @test
      */
     public function FcnInvokeMgrTest1() {
-
+        $fcnName = 'fcnName101';
         $this->assertEquals(
-            'fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( null, 'fcnName' )
+            $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( null, $fcnName )
                 ->toString()
         );
 
+        $fcnName = 'fcnName102';
         $this->assertEquals(
-            'fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( null, '$fcnName' )
+            $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( null, $fcnName )
                 ->toString()
         );
 
+        $fcnName = 'fcnName103';
         $this->assertEquals(
-            'self::fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( FcnInvokeMgr::SELF_KW, 'fcnName' )
+            'self::' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( FcnInvokeMgr::SELF_KW, $fcnName )
                 ->toString()
         );
 
+        $fcnName = 'fcnName104';
         $this->assertEquals(
-            'self::fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( FcnInvokeMgr::SELF_KW, '$fcnName' )
+            'self::' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( FcnInvokeMgr::SELF_KW, $fcnName )
                 ->toString()
         );
 
+        $fcnName = 'fcnName105';
         $this->assertEquals(
-            '$this->fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( FcnInvokeMgr::THIS_KW, 'fcnName' )
+            '$this->' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( FcnInvokeMgr::THIS_KW, $fcnName )
                 ->toString()
         );
 
+        $fcnName = 'fcnName106';
         $this->assertEquals(
-            '$this->fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( FcnInvokeMgr::THIS_KW, '$fcnName' )
+            '$this->' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( FcnInvokeMgr::THIS_KW, $fcnName )
                 ->toString()
         );
 
+        $fcnName = 'fcnName107';
         $this->assertEquals(
-            '$class::fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( '$class', 'fcnName' )
+            '$class::' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( '$class', $fcnName )
                 ->setIsStatic( true )
                 ->toString()
         );
 
+        $fcnName = 'fcnName108';
         $this->assertEquals(
-            '$class::fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( '$class', '$fcnName' )
+            '$class::' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( '$class', $fcnName )
                 ->setIsStatic( true )
                 ->toString()
         );
 
+        $fcnName = 'fcnName109';
         $this->assertEquals(
-            '$class->fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( '$class', 'fcnName' )
+            '$class->' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( '$class', $fcnName )
                 ->toString()
         );
 
+        $fcnName = 'fcnName110';
         $this->assertEquals(
-            '$class->fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( '$class', '$fcnName' )
+            '$class->' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( '$class', '$' . $fcnName )
                 ->toString()
         );
 
+        $fcnName = 'fcnName111';
         $this->assertEquals(
-            'fqcn::fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( 'fqcn', 'fcnName' )
+            'fqcn::' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( 'fqcn', $fcnName )
                 ->toString()
         );
 
+        $fcnName = 'fcnName112';
         $this->assertEquals(
-            'fqcn::fcnName()' . PHP_EOL,
-            FcnInvokeMgr::factory( 'fqcn', '$fcnName' )
+            'fqcn::' . $fcnName .'()' . PHP_EOL,
+            FcnInvokeMgr::factory( 'fqcn', '$' . $fcnName )
                 ->toString()
         );
 
@@ -119,7 +131,8 @@ class FcnInvokeMgrTest extends TestCase
     /**
      * @return array
      */
-    public function FcnInvokeMgrTest3DataProvider() {
+    public function FcnInvokeMgrTest3DataProvider() : array
+    {
         $testData = [];
 
         foreach( self::FcnInvokeMgrFunctionProvider() as $function ) {
@@ -151,7 +164,8 @@ class FcnInvokeMgrTest extends TestCase
      * @param string|array $argSet
      * @param string       $expFcnName
      */
-    public function FcnInvokeMgrTest3( $case, $class, $name, $argSet, $expFcnName ) {
+    public function FcnInvokeMgrTest3( string $case, $class, string $name, $argSet, string $expFcnName ) {
+        $case = '3-' . $case;
         if( empty( $argSet )) {
             $argSet = null;
         }
@@ -188,7 +202,7 @@ class FcnInvokeMgrTest extends TestCase
                 $case . ' actual : ' . trim( $code ). ' expected : ' . $expected
             );
             if( DISPLAYfim ) {
-                echo __FUNCTION__ . ' ' . $case . ' ' . $code;
+                echo __FUNCTION__ . ' ' . $case . ' ' . trim( $code );
             }
             return;
         }
@@ -244,9 +258,10 @@ class FcnInvokeMgrTest extends TestCase
      * @test
      */
     public function FcnInvokeMgrTest35() {
+        $fcnName = 'method35';
         $this->assertEquals(
-            '$class->method()' . PHP_EOL,
-            FcnInvokeMgr::factory( null, 'method' )
+            '$class->' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( null, $fcnName )
                 ->setClass( '$class' )
                 ->toString()
         );
@@ -256,14 +271,17 @@ class FcnInvokeMgrTest extends TestCase
      * @test
      */
     public function FcnInvokeMgrTest36() {
+        $fcnName = 'method361';
         $this->assertEquals(
-            '$class->method()' . PHP_EOL,
-            FcnInvokeMgr::factory( '$class', 'method' )
+            '$class->' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( '$class', $fcnName )
                 ->toString()
         );
+
+        $fcnName = 'method361';
         $this->assertEquals(
-            '$class::method()' . PHP_EOL,
-            FcnInvokeMgr::factory( '$class', 'method' )
+            '$class::' . $fcnName . '()' . PHP_EOL,
+            FcnInvokeMgr::factory( '$class', $fcnName )
                 ->setIsStatic( true )
                 ->toString()
         );
@@ -275,26 +293,26 @@ class FcnInvokeMgrTest extends TestCase
     public function FcnInvokeMgrTest43() {
         try {
             FcnInvokeMgr::init()->toArray();
-            $this->assertTrue( false );
+            $this->assertTrue( false, 'case 43-101' );
         }
         catch( Exception $e ) {
-            $this->assertTrue( true );
+            $this->assertTrue( true, 'case 43-102' );
         }
 
         try {
             FcnInvokeMgr::init()->setName( null, null );
-            $this->assertTrue( false );
+            $this->assertTrue( false, 'case 43-111' );
         }
         catch( Exception $e ) {
-            $this->assertTrue( true );
+            $this->assertTrue( true, 'case 43-112' );
         }
 
         try {
             FcnInvokeMgr::init()->setIsStatic( true );
-            $this->assertTrue( false );
+            $this->assertTrue( false, 'case 43-131' );
         }
         catch( Exception $e ) {
-            $this->assertTrue( true );
+            $this->assertTrue( true, 'case 43-132' );
         }
     }
 
@@ -305,24 +323,26 @@ class FcnInvokeMgrTest extends TestCase
      */
     public function ChainInvokeMgrTest56() {
         $invokes = [
-            FcnInvokeMgr::factory( 'SourceClass', FcnInvokeMgr::FACTORY, [ 'arg11', 'arg12' ] ),
-            FcnInvokeMgr::factory( 'SourceClass', 'method2', [ 'arg21', 'arg22' ] ),
-            FcnInvokeMgr::factory( 'SourceClass', 'method3', [ 'arg31', 'arg32' ] ),
-            FcnInvokeMgr::factory( 'SourceClass', 'method4', [ 'arg41', 'arg42' ] ),
+            FcnInvokeMgr::factory( 'SourceClass', FcnInvokeMgr::FACTORY, [ 'arg561', 'arg562' ] ),
+            FcnInvokeMgr::factory( 'SourceClass', 'method2', [ 'arg5621', 'arg5622' ] ),
+            FcnInvokeMgr::factory( 'SourceClass', 'method3', [ 'arg5631', 'arg5632' ] ),
+            FcnInvokeMgr::factory( 'SourceClass', 'method4', [ 'arg5641', 'arg5642' ] ),
             FcnInvokeMgr::factory( 'SourceClass', __FUNCTION__ )
         ];
+        $acceptedTail = 'SourceClass::factory( $arg561, $arg562 )' . PHP_EOL .
+            '    ->method2( $arg5621, $arg5622 )' . PHP_EOL .
+            '    ->method3( $arg5631, $arg5632 )' . PHP_EOL .
+            '    ->method4( $arg5641, $arg5642 )' . PHP_EOL .
+            '    ->' . __FUNCTION__ . '();' . PHP_EOL;
 
         $rcm = ReturnClauseMgr::init()
             ->setBaseIndent()
             ->setFcnInvoke( $invokes );
         $code = ltrim( $rcm->toString());
         $this->assertEquals(
-            'return SourceClass::factory( $arg11, $arg12 )' . PHP_EOL .
-            '    ->method2( $arg21, $arg22 )' . PHP_EOL .
-            '    ->method3( $arg31, $arg32 )' . PHP_EOL .
-            '    ->method4( $arg41, $arg42 )' . PHP_EOL .
-            '    ->' . __FUNCTION__ . '();' . PHP_EOL,
-            $code
+            'return ' . $acceptedTail,
+            $code,
+            'case 56-1'
         );
         if( DISPLAYfim ) {
             echo $code . PHP_EOL;
@@ -336,12 +356,9 @@ class FcnInvokeMgrTest extends TestCase
         }
         $code = ltrim( $acm->toString());
         $this->assertEquals(
-            '$target = SourceClass::factory( $arg11, $arg12 )' . PHP_EOL .
-            '    ->method2( $arg21, $arg22 )' . PHP_EOL .
-            '    ->method3( $arg31, $arg32 )' . PHP_EOL .
-            '    ->method4( $arg41, $arg42 )' . PHP_EOL .
-            '    ->' . __FUNCTION__ . '();' . PHP_EOL,
-            $code
+            '$target = ' . $acceptedTail,
+            $code,
+            'case 56-2'
         );
         if( DISPLAYfim ) {
             echo $code . PHP_EOL;
@@ -349,64 +366,101 @@ class FcnInvokeMgrTest extends TestCase
     }
 
     /**
+     * Test Exception (Throwable?) or not
+     *
      * @test
      */
     public function ChainInvokeMgrTest57() {
+        // Not accepted, no invoke class at all
         try {
             $rcm = ReturnClauseMgr::init()
                 ->setFcnInvoke(
                     [
                         FcnInvokeMgr::factory( null, FcnInvokeMgr::FACTORY),
-                        FcnInvokeMgr::factory( null, 'method2'),
+                        FcnInvokeMgr::factory( null, 'method57_1'),
                     ]
                 );
-            $this->assertTrue( false );
+            if( DISPLAYfim ) {
+                echo ltrim( $rcm->toString()) . PHP_EOL;
+            }
+            $this->assertTrue( false, 'case 57-1-1 ' );
         }
         catch( Exception $e ) {
-            $this->assertTrue( true );
+            /*
+            echo get_class( $e ) . ' in ' . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL; // test ###
+            echo $e->getMessage() . PHP_EOL; // test ###
+            echo $e->getTraceAsString() . PHP_EOL; // test ###
+            */
+            $this->assertTrue( true, 'case 57-1-2' );
         }
 
+        // accepted !!
         try {
             $rcm = ReturnClauseMgr::init()
                 ->setFcnInvoke(
                     [
                         FcnInvokeMgr::factory( 'SourceClass', FcnInvokeMgr::FACTORY),
-                        FcnInvokeMgr::factory( null, 'method2'),
+                        FcnInvokeMgr::factory( null, 'method57_2'),
                     ]
                 );
-            $this->assertTrue( false );
+            $this->assertTrue( true, 'case 57-2-1' );
         }
         catch( Exception $e ) {
-            $this->assertTrue( true );
+            $this->assertTrue( false, 'case 57-2-2' );
         }
 
+        // Not accepted, no (first) invoke class
         try {
             $rcm = ReturnClauseMgr::init()
                 ->setFcnInvoke(
                     [
                         FcnInvokeMgr::factory( null, FcnInvokeMgr::FACTORY),
-                        FcnInvokeMgr::factory( 'SourceClass', 'method2'),
+                        FcnInvokeMgr::factory( 'SourceClass', 'method57_3'),
                     ]
                 );
-            $this->assertTrue( false );
+            if( DISPLAYfim ) {
+                echo ltrim( $rcm->toString()) . PHP_EOL;
+            }
+            $this->assertTrue( false, 'case 57-3-1' );
         }
         catch( Exception $e ) {
-            $this->assertTrue( true );
+            $this->assertTrue( true, 'case 57-3-2' );
         }
 
+        // Not accepted (#2) invoke class
         try {
             $rcm = ReturnClauseMgr::init()
                 ->setFcnInvoke(
                     [
                         FcnInvokeMgr::factory( 'SourceClass', FcnInvokeMgr::FACTORY),
-                        FcnInvokeMgr::factory( 'ns\123\src\Klass', 'method2'),
-                    ]
+                        FcnInvokeMgr::factory( 'ns\123\src\Klass', 'method57_4'),
+                        ]
                 );
-            $this->assertTrue( false );
+            if( DISPLAYfim ) {
+                echo ltrim( $rcm->toString()) . PHP_EOL;
+            }
+            $this->assertTrue( false, 'case 57-4-1' );
         }
         catch( Exception $e ) {
-            $this->assertTrue( true );
+            $this->assertTrue( true, 'case 57-4-2' );
+        }
+
+        // Accepted, invoke class replace by first
+        try {
+            $rcm = ReturnClauseMgr::init()
+                ->setFcnInvoke(
+                    [
+                        FcnInvokeMgr::factory( 'SourceClass', FcnInvokeMgr::FACTORY),
+                        FcnInvokeMgr::factory( 'ns\acme\src\Klass', 'method57_5'),
+                        ]
+                );
+            if( DISPLAYfim ) {
+                echo ltrim( $rcm->toString()) . PHP_EOL;
+            }
+            $this->assertTrue( true, 'case 57-5-1' );
+        }
+        catch( Exception $e ) {
+            $this->assertTrue( false, 'case 57-5-2' );
         }
     }
-
 }

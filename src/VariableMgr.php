@@ -2,31 +2,42 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use Kigkonsult\PcGen\Dto\VarDto;
 use Kigkonsult\PcGen\Traits\OperatorTrait;
 use RuntimeException;
+
+use function array_keys;
+use function array_reverse;
+use function call_user_func_array;
+use function implode;
+use function is_bool;
+use function ltrim;
+use function sprintf;
+use function strtoupper;
+use function var_export;
 
 /**
  * Class VariableMgr
@@ -67,9 +78,9 @@ class VariableMgr extends BaseC
     /**
      * VariableMgr constructor
      *
-     * @param string $eol
-     * @param string $indent
-     * @param string $baseIndent
+     * @param null|string $eol
+     * @param null|string $indent
+     * @param null|string $baseIndent
      */
     public function __construct( $eol = null, $indent = null, $baseIndent = null )
     {
@@ -82,11 +93,11 @@ class VariableMgr extends BaseC
      * @return static
      * @throws InvalidArgumentException
      */
-    public static function factory( ...$args )
+    public static function factory( ...$args ) : self
     {
         $instance = new static();
         switch ( true ) {
-            case ( $args[0] instanceof VarDto ) :
+            case ( isset( $args[0] ) && ( $args[0] instanceof VarDto )) :
                 $instance->setVarDto( $args[0] );
                 break;
             case ! empty( $args ) :
@@ -103,7 +114,6 @@ class VariableMgr extends BaseC
                 throw new InvalidArgumentException(
                     sprintf( self::$ERRx, var_export( $args, true ))
                 );
-                break;
         } // end switch
         return $instance;
     }
@@ -112,7 +122,7 @@ class VariableMgr extends BaseC
      * @return string
      * @todo stringify
      */
-    public function __toString()
+    public function __toString() : string
     {
         $string  = empty( $this->varDto ) ? self::SP0 : $this->varDto;
         $string .= ', visibility : \'' . $this->getVisibility() . '\'';
@@ -140,7 +150,7 @@ class VariableMgr extends BaseC
      * @return array
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         static $CONSTTMPL = '%s %s';
         if( ! $this->varDto->isNameSet()) {
@@ -153,6 +163,7 @@ class VariableMgr extends BaseC
         ) {
             $row .= $this->visibility . self::SP1;
         }
+
         if( $this->isConst()) {
             $row .= sprintf( $CONSTTMPL, self::CONST_, strtoupper( $this->varDto->getName()));
         }
@@ -162,6 +173,7 @@ class VariableMgr extends BaseC
             }
             $row .= Util::setVarPrefix( $this->varDto->getName());
         }
+
         $row .= $this->getOperator( false );
         switch( true ) {
             case $this->isBodySet() :  // closure or expression
@@ -174,7 +186,7 @@ class VariableMgr extends BaseC
                 $code = $this->renderInitValue( $row );
                 break;
         } // end switch
-        return Util::nullByteClean( $code );
+        return Util::nullByteCleanArray( $code );
     }
 
     /**
@@ -183,7 +195,7 @@ class VariableMgr extends BaseC
      * @param string $row
      * @return array
      */
-    private function renderClosureBody( $row )
+    private function renderClosureBody( string $row ) : array
     {
         $body          = $this->getBody();
         $body[0]       = $row . ltrim( $body[0] );
@@ -198,7 +210,7 @@ class VariableMgr extends BaseC
      * @param string $row
      * @return array
      */
-    private function renderCallBlack( $row )
+    private function renderCallBlack( string $row ) : array
     {
         if( is_string( $this->callback )) {
             return [ $row . self::renderCallBlackClass( $this->callback ) . self::$CLOSECLAUSE ];
@@ -217,7 +229,7 @@ class VariableMgr extends BaseC
      * @param string $class
      * @return string
      */
-    private static function renderCallBlackClass( $class )
+    private static function renderCallBlackClass( string $class ) : string
     {
         return Util::isVarPrefixed( $class ) ? $class : sprintf( self::$QUOTE, $class );
     }
@@ -228,7 +240,7 @@ class VariableMgr extends BaseC
      * @param string $row
      * @return array
      */
-    private function renderInitValue( $row )
+    private function renderInitValue( string $row ) : array
     {
         static $KEYFMT = '"%s" => ';
         $initValue = $this->varDto->getDefault();
@@ -243,7 +255,8 @@ class VariableMgr extends BaseC
             case $this->varDto->isDefaultTypedNull() :
                 $initValue = self::NULL_T;
                 break;
-            case $this->varDto->isDefaultTypedArray() :
+            case ( $this->varDto->isDefaultTypedArray() &&
+                ( ! $this->varDto->isDefaultArray() || empty( $initValue ))) :
                 $initValue = self::ARRAY2_T;
                 break;
             case $this->varDto->isDefaultArray() :
@@ -262,7 +275,6 @@ class VariableMgr extends BaseC
                 } // end foreach
                 $code[] = $this->baseIndent . self::$ARREND . self::$CLOSECLAUSE;
                 return $code;
-                break;
             case is_string( $initValue ) :
                 $initValue = Util::renderScalarValue( $initValue, $expType );
                 break;
@@ -276,7 +288,7 @@ class VariableMgr extends BaseC
     }
 
     /**
-     * @return VarDto
+     * @return null|VarDto
      */
     public function getVarDto()
     {
@@ -287,7 +299,7 @@ class VariableMgr extends BaseC
      * @param VarDto $varDto
      * @return static
      */
-    public function setVarDto( $varDto )
+    public function setVarDto( VarDto $varDto ) : self
     {
         $this->varDto = $varDto;
         return $this;
@@ -296,7 +308,7 @@ class VariableMgr extends BaseC
     /**
      * Get varable name, override parent
      *
-     * @return string
+     * @return null|string
      */
     public function getName()
     {
@@ -310,7 +322,7 @@ class VariableMgr extends BaseC
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setName( $name )
+    public function setName( string $name ) : self
     {
         $this->varDto->setName( $name );
         return $this;
@@ -320,14 +332,16 @@ class VariableMgr extends BaseC
      * @param mixed $initValue
      * @return static
      */
-    public function setInitValue( $initValue = null )
+    public function setInitValue( $initValue = null ) : self
     {
         switch( true ) {
             case (( null === $initValue ) ||
-                ( is_string( $initValue ) && ( 0 === strcasecmp(  self::NULL_T, $initValue )))) :
+                ( is_string( $initValue ) &&
+                    ( 0 === strcasecmp(  self::NULL_T, $initValue )))) :
                 $initValue = self::NULL_T;
                 break;
-            case in_array( $initValue, VarDto::$ARRAYs, true ) :
+            case ( is_string( $initValue ) &&
+                in_array( $initValue, VarDto::$ARRAYs, true )) :
                 $initValue = self::ARRAY2_T;
                 break;
             default :
@@ -340,18 +354,18 @@ class VariableMgr extends BaseC
     /**
      * @return bool
      */
-    public function isConst()
+    public function isConst() : bool
     {
         return $this->isConst;
     }
 
     /**
      * @param bool $isConst
-     * @return VariableMgr
+     * @return static
      */
-    public function setIsConst( $isConst = true )
+    public function setIsConst( $isConst = true ) : self
     {
-        $this->isConst = (bool) $isConst;
+        $this->isConst = $isConst ?? true;
         if( $this->isConst ) {
             $this->setStatic( false );
         }
@@ -359,7 +373,7 @@ class VariableMgr extends BaseC
     }
 
     /**
-     * @return null
+     * @return null|string|string[]
      */
     public function getCallback()
     {
@@ -369,7 +383,7 @@ class VariableMgr extends BaseC
     /**
      * @return bool
      */
-    public function isCallBackSet()
+    public function isCallBackSet() : bool
     {
         return ( ! empty( $this->callback ));
     }
@@ -387,11 +401,11 @@ class VariableMgr extends BaseC
      *   instantiated sourceObject, class has an (magic) __invoke method  : $sourceObject
      *
      * @param string $class         accepts both '$obj' and 'className', ie opt $-class, no check
-     * @param string $method
+     * @param null|string $method
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setCallback( $class, $method = null )
+    public function setCallback( string $class, $method = null ) : self
     {
         if( Util::isVarPrefixed( $class ) ) {
             Assert::assertPhpVar( $class );
@@ -399,7 +413,7 @@ class VariableMgr extends BaseC
         else {
             Assert::assertFqcn( $class );
         }
-        if( is_null( $method )) {
+        if( null === $method ) {
             $this->callback = $class;
         }
         else {
@@ -420,9 +434,9 @@ class VariableMgr extends BaseC
      * @param bool $static
      * @return static
      */
-    public function setStatic( $static = true )
+    public function setStatic( $static = true ) : BaseC
     {
-        $this->static = (bool) $static;
+        $this->static = $static ?? true;
         if( $this->static ) {
             $this->setIsConst( false );
         }

@@ -2,29 +2,33 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use RuntimeException;
+
+use function sprintf;
+use function trim;
 
 /**
  * Class TernaryNullCoalesceMgr
@@ -86,7 +90,7 @@ final class TernaryNullCoalesceMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public static function factory( $expr1, $expr2, $expr3 = null )
+    public static function factory( $expr1, $expr2, $expr3 = null ) : self
     {
         $instance = new self();
         $instance->setExpr1( $expr1 );
@@ -103,7 +107,7 @@ final class TernaryNullCoalesceMgr extends BaseA
      * @inheritDoc
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         static $ERR1 = 'No expression %d set';
         static $ERR3 = '%d expressions set';
@@ -135,13 +139,13 @@ final class TernaryNullCoalesceMgr extends BaseA
         if( $this->isTernaryOperator()) {
             $row .= $sp23 . $TO2 . trim( $this->getExpr3()->toString());
         }
-        return [ sprintf( $OUT, Util::nullByteClean( $row )) ];
+        return [ sprintf( $OUT, Util::nullByteCleanString( $row )) ];
     }
 
     /**
      * @return bool
      */
-    public function isTernaryOperator()
+    public function isTernaryOperator() : bool
     {
         return $this->ternaryOperator;
     }
@@ -150,9 +154,9 @@ final class TernaryNullCoalesceMgr extends BaseA
      * @param bool $ternaryOperator
      * @return static
      */
-    public function setTernaryOperator( $ternaryOperator = true )
+    public function setTernaryOperator( $ternaryOperator = true ) : self
     {
-        $this->ternaryOperator = (bool) $ternaryOperator;
+        $this->ternaryOperator = $ternaryOperator ?? true;
         return $this;
     }
 
@@ -185,7 +189,7 @@ final class TernaryNullCoalesceMgr extends BaseA
     /**
      * @return bool
      */
-    public function isExpr1Set()
+    public function isExpr1Set() : bool
     {
         return ( null !== $this->expr1 );
     }
@@ -194,7 +198,7 @@ final class TernaryNullCoalesceMgr extends BaseA
      * @param string|EntityMgr|FcnInvokeMgr $expr1
      * @return static
      */
-    public function setExpr1( $expr1 )
+    public function setExpr1( $expr1 ) : self
     {
         $this->expr1 = self::evalExpr( $expr1 );
         return $this;
@@ -211,7 +215,7 @@ final class TernaryNullCoalesceMgr extends BaseA
     /**
      * @return bool
      */
-    public function isExpr2Set()
+    public function isExpr2Set() : bool
     {
         return ( null !== $this->expr2 );
     }
@@ -220,7 +224,7 @@ final class TernaryNullCoalesceMgr extends BaseA
      * @param EntityMgr|FcnInvokeMgr $expr2
      * @return static
      */
-    public function setExpr2( $expr2 )
+    public function setExpr2( $expr2 ) : self
     {
         $this->expr2 = self::evalExpr( $expr2 );
         return $this;
@@ -237,7 +241,7 @@ final class TernaryNullCoalesceMgr extends BaseA
     /**
      * @return bool
      */
-    public function isExpr3Set()
+    public function isExpr3Set() : bool
     {
         return ( null !== $this->expr3 );
     }
@@ -246,7 +250,7 @@ final class TernaryNullCoalesceMgr extends BaseA
      * @param string|EntityMgr|FcnInvokeMgr $expr3
      * @return static
      */
-    public function setExpr3( $expr3 )
+    public function setExpr3( $expr3 ) : self
     {
         $this->expr3 = self::evalExpr( $expr3 );
         return $this;

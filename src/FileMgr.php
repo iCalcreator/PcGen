@@ -2,29 +2,38 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use RuntimeException;
+
+use function array_keys;
+use function array_merge;
+use function get_class;
+use function is_array;
+use function is_object;
+use function sprintf;
+
 
 /**
  * Class FileMgr
@@ -53,9 +62,9 @@ final class FileMgr extends BaseB
     /**
      * FileMgr constructor
      *
-     * @param string $eol
-     * @param string $indent
-     * @param string $baseIndent
+     * @param null|string $eol
+     * @param null|string $indent
+     * @param null|string $baseIndent
      */
     public function __construct( $eol = null, $indent = null, $baseIndent = null )
     {
@@ -67,7 +76,7 @@ final class FileMgr extends BaseB
      * @inheritDoc
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         $code = [];
         foreach( array_keys( $this->docBlock ) as $dbIx ) {
@@ -84,13 +93,13 @@ final class FileMgr extends BaseB
         if( $this->isBodySet()) {
             $code = array_merge( $code, $this->getBody());
         }
-        return Util::nullByteClean( $code );
+        return Util::nullByteCleanArray( $code );
     }
 
     /**
      * @return DocBlockMgr[]
      */
-    public function getDocBlock()
+    public function getDocBlock() : array
     {
         return $this->docBlock;
     }
@@ -102,7 +111,7 @@ final class FileMgr extends BaseB
      * @return FileMgr
      * @throws InvalidArgumentException
      */
-    public function setDocBlock( $docBlocks )
+    public function setDocBlock( $docBlocks ) : self
     {
         $this->docBlock = [];
         if( ! is_array( $docBlocks )) {
@@ -129,10 +138,10 @@ final class FileMgr extends BaseB
      * Set file docBlock summary AND (one) description in FIRST docBlock
      *
      * @param string $summary
-     * @param string|array $description
+     * @param null|string|array $description
      * @return static
      */
-    public function setInfo( $summary, $description = null )
+    public function setInfo( string $summary, $description = null ) : self
     {
         $this->docBlock[0]->setInfo( $summary, $description );
         return $this;
@@ -141,7 +150,8 @@ final class FileMgr extends BaseB
     /**
      * @return bool
      */
-    public function isFileBodySet() {
+    public function isFileBodySet() : bool
+    {
         return ( ! empty( $this->fileBody ));
     }
 
@@ -149,7 +159,7 @@ final class FileMgr extends BaseB
      * @param ClassMgr $fileBody
      * @return FileMgr
      */
-    public function setFileBody( ClassMgr $fileBody )
+    public function setFileBody( ClassMgr $fileBody ) : self
     {
         $this->fileBody = $fileBody;
         return $this;

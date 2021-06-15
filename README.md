@@ -60,7 +60,7 @@ You may need to readjust result output code style and indents.
 ###### Tests
 
 Tests are executed in ```DISPLAY``` mode, to alter, update _PHP_ const in top of ```phpunit.xml```.  
-Asserted PHP 7+ compability using [PHPCompatibility].
+Assert PHP 7+ using [PHPCompatibility] and [PHPStan].
 
 
 ###### Support
@@ -105,5 +105,6 @@ This project is licensed under the GPLv3 License
 [Composer]:https://getcomposer.org/
 [github.com PcGen]:https://github.com/iCalcreator/PcGen
 [phpdoc]:https://phpdoc.org
-[Summary]:docs/Summary.md
 [PHPCompatibility]:https://github.com/PHPCompatibility/PHPCompatibility
+[PHPStan]:https://github.com/phpstan/phpstan
+[Summary]:docs/Summary.md

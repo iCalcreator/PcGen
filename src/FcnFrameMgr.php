@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
@@ -29,6 +30,16 @@ use Kigkonsult\PcGen\Dto\VarDto;
 use Kigkonsult\PcGen\Traits\ArgumentTrait;
 use Kigkonsult\PcGen\Traits\NameTrait;
 use RuntimeException;
+
+use function array_merge;
+use function count;
+use function in_array;
+use function is_array;
+use function is_scalar;
+use function is_string;
+use function sprintf;
+use function substr;
+use function var_export;
 
 /**
  * Class FcnFrameMgr
@@ -54,7 +65,7 @@ final class FcnFrameMgr extends BaseC
     private $varUses = [];
 
     /**
-     * @var ReturnClauseMgr
+     * @var null|ReturnClauseMgr
      */
     private $returnValue = null;
 
@@ -70,7 +81,7 @@ final class FcnFrameMgr extends BaseC
      * @param array $arguments
      * @return static
      */
-    public static function factory( $name, array $arguments = null )
+    public static function factory( string $name, array $arguments = null ) : self
     {
         $instance = self::init()->setName( $name );
         if( ! empty( $arguments )) {
@@ -85,7 +96,7 @@ final class FcnFrameMgr extends BaseC
      * @return array
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         static $ERR = 'No function directives';
         if( ! $this->isNameSet() &&
@@ -104,7 +115,7 @@ final class FcnFrameMgr extends BaseC
         if( ! $trailFound ) {
             $body = Util::trimTrailing( $body );
         }
-        return Util::nullByteClean(
+        return Util::nullByteCleanArray(
             array_merge(
                 $this->initCode(),
                 $leadCode,
@@ -120,7 +131,7 @@ final class FcnFrameMgr extends BaseC
      *
      * @return array
      */
-    private function initCode()
+    private function initCode() : array
     {
         static $FUNCTION  = 'function';
         static $SP1CLNSP1 = ' : ';
@@ -149,7 +160,7 @@ final class FcnFrameMgr extends BaseC
      * @param array $code
      * @return array
      */
-    private function renderClosureUseVariables( array $code )
+    private function renderClosureUseVariables( array $code ) : array
     {
         static $USESTART = 'use ';
         static $ARGSTART = '(';
@@ -185,7 +196,7 @@ final class FcnFrameMgr extends BaseC
      * @param bool $found
      * @return array
      */
-    private function getPropValueSetCode( $firstLast, & $found = false )
+    private function getPropValueSetCode( int $firstLast, & $found = false ) : array
     {
         $code  = [];
         $found = false;
@@ -206,7 +217,7 @@ final class FcnFrameMgr extends BaseC
      *
      * @return array
      */
-    private function exitCode()
+    private function exitCode() : array
     {
         return array_merge(
             (
@@ -228,7 +239,7 @@ final class FcnFrameMgr extends BaseC
      * @return static
      * @throws InvalidArgumentException
      */
-    public function addVarUse( $name, $byReference = false )
+    public function addVarUse( $name, $byReference = false ) : self
     {
         switch( true ) {
             case ( $name instanceof ArgumentDto ) :
@@ -236,17 +247,16 @@ final class FcnFrameMgr extends BaseC
                 break;
             case ( $name instanceof VarDto ) :
                 $this->varUses[] = ArgumentDto::factory( $name )
-                    ->setByReference( (bool) $byReference );
+                    ->setByReference( $byReference ?? false );
                 break;
             case is_string( $name ) :
                 $this->varUses[] = ArgumentDto::factory( $name )
-                    ->setByReference( (bool) $byReference );
+                    ->setByReference( $byReference ?? false );
                 break;
             default :
                 throw new InvalidArgumentException(
                     sprintf( self::$ERRx, var_export( $name, true ))
                 );
-                break;
         } // end switch
         return $this;
     }
@@ -260,7 +270,7 @@ final class FcnFrameMgr extends BaseC
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVarUse( array $varUse = null )
+    public function setVarUse( $varUse = null ) : self
     {
         static $CLOSUREUSE = 'closure use';
         $this->varUses = [];
@@ -271,7 +281,6 @@ final class FcnFrameMgr extends BaseC
             switch( true ) {
                 case empty( $argSet ) :
                     throw new InvalidArgumentException( sprintf( self::$ERR1, $CLOSUREUSE ));
-                    break;
                 case ( $argSet instanceof ArgumentDto ) :
                     $this->addVarUse( $argSet );
                     break;
@@ -282,17 +291,16 @@ final class FcnFrameMgr extends BaseC
                     throw new InvalidArgumentException(
                         sprintf( self::$ERRx, var_export( $argSet, true ))
                     );
-                    break;
                 case ( $argSet[0] instanceof VarDto ) :
                     $this->addVarUse(
                         ArgumentDto::factory( $argSet[0] )
-                            ->setByReference( Util::getIfSet( $argSet, 1, self::BOOL_T, false ))
+                            ->setByReference( $argSet[1] ?? false )
                     );
                     break;
                 default :
                     $this->addVarUse(
                         ArgumentDto::factory( $argSet[0] )
-                            ->setByReference( Util::getIfSet( $argSet, 1, self::BOOL_T, false ))
+                            ->setByReference( $argSet[1] ?? false )
                     );
             } // end switch
         } // end foreach
@@ -300,7 +308,7 @@ final class FcnFrameMgr extends BaseC
     }
 
     /**
-     * @return ReturnClauseMgr
+     * @return null|ReturnClauseMgr
      */
     public function getReturnValue()
     {
@@ -310,19 +318,19 @@ final class FcnFrameMgr extends BaseC
     /**
      * @return bool
      */
-    public function isReturnValueSet()
+    public function isReturnValueSet() : bool
     {
         return ( null !== $this->returnValue );
     }
 
     /**
-     * @param string     $prefix null, 'parent', 'self', 'static', 'this', fqcn, '$class'
-     * @param mixed      $source int, float, string, '$name', constant
-     * @param int|string $index  int, string (array index)
+     * @param null|string     $prefix null, 'parent', 'self', 'static', 'this', fqcn, '$class'
+     * @param null|mixed      $source int, float, string, '$name', constant
+     * @param null|int|string $index  int, string (array index)
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnValue( $prefix = null, $source = null, $index = null )
+    public function setReturnValue( $prefix = null, $source = null, $index = null ) : self
     {
         if( empty( $prefix ) && is_scalar( $source ) && ! is_string( $source )) {
             return $this->setReturnFixedValue( $source );
@@ -339,7 +347,7 @@ final class FcnFrameMgr extends BaseC
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnFixedValue( $value )
+    public function setReturnFixedValue( $value ) : self
     {
         $this->returnValue =
             ReturnClauseMgr::init( $this )->setScalar( $value );
@@ -350,12 +358,12 @@ final class FcnFrameMgr extends BaseC
     /**
      * Set directive for method end-up return class 'return $this->property;' code, setReturnValue method alias
      *
-     * @param mixed      $source
-     * @param int|string $index
+     * @param null|mixed      $source
+     * @param null|int|string $index
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnProperty( $source = null, $index = null )
+    public function setReturnProperty( $source = null, $index = null ) : self
     {
         $this->setReturnValue( self::THIS_KW, $source, $index );
         return $this;
@@ -368,10 +376,9 @@ final class FcnFrameMgr extends BaseC
      *
      * @return static
      */
-    public function setReturnThis()
+    public function setReturnThis() : self
     {
         $this->setReturnValue( self::THIS_KW );
-//      $this->setReturnType( self::SELF_KW );
         return $this;
     }
 
@@ -381,11 +388,11 @@ final class FcnFrameMgr extends BaseC
      * String array subjectIndex not allowed
      *
      * @param mixed      $source
-     * @param int|string $index
+     * @param null|int|string $index
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnVariable( $source, $index = null )
+    public function setReturnVariable( $source, $index = null ) : self
     {
         if( is_string( $source )) {
             $source = Util::setVarPrefix( $source );
@@ -397,14 +404,14 @@ final class FcnFrameMgr extends BaseC
     /**
      * @return static
      */
-    public function unsetReturnValue()
+    public function unsetReturnValue() : self
     {
         $this->returnValue = null;
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getReturnType()
     {
@@ -414,7 +421,7 @@ final class FcnFrameMgr extends BaseC
     /**
      * @return bool
      */
-    public function isReturnTypeSet()
+    public function isReturnTypeSet() : bool
     {
         return ( null !== $this->returnType );
     }
@@ -429,7 +436,7 @@ final class FcnFrameMgr extends BaseC
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setReturnType( $returnType )
+    public function setReturnType( string $returnType ) : self
     {
         static $ERRTXT = 'Invalid function return value type : ';
         static $TYPES = [
@@ -448,12 +455,10 @@ final class FcnFrameMgr extends BaseC
         switch( true ) {
             case ( 7 > substr( self::getTargetPhpVersion(), 0, 1)) :
                 return $this;
-                break;
             case ( ! is_string( $returnType )) :
                 throw new InvalidArgumentException(
                     $ERRTXT . var_export( $returnType, true )
                 );
-                break;
             case( self::ARRAY2_T == substr( $returnType, -2 )) :
                 $returnType = self::ARRAY_T;
                 break;
@@ -468,7 +473,6 @@ final class FcnFrameMgr extends BaseC
                 throw new InvalidArgumentException(
                     $ERRTXT . var_export( $returnType, true )
                 );
-                break;
         } // end switch
         $this->returnType = $returnType;
         return $this;

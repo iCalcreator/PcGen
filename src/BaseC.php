@@ -2,28 +2,31 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
+
+use function strcasecmp;
 
 /**
  * Class BaseC
@@ -35,7 +38,7 @@ use InvalidArgumentException;
 abstract class BaseC extends BaseB
 {
     /**
-     * @var string
+     * @var null|string
      */
     protected $visibility = self::PUBLIC_;
 
@@ -47,7 +50,7 @@ abstract class BaseC extends BaseB
     /**
      * @return string
      */
-    public function getVisibility()
+    public function getVisibility() : string
     {
         return $this->visibility;
     }
@@ -55,7 +58,7 @@ abstract class BaseC extends BaseB
     /**
      * @return bool
      */
-    public function isVisibilitySet()
+    public function isVisibilitySet() : bool
     {
         return ( null !== $this->visibility );
     }
@@ -65,7 +68,7 @@ abstract class BaseC extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setVisibility( $visibility = null )
+    public function setVisibility( $visibility = null ) : self
     {
         static $FMT = 'Invalid visibility ';
         static $VISIBILITIES = [
@@ -73,7 +76,7 @@ abstract class BaseC extends BaseB
             self::PROTECTED_,
             self::PRIVATE_
         ];
-        if( empty( $visibility )) {
+        if( null === $visibility ) {
             $this->visibility = null;
             return $this;
         }
@@ -89,7 +92,7 @@ abstract class BaseC extends BaseB
     /**
      * @return bool
      */
-    public function isStatic()
+    public function isStatic() : bool
     {
         return $this->static;
     }
@@ -98,9 +101,9 @@ abstract class BaseC extends BaseB
      * @param bool $static
      * @return static
      */
-    public function setStatic( $static = true )
+    public function setStatic( $static = true ) : self
     {
-        $this->static = (bool) $static;
+        $this->static = $static ?? true;
         return $this;
     }
 }

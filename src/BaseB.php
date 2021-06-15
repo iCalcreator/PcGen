@@ -2,26 +2,38 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
+
+use function count;
+use function bin2hex;
+use function explode;
+use function implode;
+use function is_array;
+use function ltrim;
+use function openssl_random_pseudo_bytes;
+use function str_replace;
+use function strlen;
+use function rtrim;
 
 /**
  * Class BaseB
@@ -48,10 +60,10 @@ abstract class BaseB extends BaseA
     /**
      * Return body code rows, all rows has (at least) leading baseIndent
      *
-     * @param string $indent
+     * @param null|string $indent
      * @return array
      */
-    public function getBody( $indent = null )
+    public function getBody( $indent = null ) : array
     {
         $output = [];
         if( empty( $indent )) {
@@ -68,18 +80,22 @@ abstract class BaseB extends BaseA
     /**
      * @return bool
      */
-    public function isBodySet() {
+    public function isBodySet() : bool
+    {
         return ( ! empty( $this->body ));
     }
 
     /**
      * Set body code without 'baseIndent'
      *
-     * @param string|string[] $body
+     * @param mixed $body
      * @return static
      */
-    public function setBody( ...$body )
+    public function setBody( ...$body ) : self
     {
+        if( empty( $body )) {
+            return $this;
+        }
         $repl = bin2hex( openssl_random_pseudo_bytes( 16 ));
         $tmp  = [];
         foreach( $body as $bodyPart ) {

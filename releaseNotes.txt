@@ -1,4 +1,7 @@
 
+1.2   PHP 7 (PHPStan/strict types)
+
+
 1.1.47 new : ternary/null coalescing operator mgr
        (+AssignClauseMgr+ReturnClauseMgr)
 1.1.46 github.com #1 class use clause

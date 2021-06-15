@@ -2,28 +2,37 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
+
+use function array_keys;
+use function array_merge;
+use function get_class;
+use function is_array;
+use function is_object;
+use function is_string;
+use function sprintf;
 
 /**
  * Class TryCatchMgr
@@ -39,7 +48,7 @@ class TryCatchMgr extends BaseB
     /**
      * Try-clause catch expressions
      *
-     * @var catchMgr[]
+     * @var array catchMgr[]
      */
     private $catch = [];
 
@@ -50,7 +59,7 @@ class TryCatchMgr extends BaseB
      * @param string|string[] $catchBody
      * @return static
      */
-    public static function factory( $tryBody, $catchBody )
+    public static function factory( $tryBody, $catchBody ) : self
     {
         $instance = self::init();
         $instance->setBody( $tryBody );
@@ -61,7 +70,7 @@ class TryCatchMgr extends BaseB
     /**
      * @inheritDoc
      */
-    public function toArray()
+    public function toArray() : array
     {
         static $FMT = '%stry {';
         if( ! $this->isCatchSet()) {
@@ -85,7 +94,7 @@ class TryCatchMgr extends BaseB
     /**
      * @return bool
      */
-    public function isCatchSet()
+    public function isCatchSet() : bool
     {
         return ( ! empty( $this->catch ));
     }
@@ -94,11 +103,11 @@ class TryCatchMgr extends BaseB
      * Append single exception-expression, without $exception is an 'Exception'-exception set
      *
      * @param string|CatchMgr $exception
-     * @param string|string[] $catchBody
+     * @param string|array $catchBody
      * @return static
      * @throws InvalidArgumentException
      */
-    public function appendCatch( $exception = null, $catchBody = null )
+    public function appendCatch( $exception = null, $catchBody = null ) : self
     {
         switch( true ) {
             case empty( $exception ) :
@@ -109,7 +118,7 @@ class TryCatchMgr extends BaseB
                 $exception = CatchMgr::init( $this )->setException( $exception );
                 break;
             case ( $exception instanceof CatchMgr ) :
-                $catchBody = null;
+                $catchBody = [];
                 break;
             default :
                 throw new InvalidArgumentException(
@@ -120,7 +129,6 @@ class TryCatchMgr extends BaseB
                             : $exception )
                     )
                 );
-                break;
         } // end switch
         if( ! empty( $catchBody )) {
             $exception->setBody( $catchBody );
@@ -136,10 +144,11 @@ class TryCatchMgr extends BaseB
      *     string (Exception), catchBody
      *     catchMgr
      *
-     * @param array|catchMgr[] $catch
+     * @param array  $catch
      * @return static
      */
-    public function setCatch( $catch ) {
+    public function setCatch( array $catch ) : self
+    {
         foreach( array_keys( $catch ) as $cIx ) {
             switch( true ) {
                 case is_string( $catch[$cIx] ) :
@@ -164,7 +173,6 @@ class TryCatchMgr extends BaseB
                                 : $catch[$cIx] )
                         )
                     );
-                    break;
             } // end switch
         } // end foreach
         return $this;

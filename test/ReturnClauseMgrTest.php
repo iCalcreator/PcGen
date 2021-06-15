@@ -2,29 +2,31 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 class ReturnClauseMgrTest extends TestCase
 {
@@ -32,7 +34,8 @@ class ReturnClauseMgrTest extends TestCase
     /**
      * @return array
      */
-    public function returnClauseMgrTest1DataProvider() {
+    public function returnClauseMgrTest1DataProvider() : array
+    {
         $testData = [];
 
         $testData[] = [
@@ -340,10 +343,10 @@ class ReturnClauseMgrTest extends TestCase
      * @param int|string $index
      * @param string     $expected
      */
-    public function returnClauseMgrTest1( $case, $prefix = null, $subject = null, $index = null, $expected = null ) {
+    public function returnClauseMgrTest1( int $case, $prefix = null, $subject = null, $index = null, $expected = null ) {
         $rcm = ReturnClauseMgr::init( PHP_EOL, '    ' )->setBaseIndent( '    ' );
         switch( true ) {
-            case ( false !== strpos( $subject, 'CONSTANT' )) :
+            case ( false !== strpos((string) $subject, 'CONSTANT' )) :
                 $rcm->setSourceIsConst( true )
                     ->setSource( $prefix, $subject, $index );
                 $case .= '-A';
@@ -411,7 +414,8 @@ class ReturnClauseMgrTest extends TestCase
     /**
      * @return array
      */
-    public function returnClauseMgrTest2DataProvider() {
+    public function returnClauseMgrTest2DataProvider() : array
+    {
         $testData = [];
 
         $testData[] = [
@@ -449,13 +453,13 @@ class ReturnClauseMgrTest extends TestCase
      * @test
      * @dataProvider returnClauseMgrTest2DataProvider
      *
-     * @param      $case
-     * @param null $prefix
-     * @param null $subject
-     * @param null $index
-     * @param null $expected
+     * @param int   $case
+     * @param mixed $prefix
+     * @param mixed $subject
+     * @param mixed $index
+     * @param mixed $expected
      */
-    public function returnClauseMgrTest2( $case, $prefix = null, $subject = null, $index = null, $expected = null ) {
+    public function returnClauseMgrTest2( int $case, $prefix = null, $subject = null, $index = null, $expected = null ) {
         $rcm = ReturnClauseMgr::factory( $prefix, $subject, $index )
                               ->setSourceIsStatic();
 
@@ -506,7 +510,7 @@ class ReturnClauseMgrTest extends TestCase
             $rcm->setExpression( 123 );
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
 
@@ -537,7 +541,7 @@ class ReturnClauseMgrTest extends TestCase
             ReturnClauseMgr::init()->setSource( null, [] );
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
         try {

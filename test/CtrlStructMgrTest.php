@@ -2,34 +2,36 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Throwable;
 
 class CtrlStructMgrTest extends TestCase
 {
-    public static function ctrlStructMgrTest1DataProvider()
+    public static function ctrlStructMgrTest1DataProvider() : array
     {
         $testData = [];
 
@@ -97,7 +99,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr $operand2
      * @return CtrlStructMgr
      */
-    public static function getCsm2( $operand1, $operand2 )
+    public static function getCsm2( $operand1, $operand2 ) : CtrlStructMgr
     {
         $csm = CtrlStructMgr::init()
             ->setCompOP( array_rand( array_flip( SimpleCondMgr::getCondOPs())))
@@ -125,7 +127,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr $operand
      * @return CtrlStructMgr
      */
-    public static function getCsm1( $operand )
+    public static function getCsm1( $operand ) : CtrlStructMgr
     {
         $csm = CtrlStructMgr::init();
         if(( $operand instanceof EntityMgr ) &&
@@ -144,7 +146,7 @@ class CtrlStructMgrTest extends TestCase
      * @param FcnInvokeMgr $operand
      * @return CtrlStructMgr
      */
-    public static function getCsm3( FcnInvokeMgr $operand )
+    public static function getCsm3( FcnInvokeMgr $operand ) : CtrlStructMgr
     {
         $csm = CtrlStructMgr::init();
         if( EntityMgr::THIS_KW == $operand->getName()->getClass()) {
@@ -165,7 +167,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
-    public function ctrlStructMgrTest11( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest11( int $case, $operand1, $operand2 )
     {
         $csm     = self::getCsm2( $operand1, $operand2 );
         $this->assertTrue(
@@ -203,7 +205,7 @@ class CtrlStructMgrTest extends TestCase
      * @param string $code
      * @param CtrlStructMgr $csm
      */
-    private function assertCode( $case, $operand1, $operand2, $code, $csm )
+    private function assertCode( int $case, $operand1, $operand2, string $code, CtrlStructMgr $csm )
     {
         $exp1 = is_scalar( $operand1 ) ? $operand1 : rtrim( $operand1->toString());
         $exp2 = is_scalar( $operand2 ) ? $operand2 : rtrim( $operand2->toString());
@@ -239,7 +241,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
-    public function ctrlStructMgrTest12( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest12( int $case, $operand1, $operand2 )
     {
         if( $operand2 instanceof FcnInvokeMgr ) {
             $this->assertTrue( true );
@@ -279,7 +281,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
-    public function ctrlStructMgrTest13( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest13( int $case, $operand1, $operand2 )
     {
         if( ! $operand2 instanceof FcnInvokeMgr ) {
             $this->assertTrue( true );
@@ -315,7 +317,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr $operand1
      * @param bool|float|int|string|EntityMgr $operand2
      */
-    public function ctrlStructMgrTest41( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest41( int $case, $operand1, $operand2 )
     {
         $csm     = self::getCsm2( $operand1, $operand2 );
         $csm2    = self::getCsm2( $operand1, $operand2 );
@@ -355,7 +357,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
-    public function ctrlStructMgrTest42( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest42( int $case, $operand1, $operand2 )
     {
         if( $operand1 instanceof FcnInvokeMgr ) {
             $this->assertTrue( true );
@@ -411,7 +413,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
-    public function ctrlStructMgrTest43( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest43( int $case, $operand1, $operand2 )
     {
         if( ! $operand2 instanceof FcnInvokeMgr ) {
             $this->assertTrue( true );
@@ -454,9 +456,6 @@ class CtrlStructMgrTest extends TestCase
      * Testing switch (variable) and scalar case, default
      *
      * @test
-     * @param int    $case
-     * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
-     * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
     public function ctrlStructMgrTest44()
     {
@@ -505,9 +504,6 @@ class CtrlStructMgrTest extends TestCase
      * Testing switch(true) and expression case, default
      *
      * @test
-     * @param int    $case
-     * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
-     * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
     public function ctrlStructMgrTest45()
     {
@@ -551,7 +547,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr $operand1
      * @param bool|float|int|string|EntityMgr $operand2
      */
-    public function ctrlStructMgrTest51( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest51( int $case, $operand1, $operand2 )
     {
         $csm     = self::getCsm2( $operand1, $operand2 );
         $csmBody = ' /* this is body for case ' . __FUNCTION__ . ' ' . $case . ' */';
@@ -579,7 +575,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
-    public function ctrlStructMgrTest52( $case, $operand1, $operand2 ) {
+    public function ctrlStructMgrTest52( int $case, $operand1, $operand2 ) {
         if( $operand1 instanceof FcnInvokeMgr ) {
             $this->assertTrue( true );
             return;
@@ -614,7 +610,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
-    public function ctrlStructMgrTest53( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest53( int $case, $operand1, $operand2 )
     {
         if( ! $operand2 instanceof FcnInvokeMgr ) {
             $this->assertTrue( true );
@@ -650,7 +646,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr $operand1
      * @param bool|float|int|string|EntityMgr $operand2
      */
-    public function ctrlStructMgrTest61( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest61( int $case, $operand1, $operand2 )
     {
         $csm     = self::getCsm2( $operand1, $operand2 );
         $csmBody = ' /* this is body for case ' . __FUNCTION__ . ' ' . $case . ' */';
@@ -678,7 +674,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr $operand1
      * @param bool|float|int|string|EntityMgr $operand2
      */
-    public function ctrlStructMgrTest62( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest62( int $case, $operand1, $operand2 )
     {
         if( $operand2 instanceof FcnInvokeMgr ) {
             $this->assertTrue( true );
@@ -714,7 +710,7 @@ class CtrlStructMgrTest extends TestCase
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand1
      * @param bool|float|int|string|EntityMgr|FcnInvokeMgr $operand2
      */
-    public function ctrlStructMgrTest63( $case, $operand1, $operand2 )
+    public function ctrlStructMgrTest63( int $case, $operand1, $operand2 )
     {
         if( ! $operand2 instanceof FcnInvokeMgr ) {
             $this->assertTrue( true );
@@ -854,7 +850,7 @@ class CtrlStructMgrTest extends TestCase
             $csm->setCompOP( false );
             $this->assertTrue( false );
         }
-        catch( InvalidArgumentException $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
     }

@@ -2,30 +2,34 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use Kigkonsult\PcGen\Traits\ArgumentTrait;
 use RuntimeException;
+
+use function sprintf;
+use function var_export;
 
 /**
  * Class FcnInvokeMgr
@@ -52,7 +56,7 @@ final class FcnInvokeMgr extends BaseA
      * @param array            $arguments
      * @return static
      */
-    public static function factory( $class, $fcnName, array $arguments = null )
+    public static function factory( $class, string $fcnName, array $arguments = null ) : self
     {
         $instance = self::init()->setName( $class, $fcnName );
         if( ! empty( $arguments )) {
@@ -67,7 +71,7 @@ final class FcnInvokeMgr extends BaseA
      * @return array
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         static $ERR = 'No function directives';
         if(( null === $this->name ) && empty( $this->getArgumentCount())) {
@@ -81,11 +85,11 @@ final class FcnInvokeMgr extends BaseA
                 ->setDefault();
         } // end foreach
         $code = $this->renderArguments( $row );
-        return Util::nullByteClean( $code );
+        return Util::nullByteCleanArray( $code );
     }
 
     /**
-     * @return EntityMgr
+     * @return null|EntityMgr
      */
     public function getName()
     {
@@ -98,7 +102,7 @@ final class FcnInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setName( $class, $fcnName = null )
+    public function setName( $class, $fcnName = null ) : self
     {
         switch( true ) {
             case ( $class instanceof EntityMgr ) :
@@ -120,7 +124,6 @@ final class FcnInvokeMgr extends BaseA
                         var_export( $fcnName, true )
                     )
                 );
-                break;
         } // end switch
         return $this;
     }
@@ -132,7 +135,7 @@ final class FcnInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setClass( $class )
+    public function setClass( string $class ) : self
     {
         if( empty( $this->name )) {
             throw new RuntimeException( self::$ERR );
@@ -150,12 +153,12 @@ final class FcnInvokeMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setIsStatic( $staticStatus )
+    public function setIsStatic( bool $staticStatus ) : self
     {
         if( null === $this->name ) {
             throw new InvalidArgumentException( self::$ERR );
         }
-        $this->getName()->setIsStatic((bool) $staticStatus );
+        $this->getName()->setIsStatic( $staticStatus );
         return $this;
     }
 }

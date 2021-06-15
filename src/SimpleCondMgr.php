@@ -2,30 +2,41 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use Kigkonsult\PcGen\Traits\ScalarTrait;
 use RuntimeException;
+
+use function in_array;
+use function is_object;
+use function is_scalar;
+use function is_string;
+use function get_class;
+use function rtrim;
+use function sprintf;
+use function trim;
+use function var_export;
 
 /**
  * Class SimpleCondMgr
@@ -69,7 +80,7 @@ class SimpleCondMgr extends BaseA
      *
      * @return string[]
      */
-    public static function getCondOPs()
+    public static function getCondOPs() : array
     {
         return self::$CONDOPARR;
     }
@@ -103,7 +114,7 @@ class SimpleCondMgr extends BaseA
      * @return array
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         static $FMT1 = '( ';
         static $FMT2 = ' )';
@@ -122,10 +133,10 @@ class SimpleCondMgr extends BaseA
     }
 
     /**
-     * @param bool|float|int|EntityMgr|string $operand
+     * @param mixed $operand  bool|float|int|EntityMgr|string
      * @return string
      */
-    private static function renderOperand( $operand )
+    private static function renderOperand( $operand ) : string
     {
         return is_scalar( $operand )
             ? Util::renderScalarValue( $operand )
@@ -137,7 +148,7 @@ class SimpleCondMgr extends BaseA
      *
      * @return bool
      */
-    public function isAnySet()
+    public function isAnySet() : bool
     {
         return ( $this->isScalarSingleOpSet() ||
             ( $this->isOperand1Set() && $this->isOperand2Set())
@@ -149,7 +160,7 @@ class SimpleCondMgr extends BaseA
      *
      * @return bool
      */
-    public function isScalarSingleOpSet()
+    public function isScalarSingleOpSet() : bool
     {
         return ( $this->isScalarSet() || $this->isSingleOpSet());
     }
@@ -165,7 +176,7 @@ class SimpleCondMgr extends BaseA
     /**
      * @return bool
      */
-    public function isSingleOpSet()
+    public function isSingleOpSet() : bool
     {
         return ( null !== $this->singleOp );
     }
@@ -177,7 +188,7 @@ class SimpleCondMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setSingleOp( $singleOp )
+    public function setSingleOp( $singleOp ) : self
     {
         switch( true ) {
             case is_string( $singleOp ) :
@@ -210,7 +221,7 @@ class SimpleCondMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisPropSingleOp( $singleOp )
+    public function setThisPropSingleOp( string $singleOp ) : self
     {
         $this->setSingleOp(
             EntityMgr::init( $this )
@@ -229,7 +240,7 @@ class SimpleCondMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisFcnSingleOP( $singleOP )
+    public function setThisFcnSingleOP( string $singleOP ) : self
     {
         $this->setSingleOp(
             FcnInvokeMgr::init( $this )
@@ -244,10 +255,10 @@ class SimpleCondMgr extends BaseA
      * @param bool $strict
      * @return string
      */
-    public function getCompOP( $strict = false )
+    public function getCompOP( $strict = false ) : string
     {
         static $OPERATORfmt = ' %s ';
-        return $strict ? $this->compOp : sprintf( $OPERATORfmt, $this->compOp );
+        return ( $strict ?? false ) ? $this->compOp : sprintf( $OPERATORfmt, $this->compOp );
     }
 
     /**
@@ -255,7 +266,7 @@ class SimpleCondMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setCompOP( $compOp )
+    public function setCompOP( string $compOp ) : self
     {
         $compOp = trim( $compOp );
         if( ! in_array( $compOp, self::$CONDOPARR )) {
@@ -268,7 +279,7 @@ class SimpleCondMgr extends BaseA
     }
 
     /**
-     * @param $operand
+     * @param mixed $operand
      * @throws InvalidArgumentException
      */
     private static function assertOperand( $operand )
@@ -297,7 +308,7 @@ class SimpleCondMgr extends BaseA
     /**
      * @return bool
      */
-    public function isOperand1Set()
+    public function isOperand1Set() : bool
     {
         return ( null !== $this->operand1 );
     }
@@ -307,7 +318,7 @@ class SimpleCondMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setOperand1( $operand1 )
+    public function setOperand1( $operand1 ) : self
     {
         self::assertOperand( $operand1 );
         $this->operand1 = $operand1;
@@ -323,7 +334,7 @@ class SimpleCondMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisVarOperand1( $operand1 )
+    public function setThisVarOperand1( string $operand1 ) : self
     {
         return $this->setOperand1(
             EntityMgr::init( $this )
@@ -343,7 +354,7 @@ class SimpleCondMgr extends BaseA
     /**
      * @return bool
      */
-    public function isOperand2Set()
+    public function isOperand2Set() : bool
     {
         return ( null !== $this->operand2 );
     }
@@ -353,7 +364,7 @@ class SimpleCondMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setOperand2( $operand2 )
+    public function setOperand2( $operand2 ) : self
     {
         self::assertOperand( $operand2 );
         $this->operand2 = $operand2;
@@ -369,7 +380,7 @@ class SimpleCondMgr extends BaseA
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisVarOperand2( $operand2 )
+    public function setThisVarOperand2( string $operand2 ) : self
     {
         return $this->setOperand2(
             EntityMgr::init( $this )

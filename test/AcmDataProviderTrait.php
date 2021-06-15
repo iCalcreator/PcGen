@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 trait AcmDataProviderTrait
@@ -36,7 +37,8 @@ trait AcmDataProviderTrait
      * $class              ->       string (opt with sourceIndex), NOT accepted here (class with public property)
      * @return array
      */
-    public function getTargetArr1() {
+    public function getTargetArr1() : array
+    {
         $testData = [];
 
         $testData[] = [
@@ -111,13 +113,13 @@ trait AcmDataProviderTrait
             'self::$var24[$index24]'
         ];
 
-        $testData[] = [
+        $testData[2525] = [
             //  4x self class + $-prefixed string (with subjectIndex)
             25,
             AssignClauseMgr::SELF_KW,
             '$var25',
-            '[]',
-            'self::$var25[]'
+            25,
+            'self::$var25[25]'
         ];
 
         $testData[] = [
@@ -129,13 +131,13 @@ trait AcmDataProviderTrait
             '$this->string31'
         ];
 
-        $testData[] = [
+        $testData[3232] = [
             // 2x this   string (property with subjectIndex)
             32,
             AssignClauseMgr::THIS_KW,
             'string32',
-            0,
-            '$this->string32[0]'
+            32,
+            '$this->string32[32]'
         ];
 
         $testData[] = [
@@ -147,13 +149,13 @@ trait AcmDataProviderTrait
             '$this->string33[$pos33]'
         ];
 
-        $testData[] = [
+        $testData[3535] = [
             // 2x this   string (property, with subjectIndex
             35,
             AssignClauseMgr::THIS_KW,
             'string35',
-            '[]',
-            '$this->string35[]'
+            '35',
+            '$this->string35[35]'
         ];
 
         $testData[] = [
@@ -183,13 +185,13 @@ trait AcmDataProviderTrait
             '$class77->property77[$sevenSeven]'
         ];
 
-        $testData[] = [
+        $testData[7878] = [
             // 3x $class  :: (public) property with subjectIndex, only possible with operator '='
             78,
             '$class78',
             '$property78',
-            '[]',
-            '$class78->property78[]'
+            '78',
+            '$class78->property78[78]'
         ];
 
         return $testData;

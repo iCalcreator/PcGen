@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 /**
@@ -60,7 +61,7 @@ final class PropertyMgr extends VariableMgr
      * @param VariableMgr $variableMgr
      * @return static
      */
-    public function cloneFromParent( VariableMgr $variableMgr )
+    public function cloneFromParent( VariableMgr $variableMgr ) : self
     {
         return $this->setVarDto( $variableMgr->getVarDto())
             ->setStatic( $variableMgr->isStatic())
@@ -70,18 +71,18 @@ final class PropertyMgr extends VariableMgr
     /**
      * @return bool
      */
-    public function isMakeGetter()
+    public function isMakeGetter() : bool
     {
         return $this->makeGetter;
     }
 
     /**
      * @param bool $makeGetter
-     * @return PropertyMgr
+     * @return static
      */
-    public function setMakeGetter( $makeGetter )
+    public function setMakeGetter( bool $makeGetter ) : self
     {
-        $this->makeGetter = (bool) $makeGetter;
+        $this->makeGetter = $makeGetter;
         if( $this->makeGetter && ( $this->isConst() || $this->isStatic())) {
             $this->makeGetter = false;
         }
@@ -91,18 +92,18 @@ final class PropertyMgr extends VariableMgr
     /**
      * @return bool
      */
-    public function isMakeSetter()
+    public function isMakeSetter() : bool
     {
         return $this->makeSetter;
     }
 
     /**
      * @param bool $makeSetter
-     * @return PropertyMgr
+     * @return static
      */
-    public function setMakeSetter( $makeSetter )
+    public function setMakeSetter( bool $makeSetter ) : self
     {
-        $this->makeSetter = (bool) $makeSetter;
+        $this->makeSetter = $makeSetter;
         if( $this->makeSetter && ( $this->isConst() || $this->isStatic())) {
             $this->makeSetter = false;
         }
@@ -112,7 +113,7 @@ final class PropertyMgr extends VariableMgr
     /**
      * @return bool
      */
-    public function isFactoryFcnArgument()
+    public function isFactoryFcnArgument() : bool
     {
         return $this->argInFactory;
     }
@@ -121,9 +122,9 @@ final class PropertyMgr extends VariableMgr
      * @param bool $argInFactory
      * @return static
      */
-    public function setArgInFactory( $argInFactory )
+    public function setArgInFactory( bool $argInFactory ) : self
     {
-        $this->argInFactory = (bool) $argInFactory;
+        $this->argInFactory = $argInFactory;
         if( $this->argInFactory && ( $this->isConst() || $this->isStatic())) {
             $this->argInFactory = false;
         }
@@ -137,11 +138,11 @@ final class PropertyMgr extends VariableMgr
      * Override Variable parent
      *
      * @param bool $isConst
-     * @return VariableMgr
+     * @return static
      */
-    public function setIsConst( $isConst = true )
+    public function setIsConst( $isConst = true ) : VariableMgr
     {
-        $this->isConst = (bool) $isConst;
+        $this->isConst = $isConst ?? true;
         if( $this->isConst ) {
             $this->makeGetter = false;
             $this->makeSetter = false;
@@ -158,9 +159,9 @@ final class PropertyMgr extends VariableMgr
      * @param bool $static
      * @return static
      */
-    public function setStatic( $static = true )
+    public function setStatic( $static = true ) : BaseC
     {
-        $this->static = (bool) $static;
+        $this->static = $static ?? true;
         if( $this->static ) {
             $this->makeGetter = false;
             $this->makeSetter = false;

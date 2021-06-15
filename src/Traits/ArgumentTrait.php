@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen\Traits;
 
 use InvalidArgumentException;
@@ -28,6 +29,19 @@ use Kigkonsult\PcGen\BaseA;
 use Kigkonsult\PcGen\Dto\ArgumentDto;
 use Kigkonsult\PcGen\Dto\VarDto;
 use Kigkonsult\PcGen\Util;
+
+use function array_key_exists;
+use function array_keys;
+use function count;
+use function implode;
+use function in_array;
+use function is_bool;
+use function is_scalar;
+use function is_string;
+use function reset;
+use function strcasecmp;
+use function sprintf;
+use function var_export;
 
 /**
  * Trait ArgumentTrait
@@ -47,7 +61,7 @@ trait ArgumentTrait
      * @param string $row
      * @return array
      */
-    private function renderArguments( $row )
+    private function renderArguments( string $row ) : array
     {
         static $ARGSTART = '(';
         static $ARGEND   = ')';
@@ -67,7 +81,6 @@ trait ArgumentTrait
                 $this->renderArgsInRows( $this->arguments, $code );
                 $code[] = $this->baseIndent . $ARGEND;
                 return $code;
-                break;
         } // end switch
         return [ $row . $ARGEND ];
     }
@@ -78,7 +91,7 @@ trait ArgumentTrait
      * @return string
      * @todo fix PHP_VERSION for typeHint
      */
-    private static function renderOneArg( ArgumentDto $argumentDto )
+    private static function renderOneArg( ArgumentDto $argumentDto ) : string
     {
         static $REFERENCE = '& ';
         static $SPEQSP    = ' = ';
@@ -92,7 +105,7 @@ trait ArgumentTrait
             $argumentDto->setVarType(
                 ( $argumentDto->hasTypeHintArraySpec( self::getTargetPhpVersion(), $typeHint ) ? $typeHint : null )
             );
-            $argumentDto->setDefault( null );
+            $argumentDto->setDefault(); // null
         } // end if
         if( $argumentDto->isTypeHint( self::getTargetPhpVersion(), $typeHint )) { // varType
             $row .= $typeHint . BaseA::SP1;
@@ -109,7 +122,7 @@ trait ArgumentTrait
             case ( null === $initValue ) :
                 $row .= $SPEQSP . BaseA::NULL_T;
                 break;
-            case $argumentDto->isDefaultTypedArray() :
+            case ( $argumentDto->isDefaultTypedArray() && ( in_array( $initValue, VarDto::$ARRAYs ))) :
                 $row .= $SPEQSP . BaseA::ARRAY2_T;
                 break;
             case ( is_string( $initValue ) && ( 0 === strcasecmp( BaseA::NULL_T, $initValue ))) :
@@ -140,7 +153,7 @@ trait ArgumentTrait
      * @param ArgumentDto[] $arguments
      * @return bool
      */
-    private static function hasOnlyNames( array $arguments )
+    private static function hasOnlyNames( array $arguments ) : bool
     {
         foreach( array_keys( $arguments) as $argIx ) {
             if( $arguments[$argIx]->isVarTypeSet()) {
@@ -159,7 +172,7 @@ trait ArgumentTrait
      * @param ArgumentDto[] $arguments
      * @return string
      */
-    private static function renderArgsInOneRow( array $arguments )
+    private static function renderArgsInOneRow( array $arguments ) : string
     {
         $lastIx = count( $arguments ) - 1;
         $row    = BaseA::SP0;
@@ -193,11 +206,11 @@ trait ArgumentTrait
      * Add argument, ArgumentDto/varDto/array($variable,$type,$default,$byReference,$updClassProp,$intoNextVarPropArrItem)
      *
      * @param string|VarDto|ArgumentDto $name
-     * @param bool|string $type        also varType hint, no validation
-     * @param mixed    $default        no validation
-     * @param bool     $byReference
-     * @param bool|int $updClassProp
-     * @param bool     $intoNextVarPropArrItem
+     * @param null|bool|string $type        also varType hint, no validation
+     * @param null|mixed    $default        no validation
+     * @param null|bool     $byReference
+     * @param null|bool|int $updClassProp
+     * @param null|bool     $intoNextVarPropArrItem
      * @return static
      * @throws InvalidArgumentException
      */
@@ -208,32 +221,33 @@ trait ArgumentTrait
         $byReference = false,
         $updClassProp = false,
         $intoNextVarPropArrItem = false
-    ) {
+    ) : self
+    {
         switch( true ) {
             case ( $name instanceof ArgumentDto ) :
                 $this->arguments[] = $name;
                 break;
             case ( $name instanceof varDto ) :
                 $this->arguments[] = ArgumentDto::factory( $name )
-                    ->setByReference( Util::getIfSet( $type, null, self::BOOL_T, false ))
+                    ->setByReference( $type ?? false )
                     ->setUpdClassProperty( self::grabUpdClassProperty( ((array) $default), 0 ))
-                    ->setNextVarPropIndex( Util::getIfSet( $byReference, null, self::BOOL_T, false ));
+                    ->setNextVarPropIndex(( $byReference ?? false ));
                 break;
             default :
                 $this->arguments[] = ArgumentDto::factory( $name, $type, $default )
-                    ->setByReference( (bool) $byReference )
+                    ->setByReference( $byReference ?? false )
                     ->setUpdClassProperty( self::grabUpdClassProperty( ((array) $updClassProp), 0 ))
-                    ->setNextVarPropIndex( (bool) $intoNextVarPropArrItem );
+                    ->setNextVarPropIndex( $intoNextVarPropArrItem ?? false );
                 break;
         } // end switch
         return $this;
     }
 
     /**
-     * @param $aIx
+     * @param int $aIx
      * @return ArgumentDto
      */
-    public function getArgument( $aIx )
+    public function getArgument( int $aIx ) : ArgumentDto
     {
         return $this->arguments[$aIx];
     }
@@ -241,7 +255,7 @@ trait ArgumentTrait
     /**
      * @return int
      */
-    public function getArgumentCount()
+    public function getArgumentCount() : int
     {
         return count( $this->arguments );
     }
@@ -249,7 +263,7 @@ trait ArgumentTrait
     /**
      * @return array
      */
-    public function getArgumentIndex()
+    public function getArgumentIndex() : array
     {
         return array_keys( $this->arguments );
     }
@@ -264,11 +278,11 @@ trait ArgumentTrait
      *   array( VarDto, byReference, updClassProp, nextVarPropIndex )
      *   array( variable, varType, default, byReference, updClassProp, intoNextVarPropArrItem )
      *
-     * @param string|array $arguments
+     * @param null|array $arguments
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setArguments( array $arguments = null )
+    public function setArguments( array $arguments = null ) : self
     {
         static $ARGUMENT = 'argument';
         $this->arguments = [];
@@ -279,7 +293,6 @@ trait ArgumentTrait
             switch( true ) {
                 case empty( $argSet ) :
                     throw new InvalidArgumentException( sprintf( BaseA::$ERR1, $ARGUMENT ));
-                    break;
                 case ( $argSet instanceof ArgumentDto ) :
                     $this->addArgument( $argSet );
                     break;
@@ -288,25 +301,24 @@ trait ArgumentTrait
                     break;
                 case ! is_array( $argSet ) :
                     throw new InvalidArgumentException( sprintf( BaseA::$ERRx, var_export( $argSet, true )));
-                    break;
                 case( $argSet[0] instanceof varDto ) :
                     $this->addArgument(
                         ArgumentDto::factory( $argSet[0] )
-                            ->setByReference( Util::getIfSet( $argSet, 1, BaseA::BOOL_T, false ))
+                            ->setByReference( $argSet[1] ?? false )
                             ->setUpdClassProperty( self::grabUpdClassProperty( $argSet, 2 ))
-                            ->setNextVarPropIndex( Util::getIfSet( $argSet, 3, BaseA::BOOL_T, false ))
+                            ->setNextVarPropIndex( $argSet[3] ?? false )
                     );
                     break;
                 default :
                     $this->addArgument(
                         ArgumentDto::factory(
-                            $argSet[0],                       // variable
-                            Util::getIfSet( $argSet, 1 ), // varType
-                            Util::getIfSet( $argSet, 2 )  // default
+                            $argSet[0],             // variable
+                            ( $argSet[1] ?? null ), // varType
+                            ( $argSet[2] ?? null )  // default
                         )
-                            ->setByReference( Util::getIfSet( $argSet, 3, BaseA::BOOL_T, false ))
+                            ->setByReference( $argSet[3] ?? false )
                             ->setUpdClassProperty( self::grabUpdClassProperty( $argSet, 4 ))
-                            ->setNextVarPropIndex( Util::getIfSet( $argSet, 5, BaseA::BOOL_T, false ))
+                            ->setNextVarPropIndex( $argSet[5] ?? false )
                     );
                     break;
             } // end switch
@@ -319,7 +331,7 @@ trait ArgumentTrait
      * @param int   $index
      * @return int
      */
-    private static function grabUpdClassProperty( array $argSet, $index )
+    private static function grabUpdClassProperty( array $argSet, int $index ) : int
     {
         $updClassProperty = ArgumentDto::NONE;
         switch( true ) {

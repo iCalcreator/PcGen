@@ -2,26 +2,30 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
+
+use function array_merge;
+use function sprintf;
 
 /**
  * Class CatchMgr
@@ -43,7 +47,12 @@ class CatchMgr extends BaseB
      */
     private $exception = self::EXCEPTION;
 
-    public static function factory( $exception, $catchBody = null )
+    /**
+     * @param string $exception
+     * @param null $catchBody
+     * @return CatchMgr
+     */
+    public static function factory( string $exception, $catchBody = null ) : self
     {
         $instance = new self();
         $instance->setException( $exception );
@@ -56,7 +65,8 @@ class CatchMgr extends BaseB
     /**
      * @inheritDoc
      */
-    public function toArray() {
+    public function toArray() : array
+    {
         static $FMT = '%scatch( %s $e ) {';
         $indent1 = $this->baseIndent . $this->indent;
         return array_merge(
@@ -72,7 +82,8 @@ class CatchMgr extends BaseB
      * @param string $exception
      * @return static
      */
-    public function setException( $exception ) {
+    public function setException(string $exception ) : self
+    {
         $this->exception = $exception;
         return $this;
     }

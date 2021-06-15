@@ -2,30 +2,32 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use Exception;
 use Kigkonsult\PcGen\Dto\VarDto;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 class VariableMgrTest extends TestCase
 {
@@ -118,6 +120,7 @@ class VariableMgrTest extends TestCase
         );
 
 
+        $vm = VariableMgr::init( PHP_EOL, '    ' );
         $arr = [ true, false, 0, 331, 3.31, 'three_dot_three_one' ];
         $exp =
             '    static $theVariableName331 = [' . PHP_EOL .
@@ -128,13 +131,22 @@ class VariableMgrTest extends TestCase
             '        3.31,' . PHP_EOL .
             '        "three_dot_three_one",' . PHP_EOL .
             '    ];' . PHP_EOL;
-        $output = $vm->setName( 'theVariableName331' )
+        $vm->setName( 'theVariableName331' )
             ->setStatic( true )
             ->setVisibility()
-            ->setInitValue( $arr )
-            ->toString();
-        $this->assertEquals( $exp, $output, 'test array, 331' );
+            ->setInitValue( $arr );
 
+        $initValue = $vm->getVarDto()->getDefault();
+        $this->assertEquals(
+            $arr,
+            $initValue,
+            'test array, 331-1 : ' . var_export( $initValue, true )
+        );
+
+        $output = $vm->toString();
+        $this->assertEquals( $exp, $output, 'test array, 331-2' );
+
+        $vm = VariableMgr::init( PHP_EOL, '    ' );
         $arr = [ 'key1' => 'value1', 'key2' => 'value2', ];
         $exp =
             '    static $theVariableName332 = [' . PHP_EOL .
@@ -152,35 +164,44 @@ class VariableMgrTest extends TestCase
             echo __FUNCTION__ . ' : ' . PHP_EOL . $output . PHP_EOL;
         }
 
+        $vm     = VariableMgr::init( PHP_EOL, '    ' );
+        $output = $vm->setName( 'theVariableName34' )
+                     ->setVisibility( VariableMgr::PRIVATE_ )
+                     ->setStatic( false )
+                     ->setInitValue( 34 )
+                     ->toString();
 
         $this->assertEquals(
             '    private $theVariableName34 = 34;' . PHP_EOL,
-            $vm->setName( 'theVariableName34' )
-                ->setVisibility( VariableMgr::PRIVATE_ )
-                ->setStatic( false )
-                ->setInitValue( 34 )
-                ->toString(),
+            $output,
             'test int, 34'
         );
 
+        $vm     = VariableMgr::init( PHP_EOL, '    ' );
+        $output = $vm->setName( 'theVariableName35' )
+                     ->setVisibility( VariableMgr::PRIVATE_ )
+                     ->setInitValue( false )
+                     ->toString();
         $this->assertEquals(
             '    private $theVariableName35 = false;' . PHP_EOL,
-            $vm->setName( 'theVariableName35' )
-                ->setInitValue( false )
-                ->toString(),
-            'test false, 35'
+            $output,
+            'test false, 35 : ' . $output
         );
 
+        $vm     = VariableMgr::init( PHP_EOL, '    ' );
+        $output = $vm->setName( 'theVariableName36' )
+                     ->setVisibility()
+                     ->setInitValue( 3.6 )
+                     ->toString();
         $this->assertEquals(
             '    $theVariableName36 = 3.6;' . PHP_EOL,
-            $vm->setName( 'theVariableName36' )
-                ->setVisibility()
-                ->setInitValue( 3.6 )
-                ->toString(),
+            $output,
             'test float, 36'
         );
 
+        $vm     = VariableMgr::init( PHP_EOL, '    ' );
         $output = $vm->setName( 'theVariableName37' )
+            ->setVisibility()
             ->setInitValue( 'test37' )
             ->toString();
         $this->assertEquals(
@@ -418,7 +439,7 @@ class VariableMgrTest extends TestCase
             $vm = VariableMgr::init()->setName( 72 )->toString();
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
 
@@ -426,7 +447,7 @@ class VariableMgrTest extends TestCase
             $vm = VariableMgr::init()->setName( 'array' )->toString();
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
     }
@@ -439,7 +460,7 @@ class VariableMgrTest extends TestCase
             $vm = VariableMgr::factory( 73 );
             $this->assertTrue( false );
         }
-        catch( Exception $e ) {
+        catch( Throwable $e ) {
             $this->assertTrue( true );
         }
     }

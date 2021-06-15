@@ -2,29 +2,35 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
 use RuntimeException;
+
+use function array_merge;
+use function in_array;
+use function sprintf;
+use function trim;
 
 /**
  * Class CtrlStructMgr
@@ -78,9 +84,9 @@ final class CtrlStructMgr extends BaseB
     /**
      * CtrlStructMgr constructor
      *
-     * @param string $eol
-     * @param string $indent
-     * @param string $baseIndent
+     * @param null|string $eol
+     * @param null|string $indent
+     * @param null|string $baseIndent
      */
     public function __construct( $eol = null, $indent = null, $baseIndent = null )
     {
@@ -97,25 +103,30 @@ final class CtrlStructMgr extends BaseB
     /**
      * Class factory method
      *
-     * @param string $operand     variable
-     * @param string $compOp      default '=='
-     * @param null   $operand2    variable
-     * @param int    $exprType    default 'if'
+     * @param mixed        $operand     variable, bool|float|int|string|EntityMgr|FcnInvokeMgr
+     * @param null|string  $compOp      default '=='
+     * @param null|mixed   $operand2    variable, bool|float|int|string|EntityMgr|FcnInvokeMgr
+     * @param null|int     $exprType    default 'if'
      * @return static
      * @throws InvalidArgumentException
      */
-    public static function factory( $operand, $compOp = self::EQ, $operand2 = null, $exprType = self::IFEXPR )
+    public static function factory(
+        $operand,
+        $compOp = self::EQ,
+        $operand2 = null,
+        $exprType = self::IFEXPR
+    ) : self
     {
         $instance = new self();
         if( null !== $operand2 ) {
             $instance->setOperand1( $operand );
-            $instance->setCompOP( $compOp );
+            $instance->setCompOP( $compOp ?: self::EQ );
             $instance->setOperand2( $operand2 );
         }
         else {
             $instance->setSingleOp( $operand );
         }
-        $instance->setExprType( $exprType );
+        $instance->setExprType( $exprType ?: self::IFEXPR );
         return $instance;
     }
 
@@ -125,7 +136,7 @@ final class CtrlStructMgr extends BaseB
      * @return array
      * @throws RuntimeException
      */
-    public function toArray()
+    public function toArray() : array
     {
         $this->assertCond();
         $indent1 = $this->baseIndent . $this->indent;
@@ -138,7 +149,7 @@ final class CtrlStructMgr extends BaseB
             $this->getBody( $indent2 ),
             $this->renderEnd( $indent1 )
         );
-        return Util::nullByteClean( $code );
+        return Util::nullByteCleanArray( $code );
     }
 
     /**
@@ -168,10 +179,8 @@ final class CtrlStructMgr extends BaseB
                 break;
             case ( ! $this->condition->isOperand1Set() ) :
                 throw new RuntimeException( $ERR . 1 );
-                break;
             case ( ! $this->condition->isOperand2Set() ) :
                 throw new RuntimeException( $ERR . 2 );
-                break;
         } // end switch
     }
 
@@ -179,7 +188,7 @@ final class CtrlStructMgr extends BaseB
      * @param string $indent
      * @return array
      */
-    private function renderStart( $indent )
+    private function renderStart( string $indent ) : array
     {
         static $FMTs = [
             '%sif',
@@ -223,7 +232,7 @@ final class CtrlStructMgr extends BaseB
      * @param string $indent
      * @return array
      */
-    private function renderEnd( $indent )
+    private function renderEnd( string $indent ) : array
     {
         static $END0  = '} // end if';
         static $END1  = '} // end else';
@@ -276,7 +285,7 @@ final class CtrlStructMgr extends BaseB
      * @param int $exprType
      * @throws InvalidArgumentException
      */
-    public function setExprType( $exprType )
+    public function setExprType( int $exprType )
     {
         static $TYPES = [
             self::IFEXPR,
@@ -299,7 +308,7 @@ final class CtrlStructMgr extends BaseB
      *
      * @return static
      */
-    public function setIfExprType()
+    public function setIfExprType() : self
     {
         $this->exprType = self::IFEXPR;
         return $this;
@@ -310,7 +319,7 @@ final class CtrlStructMgr extends BaseB
      *
      * @return static
      */
-    public function setElseExprType()
+    public function setElseExprType() : self
     {
         $this->exprType = self::ELSEEXPR;
         return $this;
@@ -321,7 +330,7 @@ final class CtrlStructMgr extends BaseB
      *
      * @return static
      */
-    public function setElseIfExprType()
+    public function setElseIfExprType() : self
     {
         $this->exprType = self::ELSEIFEXPR;
         return $this;
@@ -332,7 +341,7 @@ final class CtrlStructMgr extends BaseB
      *
      * @return static
      */
-    public function setSwitchExprType()
+    public function setSwitchExprType() : self
     {
         $this->exprType = self::SWITCHEXPR;
         return $this;
@@ -343,7 +352,7 @@ final class CtrlStructMgr extends BaseB
      *
      * @return static
      */
-    public function setCaseExprType()
+    public function setCaseExprType() : self
     {
         $this->exprType = self::CASEEXPR;
         return $this;
@@ -354,7 +363,7 @@ final class CtrlStructMgr extends BaseB
      *
      * @return static
      */
-    public function setDefaultExprType()
+    public function setDefaultExprType() : self
     {
         $this->exprType = self::CASEDEFAULT;
         return $this;
@@ -365,7 +374,7 @@ final class CtrlStructMgr extends BaseB
      *
      * @return static
      */
-    public function setWhileExprType()
+    public function setWhileExprType() : self
     {
         $this->exprType = self::WHILEEXPR;
         return $this;
@@ -376,7 +385,7 @@ final class CtrlStructMgr extends BaseB
      *
      * @return static
      */
-    public function setDoWhileExprType()
+    public function setDoWhileExprType() : self
     {
         $this->exprType = self::DOWHILEEXPR;
         return $this;
@@ -385,7 +394,7 @@ final class CtrlStructMgr extends BaseB
     /**
      * @return SimpleCondMgr
      */
-    public function getCondition()
+    public function getCondition() : SimpleCondMgr
     {
         return $this->condition;
     }
@@ -393,7 +402,7 @@ final class CtrlStructMgr extends BaseB
     /**
      * @return bool
      */
-    public function isConditionSet()
+    public function isConditionSet() : bool
     {
         return ( null !== $this->condition );
     }
@@ -402,7 +411,7 @@ final class CtrlStructMgr extends BaseB
      * @param SimpleCondMgr $condition
      * @return static
      */
-    public function setCondition( SimpleCondMgr $condition )
+    public function setCondition( SimpleCondMgr $condition ) : self
     {
         $this->condition = $condition;
         return $this;
@@ -415,7 +424,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setScalar( $scalar )
+    public function setScalar( $scalar ) : self
     {
         $this->condition->setScalar( $scalar );
         return $this;
@@ -428,7 +437,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setExpression( $expression )
+    public function setExpression( string $expression ) : self
     {
         $this->condition->setExpression( $expression );
         return $this;
@@ -441,7 +450,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setSingleOp( $singleOp )
+    public function setSingleOp( $singleOp ) : self
     {
         $this->condition->setSingleOp( $singleOp );
         return $this;
@@ -456,7 +465,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisPropSingleOp( $boolVar )
+    public function setThisPropSingleOp( string $boolVar ) : self
     {
         $this->condition->setThisPropSingleOp( $boolVar );
         return $this;
@@ -471,7 +480,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisFcnSingleOP( $thisFcn )
+    public function setThisFcnSingleOP( string $thisFcn ) : self
     {
         $this->condition->setThisFcnSingleOP( $thisFcn );
         return $this;
@@ -483,7 +492,7 @@ final class CtrlStructMgr extends BaseB
      * @param bool $strict
      * @return string
      */
-    public function getCompOP( $strict = false )
+    public function getCompOP( $strict = false ) : string
     {
         return $this->condition->getCompOP( $strict );
     }
@@ -495,7 +504,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setCompOP( $compOp )
+    public function setCompOP( string $compOp ) : self
     {
         $this->condition->setCompOP( $compOp );
         return $this;
@@ -506,7 +515,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setOperand1( $operand1 )
+    public function setOperand1( $operand1 ) : self
     {
         $this->condition->setOperand1( $operand1 );
         return $this;
@@ -521,7 +530,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisVarOperand1( $operand1 )
+    public function setThisVarOperand1( string $operand1 ) : self
     {
         $this->condition->setThisVarOperand1( $operand1 );
         return $this;
@@ -532,7 +541,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setOperand2( $operand2 )
+    public function setOperand2( $operand2 ) : self
     {
         $this->condition->setOperand2( $operand2 );
         return $this;
@@ -547,7 +556,7 @@ final class CtrlStructMgr extends BaseB
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setThisVarOperand2( $operand2 )
+    public function setThisVarOperand2( string $operand2 ) : self
     {
         $this->condition->setThisVarOperand2( $operand2 );
         return $this;

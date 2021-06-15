@@ -2,29 +2,36 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen\Traits;
 
 use InvalidArgumentException;
 use Kigkonsult\PcGen\Util;
+
+use function is_scalar;
+use function rtrim;
+use function trim;
+use function sprintf;
+use function var_export;
 
 trait ScalarTrait
 {
@@ -46,7 +53,7 @@ trait ScalarTrait
      */
     public function getScalar( $strict = true )
     {
-        return ( $strict || $this->isExpression )
+        return (( $strict ?? true ) || $this->isExpression )
             ? $this->scalar
             : Util::renderScalarValue( $this->scalar );
     }
@@ -54,7 +61,7 @@ trait ScalarTrait
     /**
      * @return bool
      */
-    public function isScalarSet()
+    public function isScalarSet() : bool
     {
         return ( null !== $this->scalar );
     }
@@ -64,7 +71,7 @@ trait ScalarTrait
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setScalar( $scalar )
+    public function setScalar( $scalar ) : self
     {
         if( ! is_scalar( $scalar )) {
             throw new InvalidArgumentException(
@@ -81,7 +88,7 @@ trait ScalarTrait
      *
      * @return bool
      */
-    public function isExpression()
+    public function isExpression() : bool
     {
         return $this->isExpression;
     }
@@ -91,14 +98,9 @@ trait ScalarTrait
      * @return static
      * @throws InvalidArgumentException
      */
-    public function setExpression( $expression )
+    public function setExpression( string $expression ) : self
     {
         static $END = ';';
-        if( ! is_string( $expression )) {
-            throw new InvalidArgumentException(
-                sprintf( self::$ERRx, var_export( $expression, true  ))
-            );
-        }
         $this->scalar       = rtrim( trim( $expression ), $END );
         $this->isExpression = true;
         return $this;

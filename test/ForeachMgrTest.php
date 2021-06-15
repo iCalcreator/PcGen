@@ -2,25 +2,26 @@
 /**
  * PcGen is a PHP Code Generation support package
  *
- * Copyright 2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link <https://kigkonsult.se>
- * Support <https://github.com/iCalcreator/PcGen>
- *
  * This file is part of PcGen.
  *
- * PcGen is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2020-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software PcGen.
+ *            PcGen is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU General Public License as published by
+ *            the Free Software Foundation, either version 3 of the License, or
+ *            (at your option) any later version.
  *
- * PcGen is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *            PcGen is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *            GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
+ *            You should have received a copy of the GNU General Public License
+ *            along with PcGen.  If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\PcGen;
 
 use InvalidArgumentException;
@@ -35,10 +36,10 @@ class ForeachMgrTest extends TestCase
 {
     use FimDataProviderTrait; // FcnInvokeMgrTest3ArgumentProvider + FcnInvokeMgrFunctionProvider
 
-    public static function foreachMgrTest1DataProvider() {
-        $testData = [];
-
-        $iterators = [];
+    public static function foreachMgrTest1DataProvider() : array
+    {
+        $testData   = [];
+        $iterators  = [];
 
         $testData[] = [
             '101',
@@ -86,9 +87,10 @@ class ForeachMgrTest extends TestCase
       * @param string $key        i.e. name
       * @param string $value      i.e. name
       */
-     public function foreachMgrTest1( $case, $iterator, $key, $value )
+     public function foreachMgrTest1( string $case, $iterator, $key, $value )
     {
         $source = is_object( $iterator ) ? trim( $iterator->toString()) : ForeachMgr::VARPREFIX . $iterator;
+
         $fcnFrameMgr = FcnFrameMgr::init()
             ->setName( __FUNCTION__ . '_' . $case )
             ->setBody(
@@ -115,6 +117,15 @@ class ForeachMgrTest extends TestCase
             strpos( $code, ( empty( $value) ? 'value' : 'element' )),
             'Error in ' . __FUNCTION__ . ' ' . $case . '-3' . PHP_EOL . $code
         );
+
+        if( ! empty( $argument )) {
+            static $EXP3  = '( $';
+            static $EXP4  = '()' . PHP_EOL;
+            $this->assertTrue(
+                (( false !== strpos( $code, $EXP3  )) || ( false !== strpos( $code, $EXP4  ))),
+                'Error in ' . __FUNCTION__ . ' ' . $case . '-4' . PHP_EOL . $code
+            );
+        }
 
         if( DISPLAYffm ) {
             echo __FUNCTION__ . ' ' . $case . ' ->' . PHP_EOL . $code . '<-' . PHP_EOL;
@@ -153,7 +164,7 @@ class ForeachMgrTest extends TestCase
             $this->assertTrue( true );
         }
         try {
-            ForeachMgr::factory()->setIterator( classMgr::init())->toArray();
+            ForeachMgr::factory()->setIterator( ClassMgr::init())->toArray();
             $this->assertTrue( false );
         }
         catch( InvalidArgumentException $e ) {
